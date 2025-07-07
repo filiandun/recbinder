@@ -20,19 +20,14 @@ namespace RecBinderProject
     {
         private IKeyboardMouseEvents m_GlobalHook;
 
-        private MouseMovements mouseMovements;
-        private MouseClicks mouseClicks;
+        private RecordedEvents recordedEvents;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            this.mouseMovements = new MouseMovements();
-            this.mouseClicks = new MouseClicks();
+            this.recordedEvents = new RecordedEvents();
         }
-
-        public int previousTimeMouseClick = 0;
-        public int previousTimeMouseMove = 0;
 
         public Stopwatch stopWatch;
 
@@ -40,50 +35,79 @@ namespace RecBinderProject
         {
             this.stopWatch = Stopwatch.StartNew();
 
-            m_GlobalHook = Hook.GlobalEvents();
-             
-            //m_GlobalHook.KeyPress += GlobalHookKeyPress;
+            this.m_GlobalHook = Hook.GlobalEvents();
 
-            m_GlobalHook.MouseDown += GlobalHookMouseDown;
-            m_GlobalHook.MouseUp += GlobalHookMouseUp;
+            this.m_GlobalHook.KeyDown += GlobalHookKeyDown;
+            this.m_GlobalHook.KeyUp += GlobalHookKeyUp;
 
-            m_GlobalHook.MouseMoveExt += GlobalHookMouseMoveExt;
+            this.m_GlobalHook.MouseDown += GlobalHookMouseDown;
+            this.m_GlobalHook.MouseUp += GlobalHookMouseUp;
+
+            this.m_GlobalHook.MouseMoveExt += GlobalHookMouseMoveExt;
         }
 
-
-        private void GlobalHookMouseDown(object sender, MouseEventArgs e)
+        private void GlobalHookKeyUp(object? sender, KeyEventArgs e)
         {
-            this.textBox.Text += "Down: " + e.Button.ToString() + "//";
-            this.mouseClicks.AddMouseClick(new MouseClick(e.Button, KeyState.Down, this.GetDelay(ref this.previousTimeMouseClick)));
+            int timeOffset = (int)this.stopWatch.ElapsedMilliseconds;
+            KeyboardPressEvent keyboardPressEvent = new KeyboardPressEvent((int)e.KeyCode, KeyState.Up, timeOffset);
+
+            //this.textBox.Text += "[KU: " + e.KeyValue.ToString() + ":" + timeOffset + " ] ";
+
+            this.recordedEvents.AddEvents(keyboardPressEvent);
         }
 
-        private void GlobalHookMouseUp(object sender, MouseEventArgs e)
+        private void GlobalHookKeyDown(object? sender, KeyEventArgs e)
         {
-            this.textBox.Text += "Up: " + e.Button.ToString() + "//";
-            this.mouseClicks.AddMouseClick(new MouseClick(e.Button, KeyState.Up, this.GetDelay(ref this.previousTimeMouseClick)));
+            int timeOffset = (int)this.stopWatch.ElapsedMilliseconds;
+            KeyboardPressEvent keyboardPressEvent = new KeyboardPressEvent((int)e.KeyCode, KeyState.Down, timeOffset);
+
+            //this.textBox.Text += "[KD: " + e.KeyValue.ToString() + ":" + timeOffset + " ] ";
+
+            this.recordedEvents.AddEvents(keyboardPressEvent);
         }
 
 
-
-        private void GlobalHookKeyPress(object sender, KeyPressEventArgs e)
+        private void GlobalHookMouseDown(object? sender, MouseEventArgs e)
         {
-            this.textBox.Text += e.KeyChar.ToString() + " ";
+            int timeOffset = (int)this.stopWatch.ElapsedMilliseconds;
+            MousePressEvent mousePressEvent = new MousePressEvent(e.Button, KeyState.Down, timeOffset);
+
+            //this.textBox.Text += "[D: " + e.Button.ToString() + ":" + timeOffset + " ] ";
+
+            this.recordedEvents.AddEvents(mousePressEvent);
         }
 
-        private void GlobalHookMouseMoveExt(object sender, MouseEventExtArgs e)
+        private void GlobalHookMouseUp(object? sender, MouseEventArgs e)
+        {
+            int timeOffset = (int)this.stopWatch.ElapsedMilliseconds;
+            MousePressEvent mousePressEvent = new MousePressEvent(e.Button, KeyState.Up, timeOffset);
+
+            //this.textBox.Text += "[U: " + e.Button.ToString() + ":" + timeOffset + " ] ";
+
+            this.recordedEvents.AddEvents(mousePressEvent);
+        }
+
+
+        private void GlobalHookMouseMoveExt(object? sender, MouseEventExtArgs e)
         {
             //this.textBox.Text = e.Location.X + " " + e.Location.Y;
-            int currentTime = (int)this.stopWatch.ElapsedMilliseconds;
-            if (currentTime - this.previousTimeMouseMove < 10) { return; }
-            this.mouseMovements.AddMouseMovement(new MouseMove(e.Location.X, e.Location.Y, this.GetDelay(ref this.previousTimeMouseMove)));
+            int timeOffset = (int)this.stopWatch.ElapsedMilliseconds;
+            //if (timeOffset - this.previousTimeMouseMove < 10) { return; }
+
+            //this.textBox.Text += "[M: " + e.Location.X.ToString() + "-" + e.Location.Y.ToString() + ":" + timeOffset + " ] ";
+
+            this.recordedEvents.AddEvents(new MouseMoveEvent(e.Location.X, e.Location.Y, (int)this.stopWatch.ElapsedMilliseconds));
         }
 
         public void Unsubscribe()
         {
-            m_GlobalHook.MouseDown -= GlobalHookMouseDown;
-            m_GlobalHook.MouseUp -= GlobalHookMouseUp;
+            this.m_GlobalHook.KeyDown -= GlobalHookKeyDown;
+            this.m_GlobalHook.KeyUp -= GlobalHookKeyUp;
 
-            m_GlobalHook.KeyPress -= GlobalHookKeyPress;
+            this.m_GlobalHook.MouseDown -= GlobalHookMouseDown;
+            this.m_GlobalHook.MouseUp -= GlobalHookMouseUp;
+
+            this.m_GlobalHook.MouseMoveExt -= GlobalHookMouseMoveExt;
 
             m_GlobalHook.Dispose();
         }
@@ -96,41 +120,12 @@ namespace RecBinderProject
         private void button_Click_1(object sender, RoutedEventArgs e)
         {
             this.Unsubscribe();
+        }
 
-            Thread thread = new Thread(this.RunMouseMovements) { IsBackground = true };
-            Thread thread1 = new Thread(this.RunMouseClicks) { IsBackground = true };
-
-            thread1.Start();
+        private void button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Thread thread = new Thread(async () => { await this.recordedEvents.PlayEventsAsync(); }) { IsBackground = true };
             thread.Start();
-
-            startEvent.Set();
-        }
-
-        // Создаем события для синхронизации
-        ManualResetEvent startEvent = new ManualResetEvent(false);
-
-        // Метод для первого потока
-        void RunMouseMovements()
-        {
-            startEvent.WaitOne(); // Ждем сигнала запуска
-            this.mouseMovements.PlayMouseMovements();
-        }
-
-        // Метод для второго потока
-        void RunMouseClicks()
-        {
-            startEvent.WaitOne(); // Ждем сигнала запуска
-            this.mouseClicks.PlayMouseClicks();
-        }
-
-        private int GetDelay(ref int previousTime)
-        {
-            int currentTime = (int) this.stopWatch.ElapsedMilliseconds;
-
-            int deltaTime = currentTime - previousTime;
-            previousTime = currentTime;
-
-            return deltaTime;
         }
     }
 }

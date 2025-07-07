@@ -2,23 +2,17 @@
 
 namespace RecBinderProject
 {
-    public enum KeyState
-    {
-        Up,
-        Down
-    }
-
-    public struct MouseClick
+    public struct MousePressEvent : IInputEvent
     {
         public MouseButtons MouseButton { get; set; } 
         public KeyState KeyState { get; set; }
-        public int DelayMs { get; set; }
+        public int TimeOffset { get; set; }
 
-        public MouseClick(MouseButtons mouseButton, KeyState keyState, int delayMs)
+        public MousePressEvent(MouseButtons mouseButton, KeyState keyState, int timeOffset)
         {
             this.MouseButton = mouseButton;
             this.KeyState = keyState;
-            this.DelayMs = delayMs;
+            this.TimeOffset = timeOffset;
         }
     }
 }
