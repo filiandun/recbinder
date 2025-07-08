@@ -112,17 +112,17 @@ namespace RecBinderProject
             m_GlobalHook.Dispose();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ButtonStartRecord_Click(object sender, RoutedEventArgs e)
         {
             this.Subscribe();
         }
 
-        private void button_Click_1(object sender, RoutedEventArgs e)
+        private void ButtonStopRecord_Click(object sender, RoutedEventArgs e)
         {
             this.Unsubscribe();
         }
 
-        private void button_Click_2(object sender, RoutedEventArgs e)
+        private void ButtonPlayRecord_Click(object sender, RoutedEventArgs e)
         {
             Thread thread = new Thread(async () => { await this.recordedEvents.PlayEventsAsync(); }) { IsBackground = true };
             thread.Start();
