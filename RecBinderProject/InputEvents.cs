@@ -10,18 +10,40 @@ using WindowsInput;
 
 namespace RecBinderProject
 {
-    public class RecordedEvents
+    public class InputEvents : ICloneable
     {
-        private LinkedList<IInputEvent> recordedEvents;
+        private LinkedList<IInputEvent> inputEventsList;
 
-        public RecordedEvents()
+        public string Name { get; private set; }
+        public double Duration { get; private set; }
+        public DateTime dateTime { get; private set; }
+        public string Description { get; private set; }
+
+
+        public InputEvents()
         {
-            this.recordedEvents = new LinkedList<IInputEvent>();
+            this.inputEventsList = new LinkedList<IInputEvent>();
+        }
+
+        private InputEvents(LinkedList<IInputEvent> recordedEvents)
+        {
+            this.inputEventsList = recordedEvents;
         }
 
         public void AddEvents(IInputEvent userEvent)
         {
-            this.recordedEvents.AddLast(userEvent);
+            this.inputEventsList.AddLast(userEvent);
+        }
+
+        public void ClearEvents()
+        {
+            this.inputEventsList.Clear();
+        }
+
+        public object Clone()
+        {
+            LinkedList<IInputEvent> recordedEventsCopy = new LinkedList<IInputEvent>(this.inputEventsList);
+            return new InputEvents(recordedEventsCopy);
         }
 
         public async Task PlayEventsAsync()
@@ -29,9 +51,9 @@ namespace RecBinderProject
             InputSimulator inputSimulator = new InputSimulator();
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            for (int i = 0; i < this.recordedEvents.Count; i++)
+            for (int i = 0; i < this.inputEventsList.Count; i++)
             {
-                IInputEvent recordedEvent = this.recordedEvents.ElementAt(i);
+                IInputEvent recordedEvent = this.inputEventsList.ElementAt(i);
 
                 double targetTime = recordedEvent.TimeOffset;
                 double elapsed = stopwatch.ElapsedMilliseconds;

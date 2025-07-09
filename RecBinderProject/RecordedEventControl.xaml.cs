@@ -20,9 +20,13 @@ namespace RecBinderProject
     /// </summary>
     public partial class RecordedEventControl : UserControl
     {
-        public RecordedEventControl()
+        public InputEvents RecordedEvents { get; set; }
+
+        public RecordedEventControl(InputEvents recordedEvents)
         {
             InitializeComponent();
+
+            this.RecordedEvents = recordedEvents;
         }
     }
 }
