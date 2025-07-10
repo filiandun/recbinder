@@ -13,7 +13,7 @@
         <ui:Frame x:Name="frame"/>
         <ui:NavigationView x:Name="navigationView" PaneTitle="Список записей" SelectionChanged="NavigationView_SelectionChanged">
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="Создать новую запись" Icon="Contact" Tag="createRecord"/>
+                <ui:NavigationViewItem Content="Создать новую запись" Icon="Camera"  Tag="createRecord"/>
                 <ui:NavigationViewItem Content="Помощь" Icon="Help" Tag="help"/>
             </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>

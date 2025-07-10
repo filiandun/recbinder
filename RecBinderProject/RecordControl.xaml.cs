@@ -15,18 +15,18 @@ using System.Windows.Shapes;
 
 namespace RecBinderProject
 {
-    /// <summary>
-    /// Логика взаимодействия для RecordedEventControl.xaml
-    /// </summary>
-    public partial class RecordedEventControl : UserControl
+    public partial class RecordControl : UserControl
     {
-        public InputEvents RecordedEvents { get; set; }
+        public RecordingInput RecordingInput { get; set; }
 
-        public RecordedEventControl(InputEvents recordedEvents)
+        public RecordControl(RecordingInput recordingInput)
         {
             InitializeComponent();
 
-            this.RecordedEvents = recordedEvents;
+            this.RecordingInput = recordingInput;
+
+            this.recordNameLabel.Content = this.RecordingInput.RecordingMetadata.Name;
+            this.recordDescriptionLabel.Content = this.RecordingInput.RecordingMetadata.Description;
         }
     }
 }

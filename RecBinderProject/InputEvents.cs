@@ -14,12 +14,6 @@ namespace RecBinderProject
     {
         private LinkedList<IInputEvent> inputEventsList;
 
-        public string Name { get; private set; }
-        public double Duration { get; private set; }
-        public DateTime dateTime { get; private set; }
-        public string Description { get; private set; }
-
-
         public InputEvents()
         {
             this.inputEventsList = new LinkedList<IInputEvent>();
@@ -30,7 +24,7 @@ namespace RecBinderProject
             this.inputEventsList = recordedEvents;
         }
 
-        public void AddEvents(IInputEvent userEvent)
+        public void AddEvent(IInputEvent userEvent)
         {
             this.inputEventsList.AddLast(userEvent);
         }
@@ -46,13 +40,18 @@ namespace RecBinderProject
             return new InputEvents(recordedEventsCopy);
         }
 
-        public async Task PlayEventsAsync()
+        public async Task PlayEventsAsync(CancellationToken cancellationToken)
         {
             InputSimulator inputSimulator = new InputSimulator();
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             for (int i = 0; i < this.inputEventsList.Count; i++)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
                 IInputEvent recordedEvent = this.inputEventsList.ElementAt(i);
 
                 double targetTime = recordedEvent.TimeOffset;
@@ -64,7 +63,7 @@ namespace RecBinderProject
                     await Task.Delay((int)delay);
                 }
 
-                if (recordedEvent is MouseMoveEvent mouseMove)
+                if (recordedEvent is MouseMoveInput mouseMove)
                 {
                     var startPosition = System.Windows.Forms.Cursor.Position;
 
@@ -76,7 +75,7 @@ namespace RecBinderProject
 
                     inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
                 }
-                else if (recordedEvent is MousePressEvent mousePressEvent) // TO DO расскидать по методам, а то слишком много условий
+                else if (recordedEvent is MousePressInput mousePressEvent) // TO DO расскидать по методам, а то слишком много условий
                 {
                     if (mousePressEvent.KeyState == KeyState.Down)
                     {
@@ -101,7 +100,7 @@ namespace RecBinderProject
                         }
                     }
                 }
-                else if (recordedEvent is KeyboardPressEvent keyboardPressEvent)
+                else if (recordedEvent is KeyboardPressInput keyboardPressEvent)
                 {
                     if (keyboardPressEvent.KeyState == KeyState.Down)
                     {

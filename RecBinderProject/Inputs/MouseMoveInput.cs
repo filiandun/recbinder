@@ -1,12 +1,12 @@
 ﻿namespace RecBinderProject
 {
-    public struct MouseMoveEvent : IInputEvent
+    public struct MouseMoveInput : IInputEvent
     {
         public double X { get; set; }
         public double Y { get; set; }
         public int TimeOffset { get; set; }
 
-        public MouseMoveEvent(double X, double Y, int timeOffset)
+        public MouseMoveInput(double X, double Y, int timeOffset)
         {
             this.X = X;
             this.Y = Y;

@@ -1,4 +1,4 @@
-﻿<Page x:Class="RecBinderProject.RecordingPage"
+﻿<Page x:Class="RecBinderProject.CreateRecordPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -32,7 +32,7 @@
                 <TextBox x:Name="recordDescriptionTextBox" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </DockPanel>
 
-            <Grid Grid.Row="3">
+            <Grid x:Name="durationGrid" Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="9*"/>
                     <ColumnDefinition Width="*"/>
@@ -53,7 +53,7 @@
                 </ComboBox>
             </Grid>
 
-            <Grid Grid.Row="4">
+            <Grid x:Name="settingsGrid" Grid.Row="4">
                 <Label Content="Настройки" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
                 <UniformGrid VerticalAlignment="Bottom">
                     <CheckBox Content="Игнорировать движения мыши"/>
@@ -63,8 +63,8 @@
             </Grid>
 
             <UniformGrid Grid.Row="6" Rows="1">
-                <Button x:Name="buttonStartRecord" Content="Начать запись" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ButtonStartRecord_Click" Margin="0,10,40,10"/>
-                <Button x:Name ="buttonStopRecord" Content="Остановить запись" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ButtonStopRecord_Click" Margin="0,10,0,10"/>
+                <Button x:Name="buttonStartRecord" Content="Начать запись" Margin="0,10,40,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ButtonStartRecord_Click"/>
+                <Button x:Name ="buttonStopRecord" Content="Остановить запись"  Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="false" Click="ButtonStopRecord_Click"/>
             </UniformGrid>
         </Grid>
     </Grid>

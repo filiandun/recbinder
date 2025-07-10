@@ -1,9 +1,4 @@
-﻿using Gma.System.MouseKeyHook;// библиотека для считывания нажатия клавиш и движения мышью
-using ModernWpf.Controls;
-
-using System.Windows.Forms;
-
-using ModernWpf;
+﻿using ModernWpf.Controls;
 using System.Windows;
 
 namespace RecBinderProject
@@ -17,9 +12,9 @@ namespace RecBinderProject
 
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            if (this.navigationView.SelectedItem is RecordedEventControl recordedEventControl)
+            if (this.navigationView.SelectedItem is RecordControl recordControl)
             {
-                RecordPage recordPage = new RecordPage("RecordName", 20, DateTime.Now, "RecordDescription");
+                RecordPage recordPage = new RecordPage(recordControl);
                 this.frame.Navigate(recordPage);
             }
             else if (this.navigationView.SelectedItem is NavigationViewItem navigationViewItem)
@@ -27,8 +22,10 @@ namespace RecBinderProject
                 switch (navigationViewItem.Tag)
                 {
                     case "createRecord":
-                        RecordingPage recordingPage = new RecordingPage();
-                        this.frame.Navigate(recordingPage);
+                        CreateRecordPage createRecordPage = new CreateRecordPage();
+                        this.frame.Navigate(createRecordPage);
+                        createRecordPage.StopRecording += RecordingPage_StopRecording;
+
                         break;
                 }
             }
@@ -40,6 +37,18 @@ namespace RecBinderProject
                     CloseButtonText = "Закрыть",
                 };
                 contentDialog.ShowAsync();
+            }
+        }
+
+        private void RecordingPage_StopRecording(object? sender, EventArgs e)
+        {
+            if (sender is CreateRecordPage createRecordPage)
+            {
+                this.navigationView.MenuItems.Add(new RecordControl(createRecordPage.RecordingInput));
+            }
+            else
+            {
+                throw new ArgumentException("sender должен быть типа CreateRecordPage", nameof(sender));
             }
         }
     }
