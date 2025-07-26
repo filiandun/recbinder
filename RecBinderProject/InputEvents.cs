@@ -1,6 +1,8 @@
-﻿using System;
+﻿using RecBinderProject.Inputs;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,112 +12,158 @@ using WindowsInput;
 
 namespace RecBinderProject
 {
-    public class InputEvents : ICloneable
+    public interface IDeepCloneable<T>
     {
-        private LinkedList<IInputEvent> inputEventsList;
+        public T Clone();
+    }
+
+    public class InputEvents : IDeepCloneable<InputEvents>
+    {
+        public LinkedList<InputEvent> _inputEventsList { get; init; }
 
         public InputEvents()
         {
-            this.inputEventsList = new LinkedList<IInputEvent>();
+            this._inputEventsList = new LinkedList<InputEvent>();
         }
 
-        private InputEvents(LinkedList<IInputEvent> recordedEvents)
+        private InputEvents(LinkedList<InputEvent> recordedEvents)
         {
-            this.inputEventsList = recordedEvents;
+            this._inputEventsList = recordedEvents;
         }
 
-        public void AddEvent(IInputEvent userEvent)
+        public InputEvents Clone()
         {
-            this.inputEventsList.AddLast(userEvent);
+            return new InputEvents(new LinkedList<InputEvent>(this._inputEventsList));
         }
 
-        public void ClearEvents()
+
+
+        public void Add(InputEvent userEvent)
         {
-            this.inputEventsList.Clear();
+            this._inputEventsList.AddLast(userEvent);
         }
 
-        public object Clone()
+        public void Clear()
         {
-            LinkedList<IInputEvent> recordedEventsCopy = new LinkedList<IInputEvent>(this.inputEventsList);
-            return new InputEvents(recordedEventsCopy);
+            this._inputEventsList.Clear();
         }
 
-        public async Task PlayEventsAsync(CancellationToken cancellationToken)
+
+        public async Task PlayAsync(CancellationToken cancellationToken)
         {
             InputSimulator inputSimulator = new InputSimulator();
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            for (int i = 0; i < this.inputEventsList.Count; i++)
+            //for (int i = 0; i < this._inputEventsList.Count; i++)
+                // IInputEvent inputEvent = this._inputEventsList.ElementAt(i); 
+
+            foreach (InputEvent inputEvent in this._inputEventsList)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return;
                 }
 
-                IInputEvent recordedEvent = this.inputEventsList.ElementAt(i);
+                await this.PlayDelayAsync(stopwatch, inputEvent.TimeOffset, stopwatch.ElapsedMilliseconds);
 
-                double targetTime = recordedEvent.TimeOffset;
-                double elapsed = stopwatch.ElapsedMilliseconds;
-                double delay = targetTime - elapsed;
-
-                if (delay > 0)
+                switch (inputEvent.Kind) // TO DO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
                 {
-                    await Task.Delay((int)delay);
-                }
+                    case InputEventKind.MouseMove: this.PlayMouseMove(inputEvent.MouseMove!, inputSimulator); break;
+                    case InputEventKind.MousePress: this.PlayMousePress(inputEvent.MousePress!, inputSimulator); break;
+                    case InputEventKind.KeyboardPress: this.PlayKeyboardPress(inputEvent.KeyboardPress!, inputSimulator); break;
 
-                if (recordedEvent is MouseMoveInput mouseMove)
+                    default: MessageBox.Show("Ошибка. Запись повреждена."); return;
+                }  
+            }
+        }
+
+
+        private async Task PlayDelayAsync(Stopwatch stopwatch, double timeOffset, double elapsed) // TO DO проверить на работоспособность (GPT предложил)
+        {
+            //double delay = timeOffset - elapsed;
+
+            //if (delay > 0)
+            //{
+            //    await Task.Delay((int)delay);
+            //}
+
+            while (stopwatch.ElapsedMilliseconds < timeOffset)
+            {
+                var delay = timeOffset - stopwatch.ElapsedMilliseconds;
+
+                // Ожидание только если до события хотя бы 2 мс
+                if (delay > 2)
                 {
-                    var startPosition = System.Windows.Forms.Cursor.Position;
-
-                    int targetX = /*startPosition.X +*/ (int)mouseMove.X;
-                    int targetY = /*startPosition.Y +*/ (int)mouseMove.Y;
-
-                    int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width;
-                    int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
-
-                    inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
-                }
-                else if (recordedEvent is MousePressInput mousePressEvent) // TO DO расскидать по методам, а то слишком много условий
-                {
-                    if (mousePressEvent.KeyState == KeyState.Down)
-                    {
-                        switch (mousePressEvent.MouseButton)
-                        {
-                            case MouseButtons.Left: inputSimulator.Mouse.LeftButtonDown(); break;
-                            case MouseButtons.Right: inputSimulator.Mouse.RightButtonDown(); break;
-
-                            case MouseButtons.XButton1: inputSimulator.Mouse.XButtonDown(1); break;
-                            case MouseButtons.XButton2: inputSimulator.Mouse.XButtonDown(2); break;
-                        }
-                    }
-                    else if (mousePressEvent.KeyState == KeyState.Up)
-                    {
-                        switch (mousePressEvent.MouseButton)
-                        {
-                            case MouseButtons.Left: inputSimulator.Mouse.LeftButtonUp(); break;
-                            case MouseButtons.Right: inputSimulator.Mouse.RightButtonUp(); break;
-
-                            case MouseButtons.XButton1: inputSimulator.Mouse.XButtonUp(1); break;
-                            case MouseButtons.XButton2: inputSimulator.Mouse.XButtonUp(2); break;
-                        }
-                    }
-                }
-                else if (recordedEvent is KeyboardPressInput keyboardPressEvent)
-                {
-                    if (keyboardPressEvent.KeyState == KeyState.Down)
-                    {
-                        inputSimulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode) keyboardPressEvent.KeyCode);
-                    }
-                    else if (keyboardPressEvent.KeyState == KeyState.Up)
-                    {
-                        inputSimulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)keyboardPressEvent.KeyCode);
-                    }
+                    await Task.Delay((int)delay / 2);
                 }
                 else
                 {
-                    MessageBox.Show("Error. Event undefind");
+                    await Task.Yield(); // максимально короткое ожидание
                 }
             }
+        }
+
+        private void PlayMouseMove(MouseMoveInput mouseMoveInput, InputSimulator inputSimulator)
+        {
+            var startPosition = System.Windows.Forms.Cursor.Position;
+
+            int targetX = /*startPosition.X +*/ (int)mouseMoveInput.X;
+            int targetY = /*startPosition.Y +*/ (int)mouseMoveInput.Y;
+
+            int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width;
+            int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
+
+            inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
+        }
+
+        private void PlayMousePress(MousePressInput mousePressInput, InputSimulator inputSimulator)
+        {
+            if (mousePressInput.KeyState == KeyState.Down)
+            {
+                switch (mousePressInput.MouseButton)
+                {
+                    case MouseButtons.Left: inputSimulator.Mouse.LeftButtonDown(); break;
+                    case MouseButtons.Right: inputSimulator.Mouse.RightButtonDown(); break;
+
+                    case MouseButtons.XButton1: inputSimulator.Mouse.XButtonDown(1); break;
+                    case MouseButtons.XButton2: inputSimulator.Mouse.XButtonDown(2); break;
+                }
+            }
+            else if (mousePressInput.KeyState == KeyState.Up)
+            {
+                switch (mousePressInput.MouseButton)
+                {
+                    case MouseButtons.Left: inputSimulator.Mouse.LeftButtonUp(); break;
+                    case MouseButtons.Right: inputSimulator.Mouse.RightButtonUp(); break;
+
+                    case MouseButtons.XButton1: inputSimulator.Mouse.XButtonUp(1); break;
+                    case MouseButtons.XButton2: inputSimulator.Mouse.XButtonUp(2); break;
+                }
+            }
+        }
+
+        private void PlayKeyboardPress(KeyboardPressInput keyboardPressInput, InputSimulator inputSimulator)
+        {
+            if (keyboardPressInput.KeyState == KeyState.Down)
+            {
+                inputSimulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)keyboardPressInput.KeyCode);
+            }
+            else if (keyboardPressInput.KeyState == KeyState.Up)
+            {
+                inputSimulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)keyboardPressInput.KeyCode);
+            }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (var inputEvent in this._inputEventsList.Take(10).ToArray())
+            {
+                stringBuilder.AppendLine(inputEvent.ToString());
+            }
+
+            return stringBuilder.ToString();
         }
     }
 }

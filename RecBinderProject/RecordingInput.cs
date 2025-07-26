@@ -8,13 +8,13 @@ namespace RecBinderProject
 {
     public class RecordingInput
     {
-        public InputEvents InputEvents { get; private set; }
-        public RecordingMetadata RecordingMetadata {  get; private set; }
+        public RecordingMetadata RecordingMetadata { get; set; }
+        public InputEvents InputEvents { get; set; }
 
-        public RecordingInput(InputEvents inputEvents, RecordingMetadata recordingMetadata)
+        public RecordingInput(RecordingMetadata recordingMetadata, InputEvents inputEvents)
         {
-            this.InputEvents = inputEvents;
             this.RecordingMetadata = recordingMetadata;
+            this.InputEvents = inputEvents;
         }
     }
 }

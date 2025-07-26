@@ -5,9 +5,14 @@ namespace RecBinderProject
 {
     public partial class MainWindow : Window
     {
+        private RecordingRepository _recordingRepository;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            this._recordingRepository = new RecordingRepository("C:\\Repositories\\RecBinder\\RecBinderProject\\Recordings");
+            this.UpdateRecordings();
         }
 
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -22,9 +27,17 @@ namespace RecBinderProject
                 switch (navigationViewItem.Tag)
                 {
                     case "createRecord":
-                        CreateRecordPage createRecordPage = new CreateRecordPage();
+                        CreateRecordPage createRecordPage = new CreateRecordPage(this._recordingRepository);
                         this.frame.Navigate(createRecordPage);
-                        createRecordPage.StopRecording += RecordingPage_StopRecording;
+                        createRecordPage.OnStopRecording += CreateRecordPage_StopRecording;
+
+                        break;
+
+                    case "help":
+
+                        break;
+
+                    case "settings":
 
                         break;
                 }
@@ -40,15 +53,19 @@ namespace RecBinderProject
             }
         }
 
-        private void RecordingPage_StopRecording(object? sender, EventArgs e)
+        private void CreateRecordPage_StopRecording(object? sender, EventArgs e)
         {
-            if (sender is CreateRecordPage createRecordPage)
+            this.UpdateRecordings();
+        }
+
+        private void UpdateRecordings()
+        {
+            List<RecordingInput> recordings = this._recordingRepository.LoadAll();
+            this.navigationView.MenuItems.Clear();
+
+            foreach (RecordingInput recording in recordings)
             {
-                this.navigationView.MenuItems.Add(new RecordControl(createRecordPage.RecordingInput));
-            }
-            else
-            {
-                throw new ArgumentException("sender должен быть типа CreateRecordPage", nameof(sender));
+                this.navigationView.MenuItems.Add(new RecordControl(recording));
             }
         }
     }

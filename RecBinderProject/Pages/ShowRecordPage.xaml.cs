@@ -7,84 +7,85 @@ namespace RecBinderProject
 {
     public partial class RecordPage : Page
     {
-        private CancellationTokenSource cancellationTokenSource;
-        private CancellationToken cancellationToken;
+        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationToken _cancellationToken;
 
-        private DispatcherTimer timer;
-        public Stopwatch stopWatch;
+        private Stopwatch _stopwatch;
+        private DispatcherTimer _dispatcherTimer;
 
-        private RecordControl recordControl;
+        private RecordControl _recordControl;
 
         public RecordPage(RecordControl recordControl)
         {
             InitializeComponent();
 
-            this.cancellationTokenSource = new CancellationTokenSource();
-            this.cancellationToken = this.cancellationTokenSource.Token;
+            this._cancellationTokenSource = new CancellationTokenSource();
+            this._cancellationToken = this._cancellationTokenSource.Token;
 
-            this.timer = new DispatcherTimer();
-            this.stopWatch = new Stopwatch();
+            this._stopwatch = new Stopwatch();
 
-            this.timer.Interval = TimeSpan.FromMilliseconds(10);
-            this.timer.Tick += Timer_Tick;
+            this._dispatcherTimer = new DispatcherTimer();
+            this._dispatcherTimer.Interval = TimeSpan.FromMilliseconds(10);
+            this._dispatcherTimer.Tick += Timer_Tick;
 
-            this.recordControl = recordControl;
+            this._recordControl = recordControl;
 
-            this.recordNameTextBox.Text = this.recordControl.RecordingInput.RecordingMetadata.Name;
-            this.recordDurationLabel.Content = this.recordControl.RecordingInput.RecordingMetadata.Duration.ToString(@"hh\:mm\:ss\.ff");
-            this.recordDateTimeLabel.Content = this.recordControl.RecordingInput.RecordingMetadata.CreationDateTime.ToString();
-            this.recordDescriptionTextBox.Text = this.recordControl.RecordingInput.RecordingMetadata.Description;
+            this.recordNameTextBox.Text = this._recordControl.RecordingInput.RecordingMetadata.Name;
+            this.recordDurationLabel.Content = this._recordControl.RecordingInput.RecordingMetadata.Duration.ToString(@"hh\:mm\:ss\.ff");
+            this.recordDateTimeLabel.Content = this._recordControl.RecordingInput.RecordingMetadata.CreationDateTime.ToString();
+            this.recordDescriptionTextBox.Text = this._recordControl.RecordingInput.RecordingMetadata.Description;
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            TimeSpan elapsed = this.stopWatch.Elapsed;
+            string elapsed = this._stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+            string duration = this._recordControl.RecordingInput.RecordingMetadata.Duration.ToString(@"hh\:mm\:ss\.ff");
 
-            this.buttonPlayRecord.Content = elapsed.ToString(@"hh\:mm\:ss\.ff") + " / " + this.recordControl.RecordingInput.RecordingMetadata.Duration.ToString(@"hh\:mm\:ss\.ff");
+            this.buttonPlayRecord.Content = elapsed + " / " + duration;
         }
+
 
         private async void ButtonPlayRecord_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.recordNameTextBox.IsEnabled = false;
-            this.recordDescriptionTextBox.IsEnabled = false;
-            this.recordDurationLabel.IsEnabled = false;
-            this.settingsGrid.IsEnabled = false;
-
+            this.ControlsEnabled(true);
             this.buttonPlayRecord.Content = "00:00:00:00";
-            this.buttonPlayRecord.IsEnabled = false;
-            this.buttonStopRecord.IsEnabled = true;
 
-            this.timer.Start();
-            this.stopWatch.Restart();
+            this._dispatcherTimer.Start();
+            this._stopwatch.Restart();
 
-            this.cancellationTokenSource = new CancellationTokenSource();
-            this.cancellationToken = this.cancellationTokenSource.Token;
+            this._cancellationTokenSource = new CancellationTokenSource();
+            this._cancellationToken = this._cancellationTokenSource.Token;
 
-            await Task.Run(() => this.recordControl.RecordingInput.InputEvents.PlayEventsAsync(this.cancellationToken));
-            ButtonStopRecord_Click(this, e);
+            await Task.Run(() => this._recordControl.RecordingInput.InputEvents.PlayAsync(this._cancellationToken));
+            this.ButtonStopRecord_Click(this, e);
         }
 
         private void ButtonStopRecord_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (this.cancellationTokenSource == null)
+            if (this._cancellationTokenSource == null)
             {
                 throw new InvalidOperationException();
             }
 
-            this.cancellationTokenSource.Cancel();
-            this.cancellationTokenSource.Dispose();
+            this._cancellationTokenSource.Cancel();
+            this._cancellationTokenSource.Dispose();
 
-            this.timer.Stop();
-            this.stopWatch.Stop();
+            this._dispatcherTimer.Stop();
+            this._stopwatch.Stop();
 
-            this.recordNameTextBox.IsEnabled = true;
-            this.recordDescriptionTextBox.IsEnabled = true;
-            this.recordDurationLabel.IsEnabled = true;
-            this.settingsGrid.IsEnabled = true;
-
+            this.ControlsEnabled(true);
             this.buttonPlayRecord.Content = "Воспроизвести запись";
-            this.buttonPlayRecord.IsEnabled = true;
-            this.buttonStopRecord.IsEnabled = false;
+        }
+
+        public void ControlsEnabled(bool value)
+        {
+            this.recordNameTextBox.IsEnabled = value;
+            this.recordDescriptionTextBox.IsEnabled = value;
+            this.recordDurationLabel.IsEnabled = value;
+            this.settingsGrid.IsEnabled = value;
+
+            this.buttonPlayRecord.IsEnabled = value;
+            this.buttonStopRecord.IsEnabled = !value;
         }
     }
 }

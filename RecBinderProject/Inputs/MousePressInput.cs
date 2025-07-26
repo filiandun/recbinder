@@ -1,8 +1,9 @@
-﻿using System.Windows.Forms;
+﻿using RecBinderProject.Inputs;
+using System.Windows.Forms;
 
 namespace RecBinderProject
 {
-    public struct MousePressInput : IInputEvent
+    public class MousePressInput
     {
         public MouseButtons MouseButton { get; set; } 
         public KeyState KeyState { get; set; }

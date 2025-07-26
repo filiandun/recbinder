@@ -1,6 +1,8 @@
-﻿namespace RecBinderProject
+﻿using RecBinderProject.Inputs;
+
+namespace RecBinderProject
 {
-    public struct KeyboardPressInput : IInputEvent
+    public class KeyboardPressInput
     {
         public int KeyCode { get; set; }
         public KeyState KeyState { get; set; }

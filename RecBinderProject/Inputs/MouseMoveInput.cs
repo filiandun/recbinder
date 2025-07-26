@@ -1,6 +1,8 @@
-﻿namespace RecBinderProject
+﻿using RecBinderProject.Inputs;
+
+namespace RecBinderProject
 {
-    public struct MouseMoveInput : IInputEvent
+    public class MouseMoveInput
     {
         public double X { get; set; }
         public double Y { get; set; }
