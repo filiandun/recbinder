@@ -29,6 +29,20 @@ namespace RecBinderProject
                             .ToList()!;
         }
 
+        public RecordingInput Read(string recordName)
+        {
+            string fileName = $"{this.SanitizeFileName(recordName)}.json";
+            string filePath = Path.Combine(this._folderPath, fileName);
+
+            if (!File.Exists(filePath)) { throw new FileNotFoundException($"Файл записи, которую вы пытаетесь открыть - не существует, вероятно, он был удалён ({filePath})"); }
+
+            RecordingInput? recordingInput = JsonSerializer.Deserialize<RecordingInput>(File.ReadAllText(filePath));
+
+            if (recordingInput is null) { throw new FileNotFoundException($"Файл записи, которую вы пытаетесь открыть - не существует, вероятно, он был удалён ({filePath})"); }
+
+            return recordingInput;
+        }
+
         // TO DO
         // сделать проверку на то, что если файл уже существует с таким именем, то спросить пользователя, что с этим делать
         public void Save(RecordingInput recordingInput)
@@ -45,10 +59,7 @@ namespace RecBinderProject
             string fileName = $"{this.SanitizeFileName(recordingInput.RecordingMetadata.Name)}.json";
             string filePath = Path.Combine(this._folderPath, fileName);
 
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"Файл, который вы пытаетесь удалить - не существует, вероятно, он уже был удалён ({filePath})");
-            }
+            if (!File.Exists(filePath)) { throw new FileNotFoundException($"Файл записи, который вы пытаетесь удалить - не существует, вероятно, он уже был удалён ({filePath})"); }
 
             File.Delete(filePath);
         }

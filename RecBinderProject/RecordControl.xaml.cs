@@ -17,16 +17,18 @@ namespace RecBinderProject
 {
     public partial class RecordControl : UserControl
     {
-        public RecordingInput RecordingInput { get; set; }
+        public string RecordName { get; set; }
+        public string RecordDescription { get; set; }
 
-        public RecordControl(RecordingInput recordingInput)
+        public RecordControl(string recordName, string recordDescription)
         {
             InitializeComponent();
 
-            this.RecordingInput = recordingInput;
+            this.RecordName = recordName;
+            this.RecordDescription = recordDescription;
 
-            this.recordNameLabel.Content = this.RecordingInput.RecordingMetadata.Name;
-            this.recordDescriptionLabel.Content = this.RecordingInput.RecordingMetadata.Description;
+            this.recordNameLabel.Content = recordName;
+            this.recordDescriptionLabel.Content = recordDescription;
         }
     }
 }

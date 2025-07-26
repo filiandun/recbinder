@@ -32,6 +32,13 @@ namespace RecBinderProject
 
             this._createRecordService = new CreateRecordService();
             this._recordingRepository = recordingRepository;
+
+            this._createRecordService.OnStopRecording += CreateRecordService_OnStopRecording;
+        }
+
+        private void CreateRecordService_OnStopRecording(object? sender, EventArgs e) // TO DO костылииииииииииииии
+        {
+            //this.ButtonStopRecord_Click(this, new RoutedEventArgs());
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
@@ -44,10 +51,12 @@ namespace RecBinderProject
             this.ControlsEnabled(false);
             this.buttonStartRecord.Content = "00:00:00:00";
 
+            this._timer.Start();
+
             this._createRecordService.StartRecord(GetRecordingMetadata());
         }
 
-        private RecordingMetadata GetRecordingMetadata()
+        private RecordingMetadata GetRecordingMetadata() // TO DO разделит по методам, которые отдельно будут возвращать данные о записи (не забыть и про валидацию данных)
         {
             DateTime recordCreationDateTime = DateTime.Now;
 
@@ -82,8 +91,6 @@ namespace RecBinderProject
             this._recordingRepository.Save(this._createRecordService.GetRecordingInput());
 
             this.OnStopRecording?.Invoke(this, e);
-
-            MessageBox.Show(this._createRecordService.GetRecordingInput().InputEvents.ToString());
         }
 
         public void ControlsEnabled(bool value)

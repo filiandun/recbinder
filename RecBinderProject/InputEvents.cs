@@ -12,40 +12,23 @@ using WindowsInput;
 
 namespace RecBinderProject
 {
-    public interface IDeepCloneable<T>
+    public class InputEvents
     {
-        public T Clone();
-    }
-
-    public class InputEvents : IDeepCloneable<InputEvents>
-    {
-        public LinkedList<InputEvent> _inputEventsList { get; init; }
+        public LinkedList<InputEvent> InputEventsList { get; init; }
 
         public InputEvents()
         {
-            this._inputEventsList = new LinkedList<InputEvent>();
+            this.InputEventsList = new LinkedList<InputEvent>();
         }
-
-        private InputEvents(LinkedList<InputEvent> recordedEvents)
-        {
-            this._inputEventsList = recordedEvents;
-        }
-
-        public InputEvents Clone()
-        {
-            return new InputEvents(new LinkedList<InputEvent>(this._inputEventsList));
-        }
-
-
 
         public void Add(InputEvent userEvent)
         {
-            this._inputEventsList.AddLast(userEvent);
+            this.InputEventsList.AddLast(userEvent);
         }
 
         public void Clear()
         {
-            this._inputEventsList.Clear();
+            this.InputEventsList.Clear();
         }
 
 
@@ -54,10 +37,7 @@ namespace RecBinderProject
             InputSimulator inputSimulator = new InputSimulator();
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            //for (int i = 0; i < this._inputEventsList.Count; i++)
-                // IInputEvent inputEvent = this._inputEventsList.ElementAt(i); 
-
-            foreach (InputEvent inputEvent in this._inputEventsList)
+            foreach (InputEvent inputEvent in this.InputEventsList)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -68,9 +48,10 @@ namespace RecBinderProject
 
                 switch (inputEvent.Kind) // TO DO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
                 {
-                    case InputEventKind.MouseMove: this.PlayMouseMove(inputEvent.MouseMove!, inputSimulator); break;
-                    case InputEventKind.MousePress: this.PlayMousePress(inputEvent.MousePress!, inputSimulator); break;
-                    case InputEventKind.KeyboardPress: this.PlayKeyboardPress(inputEvent.KeyboardPress!, inputSimulator); break;
+                    case InputEventKind.KeyboardPress: this.PlayKeyboardPress((KeyboardPressInput)inputEvent.KeyboardPress, inputSimulator); break;
+                    case InputEventKind.MousePress: this.PlayMousePress((MousePressInput)inputEvent.MousePress, inputSimulator); break;
+                    case InputEventKind.MouseMove: this.PlayMouseMove((MouseMoveInput)inputEvent.MouseMove, inputSimulator); break;
+                    case InputEventKind.MouseWheel: this.PlayMouseWheel((MouseWheelInput)inputEvent.MouseWheel, inputSimulator); break;
 
                     default: MessageBox.Show("Ошибка. Запись повреждена."); return;
                 }  
@@ -103,17 +84,16 @@ namespace RecBinderProject
             }
         }
 
-        private void PlayMouseMove(MouseMoveInput mouseMoveInput, InputSimulator inputSimulator)
+        private void PlayKeyboardPress(KeyboardPressInput keyboardPressInput, InputSimulator inputSimulator)
         {
-            var startPosition = System.Windows.Forms.Cursor.Position;
-
-            int targetX = /*startPosition.X +*/ (int)mouseMoveInput.X;
-            int targetY = /*startPosition.Y +*/ (int)mouseMoveInput.Y;
-
-            int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width;
-            int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
-
-            inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
+            if (keyboardPressInput.KeyState == KeyState.Down)
+            {
+                inputSimulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)keyboardPressInput.KeyCode);
+            }
+            else if (keyboardPressInput.KeyState == KeyState.Up)
+            {
+                inputSimulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)keyboardPressInput.KeyCode);
+            }
         }
 
         private void PlayMousePress(MousePressInput mousePressInput, InputSimulator inputSimulator)
@@ -142,28 +122,23 @@ namespace RecBinderProject
             }
         }
 
-        private void PlayKeyboardPress(KeyboardPressInput keyboardPressInput, InputSimulator inputSimulator)
+        private void PlayMouseMove(MouseMoveInput mouseMoveInput, InputSimulator inputSimulator)
         {
-            if (keyboardPressInput.KeyState == KeyState.Down)
-            {
-                inputSimulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)keyboardPressInput.KeyCode);
-            }
-            else if (keyboardPressInput.KeyState == KeyState.Up)
-            {
-                inputSimulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)keyboardPressInput.KeyCode);
-            }
+            var startPosition = System.Windows.Forms.Cursor.Position;
+
+            int targetX = /*startPosition.X +*/ (int)mouseMoveInput.X;
+            int targetY = /*startPosition.Y +*/ (int)mouseMoveInput.Y;
+
+            int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width;
+            int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
+
+            inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
         }
 
-        public override string ToString()
+        private void PlayMouseWheel(MouseWheelInput mouseWheelInput, InputSimulator inputSimulator)
         {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            foreach (var inputEvent in this._inputEventsList.Take(10).ToArray())
-            {
-                stringBuilder.AppendLine(inputEvent.ToString());
-            }
-
-            return stringBuilder.ToString();
+            inputSimulator.Mouse.VerticalScroll(mouseWheelInput.Delta);
         }
+
     }
 }

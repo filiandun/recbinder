@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace RecBinderProject
 {
-    public class MousePressInput
+    public struct MousePressInput
     {
         public MouseButtons MouseButton { get; set; } 
         public KeyState KeyState { get; set; }

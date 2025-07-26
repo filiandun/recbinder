@@ -19,7 +19,7 @@ namespace RecBinderProject
         {
             if (this.navigationView.SelectedItem is RecordControl recordControl)
             {
-                RecordPage recordPage = new RecordPage(recordControl);
+                RecordPage recordPage = new RecordPage(this._recordingRepository, recordControl.RecordName);
                 this.frame.Navigate(recordPage);
             }
             else if (this.navigationView.SelectedItem is NavigationViewItem navigationViewItem)
@@ -65,7 +65,7 @@ namespace RecBinderProject
 
             foreach (RecordingInput recording in recordings)
             {
-                this.navigationView.MenuItems.Add(new RecordControl(recording));
+                this.navigationView.MenuItems.Add(new RecordControl(recording.RecordingMetadata.Name, recording.RecordingMetadata.Description));
             }
         }
     }

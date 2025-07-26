@@ -16,7 +16,8 @@ namespace RecBinderProject.Inputs
     {
         KeyboardPress,
         MousePress,
-        MouseMove
+        MouseMove,
+        MouseWheel
     }
 
     public struct InputEvent
@@ -27,15 +28,11 @@ namespace RecBinderProject.Inputs
         public KeyboardPressInput? KeyboardPress { get; set; }
         public MousePressInput? MousePress { get; set; }
         public MouseMoveInput? MouseMove { get; set; }
+        public MouseWheelInput? MouseWheel { get; set; }
 
-
-        public static InputEvent From(KeyboardPressInput input)
-            => new InputEvent { Kind = InputEventKind.KeyboardPress, TimeOffset = input.TimeOffset, KeyboardPress = input };
-
-        public static InputEvent From(MousePressInput input)
-            => new InputEvent { Kind = InputEventKind.MousePress, TimeOffset = input.TimeOffset, MousePress = input };
-
-        public static InputEvent From(MouseMoveInput input)
-            => new InputEvent { Kind = InputEventKind.MouseMove, TimeOffset = input.TimeOffset, MouseMove = input };
+        public static InputEvent From(KeyboardPressInput input) => new InputEvent { Kind = InputEventKind.KeyboardPress, TimeOffset = input.TimeOffset, KeyboardPress = input };
+        public static InputEvent From(MousePressInput input) => new InputEvent { Kind = InputEventKind.MousePress, TimeOffset = input.TimeOffset, MousePress = input };
+        public static InputEvent From(MouseMoveInput input) => new InputEvent { Kind = InputEventKind.MouseMove, TimeOffset = input.TimeOffset, MouseMove = input };
+        public static InputEvent From(MouseWheelInput input) => new InputEvent { Kind = InputEventKind.MouseWheel, TimeOffset = input.TimeOffset, MouseWheel = input };
     }
 }

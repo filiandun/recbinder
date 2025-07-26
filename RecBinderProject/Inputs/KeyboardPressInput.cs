@@ -2,7 +2,7 @@
 
 namespace RecBinderProject
 {
-    public class KeyboardPressInput
+    public struct KeyboardPressInput
     {
         public int KeyCode { get; set; }
         public KeyState KeyState { get; set; }

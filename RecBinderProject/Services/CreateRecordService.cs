@@ -13,11 +13,13 @@ namespace RecBinderProject.Services
 {
     public class CreateRecordService
     {
+        public event EventHandler? OnStopRecording;
+
         private CancellationTokenSource _cancellationTokenSource;
 
         private IKeyboardMouseEvents _globalHook;
 
-        private Stopwatch _stopWatch;
+        private Stopwatch _stopwatch;
 
         private RecordingInput _recordingInput;
 
@@ -25,14 +27,14 @@ namespace RecBinderProject.Services
         {
             this._cancellationTokenSource = new CancellationTokenSource();
             
-            this._stopWatch = new Stopwatch();
+            this._stopwatch = new Stopwatch();
         }
 
         public void StartRecord(RecordingMetadata recordingMetadata)
         {
             this._recordingInput = new RecordingInput(recordingMetadata, new InputEvents());
 
-            this._stopWatch.Restart();
+            this._stopwatch.Restart();
             this.Subscribe();
 
             _ = this.WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
@@ -53,9 +55,10 @@ namespace RecBinderProject.Services
 
         public void StopRecord()
         {
-            this._cancellationTokenSource?.Cancel();
+            this.OnStopRecording?.Invoke(this, EventArgs.Empty);
+            this._cancellationTokenSource.Cancel();
 
-            this._stopWatch.Stop();
+            this._stopwatch.Stop();
 
             this.Unsubscribe();
         }
@@ -63,7 +66,7 @@ namespace RecBinderProject.Services
 
         public void Subscribe()
         {
-            this._stopWatch.Restart();
+            this._stopwatch.Restart();
 
             this._globalHook = Hook.GlobalEvents();
 
@@ -74,11 +77,12 @@ namespace RecBinderProject.Services
             this._globalHook.MouseUp += GlobalHookMouseUp;
 
             this._globalHook.MouseMoveExt += GlobalHookMouseMoveExt;
+            this._globalHook.MouseWheelExt += GlobalHook_MouseWheelExt;
         }
 
         public void Unsubscribe()
         {
-            this._recordingInput.RecordingMetadata.Duration = this._stopWatch.Elapsed;
+            this._recordingInput.RecordingMetadata.Duration = this._stopwatch.Elapsed;
 
             this._globalHook.KeyDown -= GlobalHookKeyDown;
             this._globalHook.KeyUp -= GlobalHookKeyUp;
@@ -87,6 +91,7 @@ namespace RecBinderProject.Services
             this._globalHook.MouseUp -= GlobalHookMouseUp;
 
             this._globalHook.MouseMoveExt -= GlobalHookMouseMoveExt;
+            this._globalHook.MouseWheelExt -= GlobalHook_MouseWheelExt;
 
             this._globalHook.Dispose();
         }
@@ -94,27 +99,34 @@ namespace RecBinderProject.Services
 
         private void GlobalHookKeyUp(object? sender, KeyEventArgs e)
         {
-            this._recordingInput.InputEvents.Add(InputEvent.From(new KeyboardPressInput((int)e.KeyCode, KeyState.Up, (int)this._stopWatch.ElapsedMilliseconds)));
+            this._recordingInput.InputEvents.Add(InputEvent.From(new KeyboardPressInput((int)e.KeyCode, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
         }
 
         private void GlobalHookKeyDown(object? sender, KeyEventArgs e)
         {
-            this._recordingInput.InputEvents.Add(InputEvent.From(new KeyboardPressInput((int)e.KeyCode, KeyState.Down, (int)this._stopWatch.ElapsedMilliseconds)));
+            this._recordingInput.InputEvents.Add(InputEvent.From(new KeyboardPressInput((int)e.KeyCode, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
         }
+
 
         private void GlobalHookMouseDown(object? sender, MouseEventArgs e)
         {
-            this._recordingInput.InputEvents.Add(InputEvent.From(new MousePressInput(e.Button, KeyState.Down, (int)this._stopWatch.ElapsedMilliseconds)));
+            this._recordingInput.InputEvents.Add(InputEvent.From(new MousePressInput(e.Button, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
         }
         private void GlobalHookMouseUp(object? sender, MouseEventArgs e)
         {
-            this._recordingInput.InputEvents.Add(InputEvent.From(new MousePressInput(e.Button, KeyState.Up, (int)this._stopWatch.ElapsedMilliseconds)));
+            this._recordingInput.InputEvents.Add(InputEvent.From(new MousePressInput(e.Button, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
         }
+
 
         private void GlobalHookMouseMoveExt(object? sender, MouseEventExtArgs e)
         {
-            this._recordingInput.InputEvents.Add(InputEvent.From(new MouseMoveInput(e.Location.X, e.Location.Y, (int)this._stopWatch.ElapsedMilliseconds)));
+            this._recordingInput.InputEvents.Add(InputEvent.From(new MouseMoveInput(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds)));
         }
+        private void GlobalHook_MouseWheelExt(object? sender, MouseEventExtArgs e)
+        {
+            this._recordingInput.InputEvents.Add(InputEvent.From(new MouseWheelInput(e.Delta / 120, (int)this._stopwatch.ElapsedMilliseconds)));
+        }
+
 
         public RecordingInput GetRecordingInput()
         {
@@ -128,7 +140,7 @@ namespace RecBinderProject.Services
 
         public TimeSpan GetElapsedTime()
         {
-            return this._stopWatch.Elapsed;
+            return this._stopwatch.Elapsed;
         }
     }
 }
