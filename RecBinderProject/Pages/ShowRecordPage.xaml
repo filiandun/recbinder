@@ -46,9 +46,10 @@
             <Grid x:Name="settingsGrid" Grid.Row="5">
                 <Label Content="Настройки" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
                 <UniformGrid VerticalAlignment="Bottom">
-                    <CheckBox Content="Игнорировать движения мыши"/>
-                    <CheckBox Content="Игнорировать нажатия клавиш мыши"/>
-                    <CheckBox Content="Игнорировать нажатия клавиш клавиатуры"/>
+                    <CheckBox x:Name="ignoreKeyboardPressCheckBox" Content="Игнорировать нажатия клавиш клавиатуры" Click="IgnoreKeyboardPressCheckBox_Click"/>
+                    <CheckBox x:Name="ignoreMousePressCheckBox" Content="Игнорировать нажатия клавиш мыши" Click="IgnoreMousePressCheckBox_Click"/>
+                    <CheckBox x:Name="ignoreMouseMoveCheckBox" Content="Игнорировать движения мыши" Click="IgnoreMouseMoveCheckBox_Click"/>
+                    <CheckBox x:Name="ignoreMouseWheelCheckBox" Content="Игнорировать прокручивания колёсика мыши" Click="IgnoreMouseWheelCheckBox_Click"/>
                 </UniformGrid>
             </Grid>
 

@@ -1,5 +1,6 @@
-﻿using ModernWpf.Controls;
-using System.Windows;
+﻿using System.Windows;
+
+using ModernWpf.Controls;
 
 namespace RecBinderProject
 {
@@ -53,7 +54,7 @@ namespace RecBinderProject
             }
         }
 
-        private void CreateRecordPage_StopRecording(object? sender, EventArgs e)
+        private void CreateRecordPage_StopRecording()
         {
             this.UpdateRecordings();
         }

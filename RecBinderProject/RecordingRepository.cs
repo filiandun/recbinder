@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace RecBinderProject
 {
@@ -25,7 +19,7 @@ namespace RecBinderProject
         {
             return Directory.EnumerateFiles(this._folderPath, "*.json")
                             .Select(file => JsonSerializer.Deserialize<RecordingInput>(File.ReadAllText(file)))
-                            .Where(ri => ri != null)
+                            .Where(recordingInput => recordingInput != null)
                             .ToList()!;
         }
 

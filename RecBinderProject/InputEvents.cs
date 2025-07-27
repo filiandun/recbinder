@@ -1,14 +1,8 @@
-﻿using RecBinderProject.Inputs;
-using System;
-using System.Collections.Generic;
+﻿using WindowsInput;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WindowsInput;
+
+using RecBinderProject.Inputs;
 
 namespace RecBinderProject
 {
@@ -32,7 +26,7 @@ namespace RecBinderProject
         }
 
 
-        public async Task PlayAsync(CancellationToken cancellationToken)
+        public async Task PlayAsync(RecordOptions recordOptions, CancellationToken cancellationToken)
         {
             InputSimulator inputSimulator = new InputSimulator();
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -48,10 +42,10 @@ namespace RecBinderProject
 
                 switch (inputEvent.Kind) // TO DO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
                 {
-                    case InputEventKind.KeyboardPress: this.PlayKeyboardPress((KeyboardPressInput)inputEvent.KeyboardPress, inputSimulator); break;
-                    case InputEventKind.MousePress: this.PlayMousePress((MousePressInput)inputEvent.MousePress, inputSimulator); break;
-                    case InputEventKind.MouseMove: this.PlayMouseMove((MouseMoveInput)inputEvent.MouseMove, inputSimulator); break;
-                    case InputEventKind.MouseWheel: this.PlayMouseWheel((MouseWheelInput)inputEvent.MouseWheel, inputSimulator); break;
+                    case InputEventKind.KeyboardPress: if (!recordOptions.IgnoreKeyboardPress) { this.PlayKeyboardPress((KeyboardPressInput)inputEvent.KeyboardPress, inputSimulator); }; break;
+                    case InputEventKind.MousePress: if (!recordOptions.IgnoreMousePress) { this.PlayMousePress((MousePressInput)inputEvent.MousePress, inputSimulator); }; break;
+                    case InputEventKind.MouseMove: if (!recordOptions.IgnoreMouseMove) { this.PlayMouseMove((MouseMoveInput)inputEvent.MouseMove, inputSimulator); }; break;
+                    case InputEventKind.MouseWheel: if (!recordOptions.IgnoreMouseWheel) { this.PlayMouseWheel((MouseWheelInput)inputEvent.MouseWheel, inputSimulator); }; break;
 
                     default: MessageBox.Show("Ошибка. Запись повреждена."); return;
                 }  
@@ -72,14 +66,13 @@ namespace RecBinderProject
             {
                 var delay = timeOffset - stopwatch.ElapsedMilliseconds;
 
-                // Ожидание только если до события хотя бы 2 мс
                 if (delay > 2)
                 {
                     await Task.Delay((int)delay / 2);
                 }
                 else
                 {
-                    await Task.Yield(); // максимально короткое ожидание
+                    await Task.Yield();
                 }
             }
         }
@@ -124,7 +117,7 @@ namespace RecBinderProject
 
         private void PlayMouseMove(MouseMoveInput mouseMoveInput, InputSimulator inputSimulator)
         {
-            var startPosition = System.Windows.Forms.Cursor.Position;
+            var startPosition = Cursor.Position;
 
             int targetX = /*startPosition.X +*/ (int)mouseMoveInput.X;
             int targetY = /*startPosition.Y +*/ (int)mouseMoveInput.Y;

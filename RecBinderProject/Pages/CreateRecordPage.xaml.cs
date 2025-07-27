@@ -1,26 +1,19 @@
-﻿using Gma.System.MouseKeyHook;
-using RecBinderProject.Inputs;
-using RecBinderProject.Services;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+
+using RecBinderProject.Services;
 
 namespace RecBinderProject
 {
     public partial class CreateRecordPage : Page
     {
-        public event EventHandler? OnStopRecording;
+        public event Action? OnStopRecording;
 
         private DispatcherTimer _timer;
 
         private CreateRecordService _createRecordService;
-        private RecordingRepository _recordingRepository;
+
 
         public CreateRecordPage(RecordingRepository recordingRepository)
         {
@@ -30,31 +23,53 @@ namespace RecBinderProject
             this._timer.Interval = TimeSpan.FromMilliseconds(10);
             this._timer.Tick += Timer_Tick;
 
-            this._createRecordService = new CreateRecordService();
-            this._recordingRepository = recordingRepository;
-
-            this._createRecordService.OnStopRecording += CreateRecordService_OnStopRecording;
+            this._createRecordService = new CreateRecordService(recordingRepository);
         }
 
-        private void CreateRecordService_OnStopRecording(object? sender, EventArgs e) // TO DO костылииииииииииииии
-        {
-            //this.ButtonStopRecord_Click(this, new RoutedEventArgs());
-        }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
             this.buttonStartRecord.Content = this._createRecordService.GetElapsedTime().ToString(@"hh\:mm\:ss\.ff");
         }
 
-        private void ButtonStartRecord_Click(object sender, RoutedEventArgs e)
-        {
-            this.ControlsEnabled(false);
-            this.buttonStartRecord.Content = "00:00:00:00";
 
+        private async void ButtonStartRecord_Click(object sender, RoutedEventArgs e)
+        {
+            this.ControlsEnabled(false, "00:00:00:00");
             this._timer.Start();
 
-            this._createRecordService.StartRecord(GetRecordingMetadata());
+            await this._createRecordService.StartRecord(GetRecordingMetadata());
+
+            //this.StopRecord(); // TO DO
         }
+
+        private void ButtonStopRecord_Click(object sender, RoutedEventArgs e)
+        {
+            this._createRecordService.StopRecord();
+            this.StopRecord();
+        }
+
+
+        private void IgnoreKeyboardPressCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this._createRecordService.RecordOptions.IgnoreKeyboardPress = this.ignoreKeyboardPressCheckBox.IsChecked ?? false;
+        }
+
+        private void IgnoreMousePressCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this._createRecordService.RecordOptions.IgnoreMousePress = this.ignoreMousePressCheckBox.IsChecked ?? false;
+        }
+
+        private void IgnoreMouseMoveCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this._createRecordService.RecordOptions.IgnoreMouseMove = this.ignoreMouseMoveCheckBox.IsChecked ?? false;
+        }
+
+        private void IgnoreMouseWheelCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this._createRecordService.RecordOptions.IgnoreMouseWheel = this.ignoreMouseWheelCheckBox.IsChecked ?? false;
+        }
+
 
         private RecordingMetadata GetRecordingMetadata() // TO DO разделит по методам, которые отдельно будут возвращать данные о записи (не забыть и про валидацию данных)
         {
@@ -82,18 +97,16 @@ namespace RecBinderProject
             return new RecordingMetadata(recordName, recordDesciption, recordDuration, recordCreationDateTime);
         }
 
-        private void ButtonStopRecord_Click(object sender, RoutedEventArgs e)
+
+        private void StopRecord()
         {
-            this.ControlsEnabled(true);
-            this.buttonStartRecord.Content = "Начать запись";
+            this.ControlsEnabled(true, "Начать запись");
 
-            this._createRecordService.StopRecord();
-            this._recordingRepository.Save(this._createRecordService.GetRecordingInput());
-
-            this.OnStopRecording?.Invoke(this, e);
+            this.OnStopRecording?.Invoke();
         }
 
-        public void ControlsEnabled(bool value)
+
+        public void ControlsEnabled(bool value, string buttonStartContent)
         {
             this.recordNameTextBox.IsEnabled = value;
             this.recordDescriptionTextBox.IsEnabled = value;
@@ -101,6 +114,7 @@ namespace RecBinderProject
             this.settingsGrid.IsEnabled = value;
 
             this.buttonStartRecord.IsEnabled = value;
+            //this.buttonStartRecord.Content = buttonStartContent;
             this.buttonStopRecord.IsEnabled = !value;
         }
     }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace RecBinderProject.Services
 {
@@ -14,14 +8,22 @@ namespace RecBinderProject.Services
 
         private Stopwatch _stopwatch;
 
-        private RecordingInput _recordingInput;
+        private RecordingRepository _recordingRepository;
 
-        public PlayRecordService(RecordingInput recordingInput)
+        private RecordingInput _recordingInput;
+        public RecordingInput RecordingInput { get { return this._recordingInput; } }
+
+        public RecordOptions RecordOptions { get; set; }
+
+        public PlayRecordService(RecordingRepository recordingRepository, string recordName)
         {
             this._cancellationTokenSource = new CancellationTokenSource();
             this._stopwatch = new Stopwatch();
 
-            this._recordingInput = recordingInput;
+            this._recordingRepository = recordingRepository;
+            this._recordingInput = this._recordingRepository.Read(recordName);
+
+            this.RecordOptions = new RecordOptions();
         }
 
         public async Task PlayRecord()
@@ -30,7 +32,7 @@ namespace RecBinderProject.Services
 
             this._cancellationTokenSource = new CancellationTokenSource();
 
-            await Task.Run(() => this._recordingInput.InputEvents.PlayAsync(this._cancellationTokenSource.Token));
+            await Task.Run(() => this._recordingInput.InputEvents.PlayAsync(this.RecordOptions, this._cancellationTokenSource.Token));
             this.StopRecord();
         }
 
