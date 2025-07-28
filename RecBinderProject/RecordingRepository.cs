@@ -15,11 +15,14 @@ namespace RecBinderProject
             Directory.CreateDirectory(folderPath);
         }
 
+        // TO DO
+        // добавить, что если recordingInput => recordingInput != null && recordingInput.InputEvents != null && recordingInput.RecordingMetadata != null
+        // оповестить пользователя, что имеются "битые" файлы записи
         public List<RecordingInput> LoadAll()
         {
             return Directory.EnumerateFiles(this._folderPath, "*.json")
                             .Select(file => JsonSerializer.Deserialize<RecordingInput>(File.ReadAllText(file)))
-                            .Where(recordingInput => recordingInput != null)
+                            .Where(recordingInput => recordingInput != null && recordingInput.InputEvents != null && recordingInput.RecordingMetadata != null)
                             .ToList()!;
         }
 

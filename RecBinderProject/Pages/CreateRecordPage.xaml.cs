@@ -15,7 +15,7 @@ namespace RecBinderProject
         private CreateRecordService _createRecordService;
 
 
-        public CreateRecordPage(RecordingRepository recordingRepository)
+        public CreateRecordPage()
         {
             InitializeComponent();
 
@@ -23,9 +23,15 @@ namespace RecBinderProject
             this._timer.Interval = TimeSpan.FromMilliseconds(10);
             this._timer.Tick += Timer_Tick;
 
-            this._createRecordService = new CreateRecordService(recordingRepository);
+            this._createRecordService = new CreateRecordService();
+
+            this._createRecordService.OnRecordingStopped += CreateRecordService_OnRecordingStopped;
         }
 
+        private void CreateRecordService_OnRecordingStopped()
+        {
+            this.StopRecord();
+        }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
@@ -33,14 +39,12 @@ namespace RecBinderProject
         }
 
 
-        private async void ButtonStartRecord_Click(object sender, RoutedEventArgs e)
+        private void ButtonStartRecord_Click(object sender, RoutedEventArgs e)
         {
             this.ControlsEnabled(false, "00:00:00:00");
             this._timer.Start();
 
-            await this._createRecordService.StartRecord(GetRecordingMetadata());
-
-            //this.StopRecord(); // TO DO
+            this._createRecordService.StartRecord(GetRecordingMetadata());
         }
 
         private void ButtonStopRecord_Click(object sender, RoutedEventArgs e)
@@ -101,7 +105,6 @@ namespace RecBinderProject
         private void StopRecord()
         {
             this.ControlsEnabled(true, "Начать запись");
-
             this.OnStopRecording?.Invoke();
         }
 
@@ -114,7 +117,7 @@ namespace RecBinderProject
             this.settingsGrid.IsEnabled = value;
 
             this.buttonStartRecord.IsEnabled = value;
-            //this.buttonStartRecord.Content = buttonStartContent;
+            this.buttonStartRecord.Content = buttonStartContent;
             this.buttonStopRecord.IsEnabled = !value;
         }
     }

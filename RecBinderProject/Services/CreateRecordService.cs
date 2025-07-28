@@ -3,38 +3,46 @@ using System.Windows.Forms;
 using RecBinderProject.Inputs;
 
 using Gma.System.MouseKeyHook;
+using Application = System.Windows.Application;
 
 namespace RecBinderProject.Services
 {
     public class CreateRecordService
     {
-        private CancellationTokenSource _cancellationTokenSource;
-        private IKeyboardMouseEvents _globalHook;
+        public event Action? OnRecordingStopped;
 
+        private CancellationTokenSource _cancellationTokenSource;
         private Stopwatch _stopwatch;
 
-        private RecordingRepository _recordingRepository;
-        private RecordingInput _recordingInput;
+        private IKeyboardMouseEvents _globalHook;
 
+        private RecordingInput _recordingInput;
         public RecordOptions RecordOptions { get; set; }
 
-        public CreateRecordService(RecordingRepository recordingRepository)
+        public bool IsRecording { get; private set; }
+
+
+        public CreateRecordService()
         {
             this._cancellationTokenSource = new CancellationTokenSource();
             this._globalHook = Hook.GlobalEvents();
 
             this._stopwatch = new Stopwatch();
 
-            this._recordingRepository = recordingRepository;
             this.RecordOptions = new RecordOptions();
+
+            this.IsRecording = false;
         }
 
-        public async Task StartRecord(RecordingMetadata recordingMetadata)
+
+        public void StartRecord(RecordingMetadata recordingMetadata)
         {
             this._recordingInput = new RecordingInput(recordingMetadata, new InputEvents());
 
             this._stopwatch.Restart();
             this.Subscribe();
+
+            this.IsRecording = true;
 
             _ = this.WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
         }
@@ -54,12 +62,15 @@ namespace RecBinderProject.Services
 
         public void StopRecord()
         {
-            if (this._stopwatch.IsRunning) // TO DO bool isRecordRunning
+            if (this.IsRecording)
             {
                 this.Unsubscribe();
                 this._stopwatch.Stop();
 
-                this._recordingRepository.Save(this._recordingInput);
+                this.IsRecording = false;
+
+                this._recordingInput.RecordingMetadata.Duration = this._stopwatch.Elapsed;
+                ((App)Application.Current).RecordingRepository.Save(this._recordingInput);
 
                 this._cancellationTokenSource.Cancel();
             }
@@ -68,8 +79,6 @@ namespace RecBinderProject.Services
 
         public void Subscribe()
         {
-            this._stopwatch.Restart();
-
             this._globalHook.KeyDown += GlobalHookKeyDown;
             this._globalHook.KeyUp += GlobalHookKeyUp;
 
@@ -82,8 +91,6 @@ namespace RecBinderProject.Services
 
         public void Unsubscribe()
         {
-            this._recordingInput.RecordingMetadata.Duration = this._stopwatch.Elapsed;
-
             this._globalHook.KeyDown -= GlobalHookKeyDown;
             this._globalHook.KeyUp -= GlobalHookKeyUp;
 

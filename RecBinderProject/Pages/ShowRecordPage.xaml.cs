@@ -5,14 +5,14 @@ using RecBinderProject.Services;
 
 namespace RecBinderProject
 {
-    public partial class RecordPage : Page
+    public partial class ShowRecordPage : Page
     {
         private DispatcherTimer _timer;
 
         private PlayRecordService _playRecordService;
 
 
-        public RecordPage(RecordingRepository recordingRepository, string recordName)
+        public ShowRecordPage(string recordName)
         {
             InitializeComponent();
 
@@ -20,7 +20,7 @@ namespace RecBinderProject
             this._timer.Interval = TimeSpan.FromMilliseconds(10);
             this._timer.Tick += Timer_Tick;
 
-            this._playRecordService = new PlayRecordService(recordingRepository, recordName);
+            this._playRecordService = new PlayRecordService(recordName);
 
             this.recordNameTextBox.Text = this._playRecordService.RecordingInput.RecordingMetadata.Name;
             this.recordDurationLabel.Content = this._playRecordService.RecordingInput.RecordingMetadata.Duration.ToString(@"hh\:mm\:ss\.ff");

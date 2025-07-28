@@ -1,30 +1,28 @@
-﻿using System.Diagnostics;
+﻿using System.Windows;
+using System.Diagnostics;
 
 namespace RecBinderProject.Services
 {
     public class PlayRecordService
     {
         private CancellationTokenSource _cancellationTokenSource;
-
         private Stopwatch _stopwatch;
-
-        private RecordingRepository _recordingRepository;
 
         private RecordingInput _recordingInput;
         public RecordingInput RecordingInput { get { return this._recordingInput; } }
-
         public RecordOptions RecordOptions { get; set; }
 
-        public PlayRecordService(RecordingRepository recordingRepository, string recordName)
+
+        public PlayRecordService(string recordName)
         {
             this._cancellationTokenSource = new CancellationTokenSource();
             this._stopwatch = new Stopwatch();
 
-            this._recordingRepository = recordingRepository;
-            this._recordingInput = this._recordingRepository.Read(recordName);
+            this._recordingInput = ((App)Application.Current).RecordingRepository.Read(recordName);
 
             this.RecordOptions = new RecordOptions();
         }
+
 
         public async Task PlayRecord()
         {
@@ -48,6 +46,7 @@ namespace RecBinderProject.Services
 
             this._stopwatch.Stop();
         }
+
 
         public TimeSpan GetElapsedTime()
         {

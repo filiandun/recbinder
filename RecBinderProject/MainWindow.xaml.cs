@@ -1,26 +1,33 @@
 ﻿using System.Windows;
-
 using ModernWpf.Controls;
+
+using RecBinderProject.Pages;
+
 
 namespace RecBinderProject
 {
     public partial class MainWindow : Window
     {
-        private RecordingRepository _recordingRepository;
+        private SettingsPage _settingsPage;
+        private CreateRecordPage _createRecordPage;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            this._recordingRepository = new RecordingRepository("C:\\Repositories\\RecBinder\\RecBinderProject\\Recordings");
             this.UpdateRecordings();
+
+            this._settingsPage = new SettingsPage();
+
+            this._createRecordPage = new CreateRecordPage();
+            this._createRecordPage.OnStopRecording += CreateRecordPage_StopRecording;
         }
 
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (this.navigationView.SelectedItem is RecordControl recordControl)
             {
-                RecordPage recordPage = new RecordPage(this._recordingRepository, recordControl.RecordName);
+                ShowRecordPage recordPage = new ShowRecordPage(recordControl.RecordName);
                 this.frame.Navigate(recordPage);
             }
             else if (this.navigationView.SelectedItem is NavigationViewItem navigationViewItem)
@@ -28,17 +35,15 @@ namespace RecBinderProject
                 switch (navigationViewItem.Tag)
                 {
                     case "createRecord":
-                        CreateRecordPage createRecordPage = new CreateRecordPage(this._recordingRepository);
-                        this.frame.Navigate(createRecordPage);
-                        createRecordPage.OnStopRecording += CreateRecordPage_StopRecording;
-
+                        this.frame.Navigate(this._createRecordPage);
                         break;
 
                     case "help":
 
                         break;
 
-                    case "settings":
+                    case "Параметры":
+                        this.frame.Navigate(this._settingsPage);
 
                         break;
                 }
@@ -61,12 +66,15 @@ namespace RecBinderProject
 
         private void UpdateRecordings()
         {
-            List<RecordingInput> recordings = this._recordingRepository.LoadAll();
+            List<RecordingInput> recordingInputList = ((App)Application.Current).RecordingRepository.LoadAll();
             this.navigationView.MenuItems.Clear();
 
-            foreach (RecordingInput recording in recordings)
+            if (recordingInputList.Count > 0)
             {
-                this.navigationView.MenuItems.Add(new RecordControl(recording.RecordingMetadata.Name, recording.RecordingMetadata.Description));
+                foreach (RecordingInput recordingInput in recordingInputList)
+                {
+                    this.navigationView.MenuItems.Add(new RecordControl(recordingInput.RecordingMetadata.Name, recordingInput.RecordingMetadata.Description));
+                }
             }
         }
     }
