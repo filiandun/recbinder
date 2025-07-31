@@ -1,7 +1,9 @@
-﻿using ModernWpf;
+﻿using Microsoft.Win32;
+using ModernWpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,20 +26,46 @@ namespace RecBinderProject.Pages
         public SettingsPage()
         {
             InitializeComponent();
+
+            foreach (AppTheme appTheme in Enum.GetValues(typeof(AppTheme)))
+            {
+                this.themeSelector.Items.Add(appTheme);
+            }
+
+            this.pathToRecordsTextBox.Text = ((App)Application.Current).SettingsService.AppSettings.SaveDirectory;
         }
 
-        private void ThemeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.themeSelector.SelectedItem is ComboBoxItem item && item.Tag is string tag)
+            if (this.themeSelector.SelectedItem is AppTheme selectedAppTheme)
             {
-                AppTheme selectedTheme = tag == "Light" ? AppTheme.Light : AppTheme.Dark;
+                ((App)Application.Current).SettingsService.AppSettings.Theme = (AppTheme)this.themeSelector.SelectedItem;
 
-                ((App)Application.Current).SettingsService.AppSettings.Theme = selectedTheme;
-                ((App)Application.Current).SettingsService.Save();
+                ThemeManager.Current.ApplicationTheme = selectedAppTheme == AppTheme.Dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
+            }
 
-                ThemeManager.Current.ApplicationTheme = selectedTheme == AppTheme.Dark  ? ApplicationTheme.Dark : ApplicationTheme.Light;
+            ((App)Application.Current).SettingsService.AppSettings.SaveDirectory = this.pathToRecordsTextBox.Text;
+            ((App)Application.Current).SettingsService.Save();
+        }
+
+        public void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.themeSelector.Text = ((App)Application.Current).SettingsService.AppSettings.Theme.ToString();
+            this.pathToRecordsTextBox.Text = ((App)Application.Current).SettingsService.AppSettings.SaveDirectory;
+        }
+
+        public void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((App)Application.Current).SettingsService.AppSettings = new AppSettings();
+        }
+
+        private void OpenFileDialogButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog();
+            if ((bool)openFolderDialog.ShowDialog())
+            {
+                this.pathToRecordsTextBox.Text = openFolderDialog.FolderName;
             }
         }
-
     }
 }

@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Security.Policy;
+using System.Windows;
 using ModernWpf.Controls;
 
 using RecBinderProject.Pages;
+using RecBinderProject.ViewModels;
 
 
 namespace RecBinderProject

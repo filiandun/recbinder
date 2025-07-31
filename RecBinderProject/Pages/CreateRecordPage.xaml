@@ -64,8 +64,8 @@
             </Grid>
 
             <UniformGrid Grid.Row="6" Rows="1">
-                <Button x:Name="buttonStartRecord" Content="Начать запись" Margin="0,10,40,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ButtonStartRecord_Click"/>
-                <Button x:Name ="buttonStopRecord" Content="Остановить запись"  Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="false" Click="ButtonStopRecord_Click"/>
+                <Button Content="{Binding StatusText}" Command="{Binding StartRecordingCommand}" Margin="0,10,40,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="StartRecordButton_Click"/>
+                <Button Content="Остановить запись"  Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="false" Click="StopRecordButton_Click"/>
             </UniformGrid>
         </Grid>
     </Grid>

@@ -21,7 +21,7 @@ namespace RecBinderProject.Services
             this.AppSettings = this.Load();
         }
 
-        public AppSettings Load()
+        private AppSettings Load()
         {
             if (!File.Exists(this._filePath))
             {

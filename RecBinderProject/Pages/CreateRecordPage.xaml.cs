@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 
 using RecBinderProject.Services;
+using RecBinderProject.ViewModels;
 
 namespace RecBinderProject
 {
@@ -12,20 +13,17 @@ namespace RecBinderProject
 
         private DispatcherTimer _timer;
 
-        private CreateRecordService _createRecordService;
-
-
         public CreateRecordPage()
         {
             InitializeComponent();
+
+            this.DataContext = new CreateRecordViewModel();
 
             this._timer = new DispatcherTimer();
             this._timer.Interval = TimeSpan.FromMilliseconds(10);
             this._timer.Tick += Timer_Tick;
 
-            this._createRecordService = new CreateRecordService();
-
-            this._createRecordService.OnRecordingStopped += CreateRecordService_OnRecordingStopped;
+            //this._createRecordService.OnRecordingStopped += CreateRecordService_OnRecordingStopped;
         }
 
         private void CreateRecordService_OnRecordingStopped()
@@ -35,11 +33,11 @@ namespace RecBinderProject
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            this.buttonStartRecord.Content = this._createRecordService.GetElapsedTime().ToString(@"hh\:mm\:ss\.ff");
+            //this.startRecordButton.Content = this._createRecordService.GetElapsedTime().ToString(@"hh\:mm\:ss\.ff");
         }
 
 
-        private void ButtonStartRecord_Click(object sender, RoutedEventArgs e)
+        private void StartRecordButton_Click(object sender, RoutedEventArgs e)
         {
             this.ControlsEnabled(false, "00:00:00:00");
             this._timer.Start();
@@ -47,29 +45,29 @@ namespace RecBinderProject
             this._createRecordService.StartRecord(GetRecordingMetadata());
         }
 
-        private void ButtonStopRecord_Click(object sender, RoutedEventArgs e)
+        private void StopRecordButton_Click(object sender, RoutedEventArgs e)
         {
             this._createRecordService.StopRecord();
             this.StopRecord();
         }
 
 
-        private void IgnoreKeyboardPressCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void IgnoreKeyboardPressCheckBox_Click(object sender, RoutedEventArgs e)
         {
             this._createRecordService.RecordOptions.IgnoreKeyboardPress = this.ignoreKeyboardPressCheckBox.IsChecked ?? false;
         }
 
-        private void IgnoreMousePressCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void IgnoreMousePressCheckBox_Click(object sender, RoutedEventArgs e)
         {
             this._createRecordService.RecordOptions.IgnoreMousePress = this.ignoreMousePressCheckBox.IsChecked ?? false;
         }
 
-        private void IgnoreMouseMoveCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void IgnoreMouseMoveCheckBox_Click(object sender, RoutedEventArgs e)
         {
             this._createRecordService.RecordOptions.IgnoreMouseMove = this.ignoreMouseMoveCheckBox.IsChecked ?? false;
         }
 
-        private void IgnoreMouseWheelCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void IgnoreMouseWheelCheckBox_Click(object sender, RoutedEventArgs e)
         {
             this._createRecordService.RecordOptions.IgnoreMouseWheel = this.ignoreMouseWheelCheckBox.IsChecked ?? false;
         }
@@ -116,9 +114,9 @@ namespace RecBinderProject
             this.durationGrid.IsEnabled = value;
             this.settingsGrid.IsEnabled = value;
 
-            this.buttonStartRecord.IsEnabled = value;
-            this.buttonStartRecord.Content = buttonStartContent;
-            this.buttonStopRecord.IsEnabled = !value;
+            //this.startRecordButton.IsEnabled = value;
+            //this.startRecordButton.Content = buttonStartContent;
+            //this.stopRecordButton.IsEnabled = !value;
         }
     }
 }

@@ -10,9 +10,45 @@
       Title="SettingsPage">
 
     <Grid>
-        <ComboBox x:Name="themeSelector" SelectionChanged="ThemeSelector_SelectionChanged">
-            <ComboBoxItem Content="Светлая" Tag="Light"/>
-            <ComboBoxItem Content="Тёмная" Tag="Dark"/>
-        </ComboBox>
+        <Grid Margin="60, 20, 30, 30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Настройки" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontFamily="Segoe UI"/>
+
+            <StackPanel Grid.Row="1" Orientation="Vertical">
+                <Label Content="Тема" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <ComboBox x:Name="themeSelector" Grid.Row="1">
+                    <ComboBoxItem Content="Как в системе"/>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Orientation="Vertical">
+                <Label Content="Путь к папке с сохранёнными записями" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBox x:Name="pathToRecordsTextBox" Grid.Column="0"/>
+                    <Button x:Name="openFileDialogButton" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="OpenFileDialogButton_Click"/>
+                </Grid>
+            </StackPanel>
+
+            <UniformGrid Grid.Row="7" Rows="1" Margin="200, 0, 0, 0">
+                <Button x:Name="saveButton" Content="Сохранить изменения" Margin="0,10,40,10" VerticalAlignment="Stretch" Click="SaveButton_Click"/>
+                <Button x:Name ="cancelButton" Content="Отменить изменения"  Margin="0,10,0,10" VerticalAlignment="Stretch" IsEnabled="false" Click="CancelButton_Click"/>
+                <Button x:Name ="resetButton" Content="Сбросить по умолчанию"  Margin="0,10,0,10" VerticalAlignment="Stretch" IsEnabled="false" Click="ResetButton_Click"/>
+            </UniformGrid>
+        </Grid>
     </Grid>
 </Page>
