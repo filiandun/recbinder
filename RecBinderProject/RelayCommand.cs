@@ -15,9 +15,15 @@ namespace RecBinderProject
             this._canExecute = canExecute;
         }
 
-        public bool CanExecute(object? parameter) => this._canExecute == null || this._canExecute();
+        public bool CanExecute(object? parameter)
+        {
+            return this._canExecute == null || this._canExecute();
+        }
 
-        public void Execute(object? parameter) => this._execute();
+        public void Execute(object? parameter)
+        {
+            this._execute();
+        }
 
         public void RaiseCanExecuteChanged()
         {

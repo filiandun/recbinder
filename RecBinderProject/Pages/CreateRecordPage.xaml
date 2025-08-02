@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:RecBinderProject"
-      xmlns:ui="http://schemas.modernwpf.com/2019"
+      xmlns:ui="http://schemas.modernwpf.com/2019" xmlns:viewmodels="clr-namespace:RecBinderProject.ViewModels"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="RecordingPage">
@@ -24,12 +24,12 @@
 
             <StackPanel Grid.Row="1">
                 <Label Content="Название" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox x:Name="recordNameTextBox" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox Text="{Binding RecordName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsPropertyEnabled}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <DockPanel Grid.Row="2">
                 <Label Content="Описание" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox x:Name="recordDescriptionTextBox" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox Text="{Binding RecordDescription, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsPropertyEnabled}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </DockPanel>
 
             <Grid x:Name="durationGrid" Grid.Row="3">
@@ -45,8 +45,8 @@
 
                 <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Продолительность записи" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
 
-                <ui:NumberBox x:Name="durationNumberBox" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline" Value="1"/>
-                <ComboBox x:Name="durationListBox" Grid.Column="1" Grid.Row="1" >
+                <ui:NumberBox Value="{Binding RecordDurationValue, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsPropertyEnabled}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline"/>
+                <ComboBox SelectedIndex="{Binding RecordDurationUnitIndex}" IsEnabled="{Binding IsPropertyEnabled}" Grid.Column="1" Grid.Row="1" >
                     <ComboBoxItem Content="мс."/>
                     <ComboBoxItem Content="сек."/>
                     <ComboBoxItem Content="мин." IsSelected="True"/>
@@ -56,16 +56,16 @@
             <Grid x:Name="settingsGrid" Grid.Row="4">
                 <Label Content="Настройки" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
                 <UniformGrid VerticalAlignment="Bottom">
-                    <CheckBox x:Name="ignoreKeyboardPressCheckBox" Content="Игнорировать нажатия клавиш клавиатуры" Click="IgnoreKeyboardPressCheckBox_Click"/>
-                    <CheckBox x:Name="ignoreMousePressCheckBox" Content="Игнорировать нажатия клавиш мыши" Click="IgnoreMousePressCheckBox_Click"/>
-                    <CheckBox x:Name="ignoreMouseMoveCheckBox" Content="Игнорировать движения мыши" Click="IgnoreMouseMoveCheckBox_Click"/>
-                    <CheckBox x:Name="ignoreMouseWheelCheckBox" Content="Игнорировать прокручивания колёсика мыши" Click="IgnoreMouseWheelCheckBox_Click"/>
+                    <CheckBox IsChecked="{Binding RecordOptions.IgnoreKeyboardPress, Mode=TwoWay}" Content="Игнорировать нажатия клавиш клавиатуры"/>
+                    <CheckBox IsChecked="{Binding RecordOptions.IgnoreMousePress, Mode=TwoWay}" Content="Игнорировать нажатия клавиш мыши"/>
+                    <CheckBox IsChecked="{Binding RecordOptions.IgnoreMouseMove, Mode=TwoWay}" Content="Игнорировать движения мыши"/>
+                    <CheckBox IsChecked="{Binding RecordOptions.IgnoreMouseWheel, Mode=TwoWay}" Content="Игнорировать прокручивания колёсика мыши"/>
                 </UniformGrid>
             </Grid>
 
             <UniformGrid Grid.Row="6" Rows="1">
-                <Button Content="{Binding StatusText}" Command="{Binding StartRecordingCommand}" Margin="0,10,40,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="StartRecordButton_Click"/>
-                <Button Content="Остановить запись"  Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="false" Click="StopRecordButton_Click"/>
+                <Button Command="{Binding StartRecordCommand}" Content="{Binding StatusText}" Margin="0,10,40,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Button Command="{Binding StopRecordCommand}" Content="Остановить запись" Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             </UniformGrid>
         </Grid>
     </Grid>
