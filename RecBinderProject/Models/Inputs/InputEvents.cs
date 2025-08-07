@@ -2,9 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 
-using RecBinderProject.Inputs;
-
-namespace RecBinderProject
+namespace RecBinderProject.Models.Inputs
 {
     public class InputEvents
     {
@@ -12,17 +10,17 @@ namespace RecBinderProject
 
         public InputEvents()
         {
-            this.InputEventsList = new LinkedList<InputEvent>();
+            InputEventsList = new LinkedList<InputEvent>();
         }
 
         public void Add(InputEvent userEvent)
         {
-            this.InputEventsList.AddLast(userEvent);
+            InputEventsList.AddLast(userEvent);
         }
 
         public void Clear()
         {
-            this.InputEventsList.Clear();
+            InputEventsList.Clear();
         }
 
 
@@ -31,21 +29,21 @@ namespace RecBinderProject
             InputSimulator inputSimulator = new InputSimulator();
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            foreach (InputEvent inputEvent in this.InputEventsList)
+            foreach (InputEvent inputEvent in InputEventsList)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return;
                 }
 
-                await this.PlayDelayAsync(stopwatch, inputEvent.TimeOffset, stopwatch.ElapsedMilliseconds);
+                await PlayDelayAsync(stopwatch, inputEvent.TimeOffset, stopwatch.ElapsedMilliseconds);
 
                 switch (inputEvent.Kind) // TO DO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
                 {
-                    case InputEventKind.KeyboardPress: if (!recordOptions.IgnoreKeyboardPress) { this.PlayKeyboardPress((KeyboardPressInput)inputEvent.KeyboardPress, inputSimulator); }; break;
-                    case InputEventKind.MousePress: if (!recordOptions.IgnoreMousePress) { this.PlayMousePress((MousePressInput)inputEvent.MousePress, inputSimulator); }; break;
-                    case InputEventKind.MouseMove: if (!recordOptions.IgnoreMouseMove) { this.PlayMouseMove((MouseMoveInput)inputEvent.MouseMove, inputSimulator); }; break;
-                    case InputEventKind.MouseWheel: if (!recordOptions.IgnoreMouseWheel) { this.PlayMouseWheel((MouseWheelInput)inputEvent.MouseWheel, inputSimulator); }; break;
+                    case InputEventKind.KeyboardPress: if (!recordOptions.IgnoreKeyboardPress) { PlayKeyboardPress((KeyboardPressInput)inputEvent.KeyboardPress, inputSimulator); }; break;
+                    case InputEventKind.MousePress: if (!recordOptions.IgnoreMousePress) { PlayMousePress((MousePressInput)inputEvent.MousePress, inputSimulator); }; break;
+                    case InputEventKind.MouseMove: if (!recordOptions.IgnoreMouseMove) { PlayMouseMove((MouseMoveInput)inputEvent.MouseMove, inputSimulator); }; break;
+                    case InputEventKind.MouseWheel: if (!recordOptions.IgnoreMouseWheel) { PlayMouseWheel((MouseWheelInput)inputEvent.MouseWheel, inputSimulator); }; break;
 
                     default: MessageBox.Show("Ошибка. Запись повреждена."); return;
                 }  

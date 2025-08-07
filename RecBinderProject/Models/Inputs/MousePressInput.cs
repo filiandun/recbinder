@@ -1,7 +1,6 @@
-﻿using RecBinderProject.Inputs;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
-namespace RecBinderProject
+namespace RecBinderProject.Models.Inputs
 {
     public struct MousePressInput
     {
@@ -11,9 +10,9 @@ namespace RecBinderProject
 
         public MousePressInput(MouseButtons mouseButton, KeyState keyState, int timeOffset)
         {
-            this.MouseButton = mouseButton;
-            this.KeyState = keyState;
-            this.TimeOffset = timeOffset;
+            MouseButton = mouseButton;
+            KeyState = keyState;
+            TimeOffset = timeOffset;
         }
     }
 }

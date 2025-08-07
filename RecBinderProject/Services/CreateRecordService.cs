@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
-using RecBinderProject.Inputs;
 
 using Gma.System.MouseKeyHook;
-using Application = System.Windows.Application;
+
+using RecBinderProject.Models;
+using RecBinderProject.Models.Inputs;
+
 
 namespace RecBinderProject.Services
 {
@@ -16,6 +18,8 @@ namespace RecBinderProject.Services
         private CancellationTokenSource _cancellationTokenSource;
         private Stopwatch _stopwatch;
 
+        private IRecordingRepository _recordingRepository;
+
         private RecordOptions _recordOptions;
 
         private RecordingMetadata _recordingMetadata;
@@ -24,16 +28,29 @@ namespace RecBinderProject.Services
         private bool _isRecording;
 
 
-        public CreateRecordService(RecordingMetadata recordingMetadata, RecordOptions recordOptions)
+        public RecordingMetadata RecordingMetadata 
+        { 
+            get => this._recordingMetadata;
+            set => this._recordingMetadata = value;
+        }
+
+        public RecordOptions RecordOptions
+        {
+            get => this._recordOptions;
+            set => this._recordOptions = value;
+        }
+
+
+        public CreateRecordService(IRecordingRepository recordingRepository, RecordOptions recordOptions)
         {
             this._globalHook = null;
 
             this._cancellationTokenSource = new CancellationTokenSource();
             this._stopwatch = new Stopwatch();
 
-            this._recordOptions = recordOptions;
+            this._recordingRepository = recordingRepository;
 
-            this._recordingMetadata = recordingMetadata;
+            this._recordOptions = recordOptions;
 
             this._isRecording = false;
         }
@@ -41,6 +58,11 @@ namespace RecBinderProject.Services
 
         public void StartRecord()
         {
+            if (this.RecordingMetadata == null)
+            {
+                throw new Exception("Error. Record metadata is null.");
+            }
+
             this._recordingInput = new RecordingInput(this._recordingMetadata, new InputEvents());
 
             this._stopwatch.Restart();
@@ -74,7 +96,7 @@ namespace RecBinderProject.Services
                 this._isRecording = false;
 
                 this._recordingInput.RecordingMetadata.Duration = this._stopwatch.Elapsed;
-                ((App)Application.Current).RecordingRepository.Save(this._recordingInput);
+                this._recordingRepository.Save(this._recordingInput);
 
                 this._cancellationTokenSource.Cancel();
 

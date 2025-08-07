@@ -1,6 +1,6 @@
-﻿using RecBinderProject.Inputs;
+﻿using RecBinderProject.Models.Inputs;
 
-namespace RecBinderProject
+namespace RecBinderProject.Models.Inputs
 {
     public struct MouseMoveInput
     {
@@ -12,7 +12,7 @@ namespace RecBinderProject
         {
             this.X = X;
             this.Y = Y;
-            this.TimeOffset = timeOffset;
+            TimeOffset = timeOffset;
         }
     }
 }

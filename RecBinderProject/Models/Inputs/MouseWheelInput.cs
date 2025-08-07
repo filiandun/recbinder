@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RecBinderProject.Inputs
+namespace RecBinderProject.Models.Inputs
 {
     public struct MouseWheelInput
     {
@@ -14,8 +14,8 @@ namespace RecBinderProject.Inputs
 
         public MouseWheelInput(int delta, int timeOffset)
         {
-            this.Delta = delta;
-            this.TimeOffset = timeOffset;
+            Delta = delta;
+            TimeOffset = timeOffset;
         }
     }
 }

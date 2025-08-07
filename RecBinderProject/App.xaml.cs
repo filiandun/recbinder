@@ -1,4 +1,6 @@
-﻿using ModernWpf;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ModernWpf;
+using RecBinderProject.Pages;
 using RecBinderProject.Services;
 using System.Configuration;
 using System.Data;
@@ -12,14 +14,18 @@ namespace RecBinderProject
     /// </summary>
     public partial class App : Application
     {
-        public SettingsService SettingsService { get; private set; }
-        public RecordingRepository RecordingRepository { get; private set; }
-
+        public IServiceProvider ServiceProvider { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            this.SettingsService = new SettingsService();
-            this.RecordingRepository = new RecordingRepository(this.SettingsService.AppSettings.SaveDirectory);
+            ServiceCollection services = new ServiceCollection();
+
+            services.AddSingleton<IRecordingRepository, RecordingRepository>();
+            services.AddSingleton<ISettingsService, SettingsService>();
+            //services.AddSingleton<CreateRecordPage>();
+            services.AddSingleton<SettingsPage>();
+
+            this.ServiceProvider = services.BuildServiceProvider();
 
             base.OnStartup(e);
         }

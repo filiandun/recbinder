@@ -1,18 +1,20 @@
-﻿using System.IO;
+﻿using RecBinderProject.Models;
+using RecBinderProject.Services;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace RecBinderProject
 {
-    public class RecordingRepository
+    public class RecordingRepository : IRecordingRepository
     {
         public string _folderPath;
 
-        public RecordingRepository(string folderPath)
+        public RecordingRepository(ISettingsService settingsService)
         {
-            this._folderPath = folderPath;
+            this._folderPath = settingsService.AppSettings.SaveDirectory;
 
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(this._folderPath);
         }
 
         // TO DO

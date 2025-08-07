@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
 using ModernWpf;
+using RecBinderProject.Models;
+using RecBinderProject.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,40 +25,44 @@ namespace RecBinderProject.Pages
     /// </summary>
     public partial class SettingsPage : Page
     {
-        public SettingsPage()
+        private readonly ISettingsService _settingsService;
+
+        public SettingsPage(ISettingsService settingsService)
         {
             InitializeComponent();
+
+            this._settingsService = settingsService;
 
             foreach (AppTheme appTheme in Enum.GetValues(typeof(AppTheme)))
             {
                 this.themeSelector.Items.Add(appTheme);
             }
 
-            this.pathToRecordsTextBox.Text = ((App)Application.Current).SettingsService.AppSettings.SaveDirectory;
+            this.pathToRecordsTextBox.Text = this._settingsService.AppSettings.SaveDirectory;
         }
 
         public void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (this.themeSelector.SelectedItem is AppTheme selectedAppTheme)
             {
-                ((App)Application.Current).SettingsService.AppSettings.Theme = (AppTheme)this.themeSelector.SelectedItem;
+                this._settingsService.AppSettings.Theme = (AppTheme)this.themeSelector.SelectedItem;
 
                 ThemeManager.Current.ApplicationTheme = selectedAppTheme == AppTheme.Dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
             }
 
-            ((App)Application.Current).SettingsService.AppSettings.SaveDirectory = this.pathToRecordsTextBox.Text;
-            ((App)Application.Current).SettingsService.Save();
+            this._settingsService.AppSettings.SaveDirectory = this.pathToRecordsTextBox.Text;
+            this._settingsService.Save();
         }
 
         public void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.themeSelector.Text = ((App)Application.Current).SettingsService.AppSettings.Theme.ToString();
-            this.pathToRecordsTextBox.Text = ((App)Application.Current).SettingsService.AppSettings.SaveDirectory;
+            this.themeSelector.Text = this._settingsService.AppSettings.Theme.ToString();
+            this.pathToRecordsTextBox.Text = this._settingsService.AppSettings.SaveDirectory;
         }
 
         public void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            ((App)Application.Current).SettingsService.AppSettings = new AppSettings();
+            this._settingsService.AppSettings = new AppSettings();
         }
 
         private void OpenFileDialogButton_Click(object sender, RoutedEventArgs e)

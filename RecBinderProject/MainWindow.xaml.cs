@@ -1,9 +1,10 @@
-﻿using System.Security.Policy;
-using System.Windows;
+﻿using System.Windows;
 using ModernWpf.Controls;
+using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Pages;
 using RecBinderProject.ViewModels;
+using RecBinderProject.Models;
 
 
 namespace RecBinderProject
@@ -13,23 +14,32 @@ namespace RecBinderProject
         private SettingsPage _settingsPage;
         private CreateRecordPage _createRecordPage;
 
+
         public MainWindow()
         {
             InitializeComponent();
 
+            IServiceProvider serviceProvider = ((App)Application.Current).ServiceProvider;
+
+            this._settingsPage = serviceProvider.GetRequiredService<SettingsPage>();
+            //this._createRecordPage = serviceProvider.GetRequiredService<CreateRecordPage>();
+
+            IRecordingRepository recordingRepository = serviceProvider.GetRequiredService<IRecordingRepository>();
+            this._createRecordPage = new CreateRecordPage(recordingRepository);
+
+            //this._createRecordPage.OnStopRecording += CreateRecordPage_StopRecording;
+
             this.UpdateRecordings();
-
-            this._settingsPage = new SettingsPage();
-
-            this._createRecordPage = new CreateRecordPage();
-            this._createRecordPage.OnStopRecording += CreateRecordPage_StopRecording;
         }
 
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (this.navigationView.SelectedItem is RecordControl recordControl)
             {
-                ShowRecordPage recordPage = new ShowRecordPage(recordControl.RecordName);
+                IServiceProvider serviceProvider = ((App)Application.Current).ServiceProvider;
+                IRecordingRepository recordingRepository = serviceProvider.GetRequiredService<IRecordingRepository>();
+
+                ShowRecordPage recordPage = new ShowRecordPage(recordingRepository, recordControl.RecordName);
                 this.frame.Navigate(recordPage);
             }
             else if (this.navigationView.SelectedItem is NavigationViewItem navigationViewItem)
@@ -68,7 +78,10 @@ namespace RecBinderProject
 
         private void UpdateRecordings()
         {
-            List<RecordingInput> recordingInputList = ((App)Application.Current).RecordingRepository.LoadAll();
+            IServiceProvider serviceProvider = ((App)Application.Current).ServiceProvider;
+            IRecordingRepository recordingRepository = serviceProvider.GetRequiredService<IRecordingRepository>();
+
+            List<RecordingInput> recordingInputList = recordingRepository.LoadAll();
             this.navigationView.MenuItems.Clear();
 
             if (recordingInputList.Count > 0)

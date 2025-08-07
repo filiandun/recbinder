@@ -1,5 +1,6 @@
-﻿
-namespace RecBinderProject
+﻿using RecBinderProject.Models.Inputs;
+
+namespace RecBinderProject.Models
 {
     public class RecordingInput
     {
@@ -8,8 +9,8 @@ namespace RecBinderProject
 
         public RecordingInput(RecordingMetadata recordingMetadata, InputEvents inputEvents)
         {
-            this.RecordingMetadata = recordingMetadata;
-            this.InputEvents = inputEvents;
+            RecordingMetadata = recordingMetadata;
+            InputEvents = inputEvents;
         }
     }
 }

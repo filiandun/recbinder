@@ -1,23 +1,32 @@
-﻿using System.Diagnostics;
-using System.Windows.Input;
-using System.ComponentModel;
-using System.Windows.Threading;
-using System.Runtime.CompilerServices;
-
+﻿using ModernWpf.Controls;
+using RecBinderProject.Models;
 using RecBinderProject.Services;
+using System.ComponentModel;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 
 namespace RecBinderProject.ViewModels
 {
-    internal class CreateRecordViewModel : INotifyPropertyChanged
+    internal class CreateRecordViewModel : RecordViewModel
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public override event PropertyChangedEventHandler? PropertyChanged;
+
+        private bool _isRecording;
+        private string _statusText;
+
+        private DispatcherTimer _timer;
+
+        private CreateRecordService _createRecordService;
+        private RecordOptions _recordOptions;
+
         public ICommand StartRecordCommand { get; }
         public ICommand StopRecordCommand { get; }
 
+        private bool CanStartRecording() => !this._isRecording;
+        private bool CanStopRecording() => this._isRecording;
 
-        private bool _isRecording;
-        public bool IsRecording
+        public bool IsRecording // TO DO может чуть изменить? Так как это поле как публичное вообще не используется.
         {
             get => this._isRecording;
             set
@@ -27,8 +36,7 @@ namespace RecBinderProject.ViewModels
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsPropertyEnabled)));
             }
         }
-
-        private string _statusText;
+       
         public string StatusText
         {
             get => this._statusText;
@@ -38,68 +46,30 @@ namespace RecBinderProject.ViewModels
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.StatusText)));
             }
         }
-
-        private DispatcherTimer _timer;
-
-        private CreateRecordService _createRecordService;
-        private RecordOptions _recordOptions;
-
-        private string _recordName;
-        private string _recordDescription;
-        private double _recordDurationValue;
-        private int _recordDurationUnitIndex;
-
-
-        private bool CanStartRecording() => !this._isRecording;
-        private bool CanStopRecording() => this._isRecording;
-
         public bool IsPropertyEnabled => !this._isRecording;
 
-        public string RecordName
-        {
-            get => this._recordName;
-            set => this.Set(ref this._recordName, value);
-        }
-
-        public string RecordDescription
-        {
-            get => this._recordDescription;
-            set => this.Set(ref this._recordDescription, value);
-        }
-
-        public double RecordDurationValue
-        {
-            get => this._recordDurationValue;
-            set => this.Set(ref this._recordDurationValue, value);
-        }
-
-        public int RecordDurationUnitIndex
-        {
-            get => this._recordDurationUnitIndex;
-            set => this.Set(ref this._recordDurationUnitIndex, value);
-        }
-
-        public RecordOptions RecordOptions
-        {
-            get => this._recordOptions;
-        }
+        public RecordOptions RecordOptions { get => this._recordOptions; }
+        public RecordingMetadataViewModel RecordingMetadataViewModel { get; }
 
 
-        public CreateRecordViewModel()
+        public CreateRecordViewModel(IRecordingRepository recordingRepository)
         {
             this._timer = new DispatcherTimer();
              
-            this.IsRecording = false;
-            this.StatusText = "Начать запись";
+            this._isRecording = false;
+            this._statusText = "Начать запись";
 
             this._recordOptions = new RecordOptions();
-            this._createRecordService = new CreateRecordService(new RecordingMetadata("", "", TimeSpan.MaxValue, DateTime.Now), this._recordOptions);
+            this._createRecordService = new CreateRecordService(recordingRepository, this._recordOptions);
+
+            this.RecordingMetadataViewModel = new RecordingMetadataViewModel();
 
             this.StartRecordCommand = new RelayCommand(StartRecording, CanStartRecording);
             this.StopRecordCommand = new RelayCommand(HandleRecordingStopped, CanStopRecording);
 
             this._createRecordService.OnRecordingStopped += CreateRecordService_OnRecordingStopped;
         }
+
         private void CreateRecordService_OnRecordingStopped()
         {
             this.StopRecording();
@@ -107,21 +77,44 @@ namespace RecBinderProject.ViewModels
 
         private void StartRecording()
         {
-            RecordingMetadata metadata = this.CreateRecordingMetadata();
-            this._createRecordService = new CreateRecordService(metadata, this._recordOptions);
-            this._createRecordService.StartRecord();
+            try
+            { 
+                RecordingMetadata recordingMetadata = this.RecordingMetadataViewModel.ToModel();
 
-            this.IsRecording = true;
-            this.StatusText = "Запись началась";
+                this._createRecordService.RecordingMetadata = recordingMetadata;
+                //this._playRecordService.RecordOptions = this.RecordOptions;
+                this._createRecordService.StartRecord();
 
-            this._timer.Interval = TimeSpan.FromMilliseconds(10);
-            this._timer.Tick += (s, e) =>
+                this.IsRecording = true;
+                this.StatusText = "Запись началась";
+
+                this._timer.Interval = TimeSpan.FromMilliseconds(10);
+                this._timer.Tick += (s, e) =>
+                {
+                    this.StatusText = this._createRecordService.GetElapsedTime().ToString(@"hh\:mm\:ss\:ff") + " / " + recordingMetadata.Duration.ToString(@"hh\:mm\:ss\:ff");
+                };
+                this._timer.Start();
+
+                this.UpdateCommands();
+            }
+            catch (ArgumentException ae)
             {
-                this.StatusText = this._createRecordService.GetElapsedTime().ToString(@"hh\:mm\:ss\:ff") + " / " + metadata.Duration.ToString(@"hh\:mm\:ss\:ff");
-            };
-            this._timer.Start();
-
-            this.UpdateCommands();
+                ContentDialog contentDialog = new ContentDialog()
+                {
+                    Content = ae.Message,
+                    CloseButtonText = "Закрыть",
+                };
+                contentDialog.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                ContentDialog contentDialog = new ContentDialog()
+                {
+                    Content = ex.Message,
+                    CloseButtonText = "Закрыть",
+                };
+                contentDialog.ShowAsync();
+            }
         }
 
         private void StopRecording()
@@ -141,36 +134,10 @@ namespace RecBinderProject.ViewModels
             this.StopRecording();
         }
 
-        public void UpdateCommands()
+        private void UpdateCommands()
         {
             (this.StartRecordCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (this.StopRecordCommand as RelayCommand)?.RaiseCanExecuteChanged();
-        }
-
-
-        public RecordingMetadata CreateRecordingMetadata()
-        {
-            TimeSpan recordDuration = this._recordDurationValue > 0 ? this._recordDurationUnitIndex switch
-            {
-                0 => TimeSpan.FromMilliseconds(this._recordDurationValue),
-                1 => TimeSpan.FromSeconds(this._recordDurationValue),
-                2 => TimeSpan.FromMinutes(this._recordDurationValue),
-                _ => TimeSpan.MaxValue
-            } : TimeSpan.MaxValue;
-
-            string recordName = string.IsNullOrWhiteSpace(this._recordName) ? $"RecBinder_{DateTime.Now:g}" : this._recordName;
-
-            return new RecordingMetadata(recordName, this.RecordDescription, recordDuration, DateTime.Now);
-        }
-
-
-        private void Set<T>(ref T field, T value, [CallerMemberName] string propName = "")
-        {
-            if (!Equals(field, value))
-            {
-                field = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-            }
         }
     }
 }

@@ -24,12 +24,12 @@
 
             <StackPanel Grid.Row="1">
                 <Label Content="Название" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox Text="{Binding RecordName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsPropertyEnabled}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="TextBox" Text="{Binding RecordingMetadataViewModel.RecordName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TextBox}" IsEnabled="{Binding IsPropertyEnabled}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <DockPanel Grid.Row="2">
                 <Label Content="Описание" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox Text="{Binding RecordDescription, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsPropertyEnabled}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox Text="{Binding RecordingMetadataViewModel.RecordDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding IsPropertyEnabled}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </DockPanel>
 
             <Grid x:Name="durationGrid" Grid.Row="3">
@@ -45,8 +45,8 @@
 
                 <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Продолительность записи" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
 
-                <ui:NumberBox Value="{Binding RecordDurationValue, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsPropertyEnabled}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline"/>
-                <ComboBox SelectedIndex="{Binding RecordDurationUnitIndex}" IsEnabled="{Binding IsPropertyEnabled}" Grid.Column="1" Grid.Row="1" >
+                <ui:NumberBox Value="{Binding RecordingMetadataViewModel.RecordDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding IsPropertyEnabled}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline"/>
+                <ComboBox SelectedIndex="{Binding RecordingMetadataViewModel.RecordDurationUnitIndex}" IsEnabled="{Binding IsPropertyEnabled}" Grid.Column="1" Grid.Row="1" >
                     <ComboBoxItem Content="мс."/>
                     <ComboBoxItem Content="сек."/>
                     <ComboBoxItem Content="мин." IsSelected="True"/>

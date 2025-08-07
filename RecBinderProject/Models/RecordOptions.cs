@@ -1,11 +1,13 @@
-﻿
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 
-namespace RecBinderProject
+namespace RecBinderProject.Models
 {
     public class RecordOptions : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         private bool _ignoreMouseMove = false;
         private bool _ignoreMouseWheel = false;
         private bool _ignoreMousePress = false;
@@ -63,9 +65,10 @@ namespace RecBinderProject
             }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+
         protected void OnPropertyChanged(string name)
         {
+            Debug.WriteLine($"Is changed {name}");
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }

@@ -1,5 +1,4 @@
-﻿
-namespace RecBinderProject
+﻿namespace RecBinderProject.Models
 {
     public enum AppTheme
     {
@@ -15,8 +14,8 @@ namespace RecBinderProject
 
         public AppSettings() 
         {
-            this.SaveDirectory = "C:\\Repositories\\RecBinder\\RecBinderProject\\Recordings\\" /*AppDomain.CurrentDomain.BaseDirectory*/;
-            this.Theme = AppTheme.Dark;
+            SaveDirectory = "C:\\Repositories\\RecBinder\\RecBinderProject\\Recordings\\" /*AppDomain.CurrentDomain.BaseDirectory*/;
+            Theme = AppTheme.Dark;
         }
     }
 }

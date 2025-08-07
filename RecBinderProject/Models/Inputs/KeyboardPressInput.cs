@@ -1,6 +1,4 @@
-﻿using RecBinderProject.Inputs;
-
-namespace RecBinderProject
+﻿namespace RecBinderProject.Models.Inputs
 {
     public struct KeyboardPressInput
     {
@@ -10,9 +8,9 @@ namespace RecBinderProject
 
         public KeyboardPressInput(int keyCode, KeyState keyState, int timeOffset)
         {
-            this.KeyCode = keyCode;
-            this.KeyState = keyState;
-            this.TimeOffset = timeOffset;
+            KeyCode = keyCode;
+            KeyState = keyState;
+            TimeOffset = timeOffset;
         }
     }
 }
