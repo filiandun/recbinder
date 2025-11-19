@@ -74,17 +74,14 @@ namespace RecBinderProject.Models
 
         public static bool NameValidation(string name)
         {
-            Debug.WriteLine("\n START");
             if (!string.IsNullOrWhiteSpace(name))
             {
                 //string pattern = @"^[^<>:""/\|?*]+$";
                 string pattern = @"^[^<>""/\|?*]+$";
                 Regex regex = new Regex(pattern);
-                Debug.WriteLine("NOT NULL TRUE\n");
 
                 if (regex.IsMatch(name))
                 {
-                    Debug.WriteLine("IS NOT MATCH TRUE\n");
                     return true;
                 }
             }

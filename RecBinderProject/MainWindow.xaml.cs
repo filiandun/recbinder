@@ -36,6 +36,7 @@ namespace RecBinderProject
         {
             if (this.navigationView.SelectedItem is RecordControl recordControl)
             {
+                //this.UpdateRecordings();
                 IServiceProvider serviceProvider = ((App)Application.Current).ServiceProvider;
                 IRecordingRepository recordingRepository = serviceProvider.GetRequiredService<IRecordingRepository>();
 
@@ -82,7 +83,10 @@ namespace RecBinderProject
             IRecordingRepository recordingRepository = serviceProvider.GetRequiredService<IRecordingRepository>();
 
             List<RecordingInput> recordingInputList = recordingRepository.LoadAll();
-            this.navigationView.MenuItems.Clear();
+            if (this.navigationView.MenuItems.Count > 0)
+            {
+                this.navigationView.MenuItems.Clear();
+            }
 
             if (recordingInputList.Count > 0)
             {

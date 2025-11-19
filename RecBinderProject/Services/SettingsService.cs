@@ -1,6 +1,7 @@
-﻿using RecBinderProject.Models;
-using System.IO;
+﻿using System.IO;
 using System.Text.Json;
+
+using RecBinderProject.Models;
 
 namespace RecBinderProject.Services
 {
@@ -14,6 +15,7 @@ namespace RecBinderProject.Services
             string folder = AppDomain.CurrentDomain.BaseDirectory;
             this._filePath = Path.Combine(folder, "settings.json");
 
+            this.AppSettings = new AppSettings();
             this.Load();
         }
 
@@ -22,10 +24,11 @@ namespace RecBinderProject.Services
             if (!File.Exists(this._filePath))
             {
                 this.AppSettings = new AppSettings();
+                this.Save();
+                return;
             }
 
             string json = File.ReadAllText(this._filePath);
-
             this.AppSettings = JsonSerializer.Deserialize<AppSettings>(json) ?? new AppSettings();
         }
 
@@ -35,6 +38,11 @@ namespace RecBinderProject.Services
             File.WriteAllText(this._filePath, json);
 
             this.Load();
+        }
+
+        public void Reset()
+        {
+            this.AppSettings = new AppSettings();
         }
     }
 }

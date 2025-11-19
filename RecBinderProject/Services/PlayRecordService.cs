@@ -1,70 +1,50 @@
 ﻿using RecBinderProject.Models;
-using System.Diagnostics;
 
 namespace RecBinderProject.Services
 {
-    public class PlayRecordService
+    public class PlayRecordService : BaseRecordService
     {
-        public event Action? OnRecordingStopped;
+        private readonly RecordingInput _recordingInput;
 
-        private CancellationTokenSource _cancellationTokenSource;
-        private Stopwatch _stopwatch;
-
-        private IRecordingRepository _recordingRepository;
-
-        private RecordingInput _recordingInput;
-        public RecordingInput RecordingInput { get { return this._recordingInput; } }
-        public RecordOptions RecordOptions { get; set; }
-
-        private bool _isPlaying;
-
-        public PlayRecordService(IRecordingRepository recordingRepository, RecordOptions recordOptions, string recordName)
+        public RecordingInput RecordingInput
         {
-            this._cancellationTokenSource = new CancellationTokenSource();
-            this._stopwatch = new Stopwatch();
+            get => this._recordingInput;
+        }
 
-            this._recordingRepository = recordingRepository;
+        public PlayRecordService(IRecordingRepository recordingRepository, RecordOptions recordOptions, string recordName) : base(recordingRepository, recordOptions)
+        {
+            this._recordingInput = this._recordingRepository.Read(recordName) ?? throw new ArgumentException($"Record '{recordName}' not found");
 
-            this._recordingInput = this._recordingRepository.Read(recordName);
-
-            this.RecordOptions = recordOptions;
-
-            this._isPlaying = false;
+            this._isActive = false;
         }
 
 
         public async Task PlayRecord()
         {
-            this._isPlaying = true;
+            this._isActive = true;
 
             this._stopwatch.Restart();
 
             this._cancellationTokenSource = new CancellationTokenSource();
 
-            await Task.Run(() => this._recordingInput.InputEvents.PlayAsync(this.RecordOptions, this._cancellationTokenSource.Token));
+            await Task.Run(() => this._recordingInput.InputEvents.PlayAsync(this._recordOptions, this._cancellationTokenSource.Token));
 
-            this.StopRecord();
+            this.StopRecord(); // TO DO колхоз ебучий, надо будет исправить, чтобы PlayAsync callback'ал завершение записи по истечению времени самой записи
         }
 
         public void StopRecord()
         {
-            if (this._isPlaying)
+            if (this._isActive)
             {
-                this._isPlaying = false;
+                this._isActive = false;
 
                 this._cancellationTokenSource.Cancel();
                 this._cancellationTokenSource.Dispose();
 
                 this._stopwatch.Stop();
 
-                this.OnRecordingStopped?.Invoke(); // TO DO nullreferenceexception
+                this.NotifyStopped();
             }
-        }
-
-
-        public TimeSpan GetElapsedTime()
-        {
-            return this._stopwatch.Elapsed;
         }
     }
 }

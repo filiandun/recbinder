@@ -1,6 +1,7 @@
 ﻿using WindowsInput;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace RecBinderProject.Models.Inputs
 {
@@ -10,18 +11,11 @@ namespace RecBinderProject.Models.Inputs
 
         public InputEvents()
         {
-            InputEventsList = new LinkedList<InputEvent>();
+            this.InputEventsList = new LinkedList<InputEvent>();
         }
 
-        public void Add(InputEvent userEvent)
-        {
-            InputEventsList.AddLast(userEvent);
-        }
-
-        public void Clear()
-        {
-            InputEventsList.Clear();
-        }
+        public void Add(InputEvent userEvent) => this.InputEventsList.AddLast(userEvent);
+        public void Clear() => this.InputEventsList.Clear();
 
 
         public async Task PlayAsync(RecordOptions recordOptions, CancellationToken cancellationToken)
@@ -29,7 +23,7 @@ namespace RecBinderProject.Models.Inputs
             InputSimulator inputSimulator = new InputSimulator();
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            foreach (InputEvent inputEvent in InputEventsList)
+            foreach (InputEvent inputEvent in this.InputEventsList)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -40,12 +34,12 @@ namespace RecBinderProject.Models.Inputs
 
                 switch (inputEvent.Kind) // TO DO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
                 {
-                    case InputEventKind.KeyboardPress: if (!recordOptions.IgnoreKeyboardPress) { PlayKeyboardPress((KeyboardPressInput)inputEvent.KeyboardPress, inputSimulator); }; break;
-                    case InputEventKind.MousePress: if (!recordOptions.IgnoreMousePress) { PlayMousePress((MousePressInput)inputEvent.MousePress, inputSimulator); }; break;
-                    case InputEventKind.MouseMove: if (!recordOptions.IgnoreMouseMove) { PlayMouseMove((MouseMoveInput)inputEvent.MouseMove, inputSimulator); }; break;
-                    case InputEventKind.MouseWheel: if (!recordOptions.IgnoreMouseWheel) { PlayMouseWheel((MouseWheelInput)inputEvent.MouseWheel, inputSimulator); }; break;
+                    case InputEventKind.KeyboardPress: if (!recordOptions.KeyboardPressEnabled) { PlayKeyboardPress((KeyboardPressInput)inputEvent.KeyboardPress, inputSimulator); }; break;
+                    case InputEventKind.MousePress: if (!recordOptions.MousePressEnabled) { PlayMousePress((MousePressInput)inputEvent.MousePress, inputSimulator); }; break;
+                    case InputEventKind.MouseMove: if (!recordOptions.MouseMoveEnabled) { PlayMouseMove((MouseMoveInput)inputEvent.MouseMove, inputSimulator, recordOptions); }; break;
+                    case InputEventKind.MouseWheel: if (!recordOptions.MouseWheelEnabled) { PlayMouseWheel((MouseWheelInput)inputEvent.MouseWheel, inputSimulator); }; break;
 
-                    default: MessageBox.Show("Ошибка. Запись повреждена."); return;
+                    default: throw new Exception("Ошибка. Неизвестное событие, запись повреждена.");
                 }  
             }
         }
@@ -113,14 +107,16 @@ namespace RecBinderProject.Models.Inputs
             }
         }
 
-        private void PlayMouseMove(MouseMoveInput mouseMoveInput, InputSimulator inputSimulator)
+        private void PlayMouseMove(MouseMoveInput mouseMoveInput, InputSimulator inputSimulator, RecordOptions recordOptions)
         {
-            var startPosition = Cursor.Position;
+            Point startPosition = Cursor.Position;
 
-            int targetX = /*startPosition.X +*/ (int)mouseMoveInput.X;
-            int targetY = /*startPosition.Y +*/ (int)mouseMoveInput.Y;
+            int targetX = recordOptions.RelativeMouseMovementEnabled ? (startPosition.X - (int)mouseMoveInput.X) + (int)mouseMoveInput.X : (int)mouseMoveInput.X;
+            int targetY = recordOptions.RelativeMouseMovementEnabled ? (startPosition.Y - (int)mouseMoveInput.Y) + (int)mouseMoveInput.Y : (int)mouseMoveInput.Y;
 
-            int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width;
+            // Debug.WriteLine(targetY + ":" + targetX);
+
+            int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width; // TODO подтягивать не по факту из ращрешения монитора, а из настроек
             int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
 
             inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
@@ -130,6 +126,5 @@ namespace RecBinderProject.Models.Inputs
         {
             inputSimulator.Mouse.VerticalScroll(mouseWheelInput.Delta);
         }
-
     }
 }

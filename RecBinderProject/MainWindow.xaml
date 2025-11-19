@@ -7,11 +7,11 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="RecBinder" Height="450" Width="800">
+        Title="RecBinder" Height="600" Width="1200" WindowStartupLocation="CenterScreen">
 
     <Grid>
         <ui:Frame x:Name="frame"/>
-        <ui:NavigationView x:Name="navigationView" PaneTitle="Список записей" SelectionChanged="NavigationView_SelectionChanged">
+        <ui:NavigationView x:Name="navigationView" PaneTitle="Список записей" SelectionChanged="NavigationView_SelectionChanged" PaneDisplayMode="LeftCompact">
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem Content="Создать новую запись" Icon="Video" Tag="createRecord"/>
                 <ui:NavigationViewItem Content="Помощь" Icon="Help" Tag="help"/>

@@ -1,13 +1,12 @@
 ﻿using System.Windows.Controls;
 
-using RecBinderProject.ViewModels;
-
+using RecBinderProject.ViewModels.RecordViewModels;
 
 namespace RecBinderProject
 {
     public partial class CreateRecordPage : Page
     {
-        private CreateRecordViewModel _viewModel;
+        private readonly CreateRecordViewModel _viewModel;
         private readonly IRecordingRepository _recordingRepository;
 
         public CreateRecordPage(IRecordingRepository recordingRepository)

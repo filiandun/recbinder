@@ -17,14 +17,14 @@
                 <RowDefinition Height="2*"/>
                 <RowDefinition Height="1.2*"/>
                 <RowDefinition Height="2*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" MaxHeight="50"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Начать новую запись" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontFamily="Segoe UI"/>
+            <TextBlock Text="Создать новую запись" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontFamily="Segoe UI"/>
 
             <StackPanel Grid.Row="1">
                 <Label Content="Название" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox x:Name="TextBox" Text="{Binding RecordingMetadataViewModel.RecordName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TextBox}" IsEnabled="{Binding IsPropertyEnabled}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="TextBox" Text="{Binding RecordingMetadataViewModel.RecordName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding IsPropertyEnabled}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <DockPanel Grid.Row="2">
@@ -56,17 +56,26 @@
             <Grid x:Name="settingsGrid" Grid.Row="4">
                 <Label Content="Настройки" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
                 <UniformGrid VerticalAlignment="Bottom">
-                    <CheckBox IsChecked="{Binding RecordOptions.IgnoreKeyboardPress, Mode=TwoWay}" Content="Игнорировать нажатия клавиш клавиатуры"/>
-                    <CheckBox IsChecked="{Binding RecordOptions.IgnoreMousePress, Mode=TwoWay}" Content="Игнорировать нажатия клавиш мыши"/>
-                    <CheckBox IsChecked="{Binding RecordOptions.IgnoreMouseMove, Mode=TwoWay}" Content="Игнорировать движения мыши"/>
-                    <CheckBox IsChecked="{Binding RecordOptions.IgnoreMouseWheel, Mode=TwoWay}" Content="Игнорировать прокручивания колёсика мыши"/>
+                    <CheckBox IsChecked="{Binding RecordOptions.KeyboardPressEnabled, Mode=TwoWay}" Content="Игнорировать нажатия клавиш клавиатуры"/>
+                    <CheckBox IsChecked="{Binding RecordOptions.MousePressEnabled, Mode=TwoWay}" Content="Игнорировать нажатия клавиш мыши"/>
+                    <CheckBox IsChecked="{Binding RecordOptions.MouseMoveEnabled, Mode=TwoWay}" Content="Игнорировать движения мыши"/>
+                    <CheckBox IsChecked="{Binding RecordOptions.MouseWheelEnabled, Mode=TwoWay}" Content="Игнорировать прокручивания колёсика мыши"/>
                 </UniformGrid>
             </Grid>
 
-            <UniformGrid Grid.Row="6" Rows="1">
-                <Button Command="{Binding StartRecordCommand}" Content="{Binding StatusText}" Margin="0,10,40,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <Button Command="{Binding StopRecordCommand}" Content="Остановить запись" Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            </UniformGrid>
+            <Grid x:Name="controlGrid" Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <ProgressBar Grid.Column="0" Value="{Binding RecordingStateViewModel.ProgressBarValue}" Maximum="100" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="#FF4BB51C"/>
+                <Button Grid.Column="0" Command="{Binding StartCommand}" Content="{Binding RecordingStateViewModel.ButtonText}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+                <Button Grid.Column="1" Command="{Binding StopCommand}" Content="[]" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#33FF0000"/>
+                <Button Grid.Column="2" Command="{Binding StopCommand}" Content="II" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace RecBinderProject.Models
@@ -8,68 +9,51 @@ namespace RecBinderProject.Models
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private bool _ignoreMouseMove = false;
-        private bool _ignoreMouseWheel = false;
-        private bool _ignoreMousePress = false;
-        private bool _ignoreKeyboardPress = false;
+        private bool _keyboardPressEnabled = false;
+        private bool _mousePressEnabled = false;
+        private bool _mouseMoveEnabled = false;
+        private bool _mouseWheelEnabled = false;
 
-        public bool IgnoreMouseMove
+        private bool _relativeMouseMovementEnabled = false;
+
+        public bool KeyboardPressEnabled
         {
-            get => this._ignoreMouseMove;
-            set
-            {
-                if (this._ignoreMouseMove != value)
-                {
-                    this._ignoreMouseMove = value;
-                    this.OnPropertyChanged(nameof(this.IgnoreMouseMove));
-                }
-            }
+            get => this._keyboardPressEnabled;
+            set => this.Set(ref this._keyboardPressEnabled, value);
         }
 
-        public bool IgnoreMouseWheel
+        public bool MousePressEnabled
         {
-            get => this._ignoreMouseWheel;
-            set
-            {
-                if (this._ignoreMouseWheel != value)
-                {
-                    this._ignoreMouseWheel = value;
-                    this.OnPropertyChanged(nameof(this.IgnoreMouseWheel));
-                }
-            }
+            get => this._mousePressEnabled;
+            set => this.Set(ref this._mousePressEnabled, value);
         }
 
-        public bool IgnoreMousePress
+        public bool MouseMoveEnabled
         {
-            get => this._ignoreMousePress;
-            set
-            {
-                if (this._ignoreMousePress != value)
-                {
-                    this._ignoreMousePress = value;
-                    this.OnPropertyChanged(nameof(this.IgnoreMousePress));
-                }
-            }
+            get => this._mouseMoveEnabled;
+            set => this.Set(ref this._mouseMoveEnabled, value);
         }
 
-        public bool IgnoreKeyboardPress
+        public bool MouseWheelEnabled
         {
-            get => this._ignoreKeyboardPress;
-            set
-            {
-                if (this._ignoreKeyboardPress != value)
-                {
-                    this._ignoreKeyboardPress = value;
-                    this.OnPropertyChanged(nameof(this.IgnoreKeyboardPress));
-                }
-            }
+            get => this._mouseWheelEnabled;
+            set => this.Set(ref this._mouseWheelEnabled, value);
         }
 
-
-        protected void OnPropertyChanged(string name)
+        public bool RelativeMouseMovementEnabled
         {
-            Debug.WriteLine($"Is changed {name}");
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            get => this._relativeMouseMovementEnabled;
+            set => this.Set(ref this._relativeMouseMovementEnabled, value);
+        }
+
+        protected void Set<T>(ref T field, T value, [CallerMemberName] string propName = "")
+        {
+            Debug.WriteLine($"Record option changed - {propName}");
+            if (!Equals(field, value))
+            {
+                field = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+            }
         }
     }
 }

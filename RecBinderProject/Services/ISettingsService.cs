@@ -9,5 +9,8 @@ namespace RecBinderProject.Services
 
         public void Load();
         public void Save();
+
+        public void Reset();
+
     }
 }
