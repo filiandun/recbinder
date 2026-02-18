@@ -3,31 +3,41 @@ using ModernWpf.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Pages;
-using RecBinderProject.ViewModels;
 using RecBinderProject.Models;
+using RecBinderProject.ViewModels;
+using RecBinderProject.Services.RecordService;
+using RecBinderProject.ViewModels.RecordViewModels;
+using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.Models.RecordingRepository;
 
 
 namespace RecBinderProject
 {
     public partial class MainWindow : Window
     {
+        private readonly IRecordingRepository _recordingRepository;
+        private readonly ILocalizationService _localizationService;
+
         private SettingsPage _settingsPage;
         private CreateRecordPage _createRecordPage;
 
-
-        public MainWindow()
+        public MainWindow(IRecordingRepository recordingRepository, ILocalizationService localizationService, SettingsPage settingsPage)
         {
             InitializeComponent();
 
-            IServiceProvider serviceProvider = ((App)Application.Current).ServiceProvider;
+            this._recordingRepository = recordingRepository;
+            this._localizationService = localizationService;
 
-            this._settingsPage = serviceProvider.GetRequiredService<SettingsPage>();
-            //this._createRecordPage = serviceProvider.GetRequiredService<CreateRecordPage>();
+            this._settingsPage = settingsPage;
 
-            IRecordingRepository recordingRepository = serviceProvider.GetRequiredService<IRecordingRepository>();
-            this._createRecordPage = new CreateRecordPage(recordingRepository);
+            // TODO костыль с созданием тут страницы, так как это позволяет сохранять "состояние" страницы (заполненные поля и выбранные настройки)
+            RecordingMetadata recordingMetadata = new RecordingMetadata();
+            RecordOptions recordOptions = new RecordOptions();
 
-            //this._createRecordPage.OnStopRecording += CreateRecordPage_StopRecording;
+            RecordingService recordingService = new RecordingService(recordingRepository, recordingMetadata, recordOptions);
+
+            CreateRecordViewModel createRecordViewModel = new CreateRecordViewModel(recordingRepository, recordingService, localizationService, "Create");
+            this._createRecordPage = new CreateRecordPage(createRecordViewModel);
 
             this.UpdateRecordings();
         }
@@ -36,11 +46,16 @@ namespace RecBinderProject
         {
             if (this.navigationView.SelectedItem is RecordControl recordControl)
             {
-                //this.UpdateRecordings();
-                IServiceProvider serviceProvider = ((App)Application.Current).ServiceProvider;
-                IRecordingRepository recordingRepository = serviceProvider.GetRequiredService<IRecordingRepository>();
 
-                ShowRecordPage recordPage = new ShowRecordPage(recordingRepository, recordControl.RecordName);
+                RecordingInput recordingInput = this._recordingRepository.Read(recordControl.RecordName) ?? throw new ArgumentException($"Record '{recordControl.RecordName}' not found");
+
+                RecordOptions recordOptions = new RecordOptions();
+
+                PlaybackService playbackService = new PlaybackService(recordOptions, recordingInput);
+
+                PlayRecordViewModel playRecordViewModel = new PlayRecordViewModel(playbackService, recordingInput, this._localizationService, "Play");
+
+                PlayRecordPage recordPage = new PlayRecordPage(playRecordViewModel);
                 this.frame.Navigate(recordPage);
             }
             else if (this.navigationView.SelectedItem is NavigationViewItem navigationViewItem)
@@ -70,19 +85,15 @@ namespace RecBinderProject
                 };
                 contentDialog.ShowAsync();
             }
+
+            //this.UpdateRecordings();
         }
 
-        private void CreateRecordPage_StopRecording()
-        {
-            this.UpdateRecordings();
-        }
 
         private void UpdateRecordings()
         {
-            IServiceProvider serviceProvider = ((App)Application.Current).ServiceProvider;
-            IRecordingRepository recordingRepository = serviceProvider.GetRequiredService<IRecordingRepository>();
+            List<RecordingInput> recordingInputList = this._recordingRepository.LoadAll();
 
-            List<RecordingInput> recordingInputList = recordingRepository.LoadAll();
             if (this.navigationView.MenuItems.Count > 0)
             {
                 this.navigationView.MenuItems.Clear();

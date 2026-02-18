@@ -23,6 +23,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="Настройки" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontFamily="Segoe UI"/>
+            <TextBlock Text="{Binding AppSettingsStateViewModel.StatusText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="14" FontFamily="Segoe UI"/>
 
             <StackPanel Grid.Row="1" Orientation="Vertical">
                 <Label Content="Тема" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
@@ -38,8 +39,8 @@
                         <ColumnDefinition Width="8*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <TextBox x:Name="pathToRecordsTextBox" Text="{Binding AppSettingsViewModel.SaveDirectory}" Grid.Column="0"/>
+
+                    <TextBox x:Name="pathToRecordsTextBox" Text="{Binding AppSettingsEditorViewModel.SaveDirectory}" Grid.Column="0"/>
                     <Button x:Name="openFileDialogButton" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="OpenFileDialogButton_Click"/>
                 </Grid>
             </StackPanel>
@@ -52,16 +53,16 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Text="{Binding AppSettingsViewModel.MonitorWidth}" Grid.Column="0"/>
-                    <TextBox Text="{Binding AppSettingsViewModel.MonitorHeight}" Grid.Column="1"/>
+                    <TextBox Text="{Binding AppSettingsEditorViewModel.MonitorWidth}" Grid.Column="0"/>
+                    <TextBox Text="{Binding AppSettingsEditorViewModel.MonitorHeight}" Grid.Column="1"/>
                 </Grid>
             </StackPanel>
 
-            <UniformGrid Grid.Row="7" Rows="1" Margin="200, 0, 0, 0">
-                <Button Command="{Binding SaveCommand}" Content="{Binding StatusText}" Margin="0,10,40,10" VerticalAlignment="Stretch"/>
-                <Button Command="{Binding CancelCommand}" Content="Отменить изменения"  Margin="0,10,0,10" VerticalAlignment="Stretch"/>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="7" Margin="0,0,0,0">
+                <Button Command="{Binding SaveCommand}" Content="Сохранить" Margin="0,10,10,10" VerticalAlignment="Stretch"/>
+                <Button Command="{Binding CancelCommand}" Content="Отменить"  Margin="0,10,20,10" VerticalAlignment="Stretch"/>
                 <Button Command="{Binding ResetCommand}" Content="Сбросить по умолчанию"  Margin="0,10,0,10" VerticalAlignment="Stretch"/>
-            </UniformGrid>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

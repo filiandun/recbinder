@@ -1,57 +1,41 @@
-﻿using ModernWpf.Controls;
+﻿using System.Diagnostics;
+using ModernWpf.Controls;
+
 using RecBinderProject.Models;
-using RecBinderProject.Services;
+using RecBinderProject.Models.RecordingRepository;
+using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.Services.RecordService;
 using RecBinderProject.ViewModels.RecordingMetadataViewModels;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Threading;
+
 
 namespace RecBinderProject.ViewModels.RecordViewModels
 {
-    internal class CreateRecordViewModel : RecordViewModel
+    public class CreateRecordViewModel : BaseRecordViewModel
     {
-        private CreateRecordService? _createRecordService;
-
-        public CreateRecordViewModel(IRecordingRepository recordingRepository) : base(recordingRepository)
+        public CreateRecordViewModel(IRecordingRepository recordingRepository, IRecordProcess recordProcess, ILocalizationService localizationService, string localizationPrefix) : base(recordProcess, localizationService, localizationPrefix)
         {
-            this._statusText = "Начать запись";
+            this._recordingMetadataViewModel = new RecordingMetadataViewModel();
 
-            this._createRecordService = null;
-
-            this.StartCommand = new RelayCommand(StartRecording, CanStart);
-            this.StopCommand = new RelayCommand(HandleRecordingStopped, CanStop);
+            this._recordOptions = new RecordOptions();
         }
 
-        private void CreateRecordService_OnRecordingStopped()
-        {
-            StopRecording();
-        }
-
-        private void StartRecording()
+        protected override void Start()
         {
             try
             {
-                this.RecordingMetadataViewModel.ApplyChanges();
-                RecordingMetadata recordingMetadata = this.RecordingMetadataViewModel.RecordingMetadataModel;
-                MessageBox.Show($"metadata:\n name: {recordingMetadata.Name}\ndecription: {recordingMetadata.Description}\nduration {recordingMetadata.Duration}\n date {recordingMetadata.CreationDateTime}");
-
-                this._createRecordService = new CreateRecordService(this._recordingRepository, recordingMetadata, this.RecordOptions);
-                this._createRecordService.OnStopped += CreateRecordService_OnRecordingStopped;
-                this._createRecordService.StartRecord();
-
-                this.IsActive = true;
-                this.StatusText = "Запись началась";
-
-                this._timer.Interval = TimeSpan.FromMilliseconds(10);
-                this._timer.Tick += (s, e) =>
+                if (this._recordProcess.State == PlaybackState.Paused)
                 {
-                    this.StatusText = this._createRecordService.GetElapsedTime().ToString(@"hh\:mm\:ss\:ff") + " / " + recordingMetadata.Duration.ToString(@"hh\:mm\:ss\:ff");
-                };
-                this._timer.Start();
+                    this._recordProcess.Resume();
+                }
+                else
+                {
+                    this.RecordingMetadataViewModel.ApplyChanges();
+                    RecordingMetadata recordingMetadata = this.RecordingMetadataViewModel.RecordingMetadataModel;
+                    Debug.WriteLine($"metadata:\n\tname: {recordingMetadata.Name}\n\tdecription: {recordingMetadata.Description}\n\tduration {recordingMetadata.Duration}\n\tdate {recordingMetadata.CreationDateTime}");
 
-                UpdateCommands();
+                    (this._recordProcess as RecordingService).UpdateMetadata(recordingMetadata); // TODO костыль
+                    this._recordProcess.Start();
+                }
             }
             catch (ArgumentException ae)
             {
@@ -73,27 +57,19 @@ namespace RecBinderProject.ViewModels.RecordViewModels
             }
         }
 
-        private void StopRecording()
+        protected override void Resume() // под вопросом, так как отдельной кнопки продолжить нет (реализуется всё через кнопку start)
         {
-            this._timer?.Stop();
-
-            this.IsActive = false;
-            this.StatusText = "Запись завершена";
-
-            UpdateCommands();
+            Debug.WriteLine("Play resume TODO");
         }
 
-        private void HandleRecordingStopped()
+        protected override void Pause()
         {
-            this._createRecordService.StopRecord();
-            
-            StopRecording();
+            this._recordProcess.Pause();
         }
 
-        private void UpdateCommands()
+        protected override void Stop()
         {
-            (this.StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            (this.StopCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            this._recordProcess.Stop();
         }
     }
 }

@@ -2,21 +2,19 @@
 
 using RecBinderProject.ViewModels.RecordViewModels;
 
+
 namespace RecBinderProject
 {
     public partial class CreateRecordPage : Page
     {
-        private readonly CreateRecordViewModel _viewModel;
-        private readonly IRecordingRepository _recordingRepository;
+        private readonly CreateRecordViewModel _createRecordViewModel;
 
-        public CreateRecordPage(IRecordingRepository recordingRepository)
+        public CreateRecordPage(CreateRecordViewModel createRecordViewModel)
         {
             InitializeComponent();
 
-            this._recordingRepository = recordingRepository;
-
-            this._viewModel = new CreateRecordViewModel(this._recordingRepository);
-            this.DataContext = this._viewModel;
+            this._createRecordViewModel = createRecordViewModel;
+            this.DataContext = this._createRecordViewModel;
         }
     }
 }

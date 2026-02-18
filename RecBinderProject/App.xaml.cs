@@ -1,11 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using ModernWpf;
-using RecBinderProject.Pages;
-using RecBinderProject.Services;
-using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
+
+using RecBinderProject.Pages;
+using RecBinderProject.Models.RecordingRepository;
+using RecBinderProject.Services.AppSettingsService;
+using RecBinderProject.Services.LocalizationService;
+
 
 namespace RecBinderProject
 {
@@ -21,11 +22,15 @@ namespace RecBinderProject
             ServiceCollection services = new ServiceCollection();
 
             services.AddSingleton<IRecordingRepository, RecordingRepository>();
-            services.AddSingleton<ISettingsService, SettingsService>();
-            //services.AddSingleton<CreateRecordPage>();
+            services.AddSingleton<IAppSettingsService, AppSettingsService>();
+            services.AddSingleton<ILocalizationService, LocalizationService>();
+
             services.AddSingleton<SettingsPage>();
 
             this.ServiceProvider = services.BuildServiceProvider();
+
+            var mainWindow = ActivatorUtilities.CreateInstance<MainWindow>(this.ServiceProvider);
+            mainWindow.Show();
 
             base.OnStartup(e);
         }

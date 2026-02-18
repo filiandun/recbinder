@@ -1,15 +1,13 @@
-﻿
-using RecBinderProject.Models;
+﻿using RecBinderProject.Models;
 
-namespace RecBinderProject.Services
+namespace RecBinderProject.Services.AppSettingsService
 {
-    public interface ISettingsService
+    public interface IAppSettingsService
     {
         public AppSettings AppSettings { get; set; }
 
         public void Load();
         public void Save();
-
         public void Reset();
 
     }

@@ -3,10 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace RecBinderProject.Models
 {
+    /// <summary>
+    /// record - чтобы объект был immutable (для дальнейшего реализования undo/redo)
+    /// </summary>
     public class RecordingInput
     {
-        public RecordingMetadata RecordingMetadata { get; }
-        public InputEvents InputEvents { get; }
+        public RecordingMetadata RecordingMetadata { get; init; }
+        public InputEvents InputEvents { get; init; }
 
         public RecordingInput(RecordingMetadata recordingMetadata)
         {

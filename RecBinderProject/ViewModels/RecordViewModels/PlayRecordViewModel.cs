@@ -1,122 +1,48 @@
-﻿using ModernWpf.Controls;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows.Input;
-using System.Windows.Threading;
+﻿using System.Diagnostics;
 
 using RecBinderProject.Models;
-using RecBinderProject.Services;
+using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.Services.RecordService;
 using RecBinderProject.ViewModels.RecordingMetadataViewModels;
+
 
 namespace RecBinderProject.ViewModels.RecordViewModels
 {
-    public class PlayRecordViewModel : RecordViewModel
+    public class PlayRecordViewModel : BaseRecordViewModel
     {
-        private readonly PlayRecordService _playRecordService;
-
-        public RecordingStateViewModel RecordingStateViewModel { get; }
-
-        public PlayRecordViewModel(IRecordingRepository recordingRepository, string recordName) : base(recordingRepository)
+        public PlayRecordViewModel(IRecordProcess recordProcess, RecordingInput recordingInput, ILocalizationService localizationService, string localizationPrefix) : base(recordProcess, localizationService, localizationPrefix)
         {
-            this._playRecordService = new PlayRecordService(recordingRepository, this._recordOptions, recordName);
+            this._recordProcess = recordProcess;
 
-            this.RecordingStateViewModel = new RecordingStateViewModel();
-
-            RecordingMetadata recordingMetadata = this._playRecordService.RecordingInput.RecordingMetadata;
-            this.RecordingMetadataViewModel.RecordName = recordingMetadata.Name;
-            this.RecordingMetadataViewModel.RecordDescription = recordingMetadata.Description;
-            this.RecordingMetadataViewModel.RecordDuration = recordingMetadata.Duration;
-            this.RecordingMetadataViewModel.RecordCreationDate = recordingMetadata.CreationDateTime;
-
-            this.StartCommand = new RelayCommand(StartPlaying, CanStart);
-            this.PauseCommand = new RelayCommand(PausePlaying, CanStart);
-            this.StopCommand = new RelayCommand(HandlePlayingStopped, CanStop);
-
-            this._playRecordService.OnStopped += CreateRecordService_OnRecordingStopped;
+            this._recordingMetadataViewModel = new RecordingMetadataViewModel(recordingInput.RecordingMetadata);
         }
 
-        private void CreateRecordService_OnRecordingStopped()
+        protected override void Start()
         {
-            this.StopPlaying();
-        }
-
-        private async void StartPlaying()
-        {
-            try
+            if (this._recordProcess.State == PlaybackState.Paused)
             {
-                this.IsActive = true;
-
-                this._timer.Interval = TimeSpan.FromMilliseconds(10);
-                this._timer.Tick += (s, e) =>
-                {
-                    TimeSpan elapsed = this._playRecordService.GetElapsedTime();
-                    TimeSpan duration = this.RecordingMetadataViewModel.RecordDuration;
-
-                    this.RecordingStateViewModel.SetRecordingState(elapsed, duration);
-                };
-                this._timer.Start();
-
-                await this._playRecordService.PlayRecord();
-
-                this.UpdateCommands();
+                this._recordProcess.Resume();
             }
-            catch (ArgumentException ae)
+            else
             {
-                ContentDialog contentDialog = new ContentDialog()
-                {
-                    Content = ae.Message,
-                    CloseButtonText = "Закрыть",
-                };
-                await contentDialog.ShowAsync();
-            }
-            catch (Exception ex)
-            {
-                ContentDialog contentDialog = new ContentDialog()
-                {
-                    Content = ex.Message,
-                    CloseButtonText = "Закрыть",
-                };
-                await contentDialog.ShowAsync();
+                this._recordProcess.Start();
             }
         }
 
-        private void PausePlaying()
+        protected override void Resume()
         {
-            this._timer?.Stop();
-
-            TimeSpan elapsed = this._playRecordService.GetElapsedTime();
-            TimeSpan duration = this.RecordingMetadataViewModel.RecordDuration;
-            this.RecordingStateViewModel.SetPausedState(elapsed, duration);
-
-            this.UpdateCommands();
+            //this._recordProcess.Start();
+            Debug.WriteLine("Play resume TODO");
         }
 
-        private void StopPlaying()
+        protected override void Pause()
         {
-            this._timer?.Stop();
-
-            this.IsActive = false;
-
-            TimeSpan elapsed = this._playRecordService.GetElapsedTime();
-            TimeSpan duration = this.RecordingMetadataViewModel.RecordDuration;
-            this.RecordingStateViewModel.SetStoppedState(elapsed, duration);
-
-            this.UpdateCommands();
+            this._recordProcess.Pause();
         }
 
-
-        private void HandlePlayingStopped()
+        protected override void Stop()
         {
-            this._playRecordService.StopRecord();
-
-            this.StopPlaying();
-        }
-
-        private void UpdateCommands()
-        {
-            (this.StartCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            (this.PauseCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            (this.StopCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            this._recordProcess.Stop();
         }
     }
 }

@@ -1,68 +1,28 @@
-﻿using System.IO;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-
+﻿
 namespace RecBinderProject.Models
 {
+    public record RecordingMetadataSnapshot( // TODO for undo/redo
+        string Name,
+        string Description,
+        TimeSpan Duration,
+        DateTime CreationDateTime
+    );
+
     public class RecordingMetadata
     {
-        private string _name;
-        private string _description;
-        private TimeSpan _duration;
-        private DateTime _creationDateTime;
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public TimeSpan Duration { get; set; }
+        public DateTime CreationDateTime { get; set; }
 
-        public string Name 
+        public RecordingMetadata()
         {
-            get => this._name;
-            set
-            {
-                if (!RecordingMetadata.NameValidation(value))
-                {
-                    throw new ArgumentException("Имя неккоректно");
-                }
-                this._name = value;
-            }
+            this.Name = string.Empty;
+            this.Description = string.Empty;
+            this.Duration = TimeSpan.Zero;
+            this.CreationDateTime = DateTime.MinValue;
         }
-
-        public string Description
-        {
-            get => this._description;
-            set
-            {
-                if (!RecordingMetadata.DescriptionValidation(value))
-                {
-                    throw new ArgumentException("Описание неккоректно");
-                }
-                this._description = value;
-            }
-        }
-
-        public TimeSpan Duration
-        {
-            get => this._duration;
-            set
-            {
-                if (!RecordingMetadata.DurationValidation(value))
-                {
-                    throw new ArgumentException("Длительность неккоректна");
-                }
-                this._duration = value;
-            }
-        }
-
-        public DateTime CreationDateTime
-        {
-            get => this._creationDateTime;
-            set
-            {
-                if (!RecordingMetadata.CreationDateTimeValidation(value))
-                {
-                    throw new ArgumentException("Дата создания некорректна");
-                }
-                this._creationDateTime = value;
-            }
-        }
-
+        
         public RecordingMetadata(string name, string description, TimeSpan duration, DateTime creationDateTime)
         {
             this.Name = name;
@@ -71,43 +31,14 @@ namespace RecBinderProject.Models
             this.CreationDateTime = creationDateTime;
         }
 
-
-        public static bool NameValidation(string name)
+        public RecordingMetadataSnapshot ToSnapshot()
         {
-            if (!string.IsNullOrWhiteSpace(name))
-            {
-                //string pattern = @"^[^<>:""/\|?*]+$";
-                string pattern = @"^[^<>""/\|?*]+$";
-                Regex regex = new Regex(pattern);
-
-                if (regex.IsMatch(name))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return new RecordingMetadataSnapshot(this.Name, this.Description, this.Duration, this.CreationDateTime);
         }
 
-        public static bool DescriptionValidation(string description)
+        public static RecordingMetadata FromSnapshot(RecordingMetadataSnapshot snapshot)
         {
-            return true;
-        }
-
-        public static bool DurationValidation(TimeSpan duration)
-        {
-            if (!duration.Equals(TimeSpan.Zero))
-            {
-                if (duration <= TimeSpan.MaxValue)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool CreationDateTimeValidation(DateTime creationDateTime)
-        {
-            return true;
+            return new RecordingMetadata(snapshot.Name, snapshot.Description, snapshot.Duration, snapshot.CreationDateTime);
         }
     }
 }

@@ -1,19 +1,21 @@
-﻿using RecBinderProject.ViewModels.RecordViewModels;
-using System.Diagnostics;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+
+using RecBinderProject.Models;
+using RecBinderProject.ViewModels.RecordViewModels;
+
 
 namespace RecBinderProject
 {
-    public partial class ShowRecordPage : Page
+    public partial class PlayRecordPage : Page
     {
         private readonly PlayRecordViewModel _playRecordViewModel;
 
-        public ShowRecordPage(IRecordingRepository recordingRepository, string recordName)
+        public PlayRecordPage(PlayRecordViewModel playRecordViewModel)
         {
-            this._playRecordViewModel = new PlayRecordViewModel(recordingRepository, recordName);
-            this.DataContext = this._playRecordViewModel;
-
             InitializeComponent();
+
+            this._playRecordViewModel = playRecordViewModel;
+            this.DataContext = this._playRecordViewModel;
         }
     }
 }

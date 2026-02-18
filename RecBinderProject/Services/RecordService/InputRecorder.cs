@@ -1,68 +1,55 @@
-﻿using System.Windows.Forms;
-
-using Gma.System.MouseKeyHook;
+﻿using System.Diagnostics;
+using System.Windows.Forms;
 
 using RecBinderProject.Models;
 using RecBinderProject.Models.Inputs;
 
+using Gma.System.MouseKeyHook;
 
-namespace RecBinderProject.Services
+
+namespace RecBinderProject.Services.RecordService
 {
-    public class CreateRecordService : BaseRecordService
+    public class InputRecorder
     {
-        private IKeyboardMouseEvents? _globalHook;
+        private IKeyboardMouseEvents? _globalHook; // TODO отличия
+
+        private readonly Stopwatch _stopwatch;
 
         private readonly RecordingInput _recordingInput;
+        private readonly RecordOptions _recordOptions;
 
-        public CreateRecordService(IRecordingRepository recordingRepository, RecordingMetadata recordingMetadata, RecordOptions recordOptions) : base(recordingRepository, recordOptions)
+        public InputRecorder(RecordingInput recordingInput, RecordOptions recordOptions)
         {
             this._globalHook = null;
-            this._recordingInput = new RecordingInput(recordingMetadata);
+
+            this._stopwatch = new Stopwatch();
+
+            this._recordingInput = recordingInput;
+            this._recordOptions = recordOptions;
         }
 
+        public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
 
-        public void StartRecord()
+        public void Start()
         {
-            this._stopwatch.Restart();
             this.Subscribe();
-
-            this._isActive = true;
-
-            _ = this.WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
+            this._stopwatch.Start();
         }
+        public void Resume() => this.Start();
 
-        private async Task WaitAndStopAfterDurationAsync(CancellationToken token)
+        public void Pause()
         {
-            try
-            {
-                await Task.Delay(this._recordingInput.RecordingMetadata.Duration, token);
-                this.StopRecord();
-            }
-            catch (TaskCanceledException)
-            {
-                
-            }
+            this.Unsubscribe();
+            this._stopwatch.Stop();
         }
 
-        public void StopRecord()
+        public void Stop()
         {
-            if (this._isActive)
-            {
-                this.Unsubscribe();
-                this._stopwatch.Stop();
+            this.Pause();
+            Debug.WriteLine($"InputRecorder: {this._recordingInput.InputEvents.InputEventsList.Count}");
 
-                this._isActive = false;
-
-                this._recordingInput.RecordingMetadata.Duration = this._stopwatch.Elapsed;
-                this._recordingInput.RecordingMetadata.CreationDateTime = DateTime.Now;
-                this._recordingRepository.Save(this._recordingInput);
-
-                this._cancellationTokenSource.Cancel();
-
-                this.NotifyStopped();
-            }
+            this._globalHook?.Dispose();
         }
-
 
         public void Subscribe()
         {
@@ -90,13 +77,11 @@ namespace RecBinderProject.Services
 
                 this._globalHook.MouseMoveExt -= GlobalHookMouseMoveExt;
                 this._globalHook.MouseWheelExt -= GlobalHook_MouseWheelExt;
-
-                this._globalHook.Dispose();
             }
         }
 
 
-        private void GlobalHookKeyUp(object? sender, KeyEventArgs e)
+        private void GlobalHookKeyUp(object? sender, KeyEventArgs e) // TODO переименовать KeyboardPressEnabled, так как сейчас они логически бредовые получаются (посмотри на if внимательно, если не понял)
         {
             if (!this._recordOptions.KeyboardPressEnabled)
             {
@@ -120,6 +105,7 @@ namespace RecBinderProject.Services
                 this._recordingInput.InputEvents.Add(InputEvent.From(new MousePressInput(e.Button, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
             }
         }
+
         private void GlobalHookMouseUp(object? sender, MouseEventArgs e)
         {
             if (!this._recordOptions.MousePressEnabled)
@@ -136,6 +122,7 @@ namespace RecBinderProject.Services
                 this._recordingInput.InputEvents.Add(InputEvent.From(new MouseMoveInput(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds)));
             }
         }
+
         private void GlobalHook_MouseWheelExt(object? sender, MouseEventExtArgs e)
         {
             if (!this._recordOptions.MouseWheelEnabled)

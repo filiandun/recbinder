@@ -4,10 +4,14 @@ namespace RecBinderProject
 {
     public class RelayCommand : ICommand
     {
-        public event EventHandler? CanExecuteChanged;
-
         private readonly Action _execute;
         private readonly Func<bool>? _canExecute;
+
+        public event EventHandler? CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
 
         public RelayCommand(Action execute, Func<bool>? canExecute = null)
         {
@@ -25,9 +29,9 @@ namespace RecBinderProject
             this._execute();
         }
 
-        public void RaiseCanExecuteChanged()
-        {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
+        //public void RaiseCanExecuteChanged()
+        //{
+        //    this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        //}
     }
 }

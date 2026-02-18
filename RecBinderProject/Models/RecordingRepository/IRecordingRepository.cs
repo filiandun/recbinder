@@ -1,7 +1,5 @@
 ﻿
-using RecBinderProject.Models;
-
-namespace RecBinderProject
+namespace RecBinderProject.Models.RecordingRepository
 {
     public interface IRecordingRepository
     {

@@ -1,8 +1,9 @@
-﻿using RecBinderProject.Models;
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
+
+using RecBinderProject.Models;
+
 
 namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
 {
@@ -31,7 +32,6 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
         private DateTime _recordCreationDateTime;
 
         private readonly RecordingMetadata _recordingMetadataModel;
-
         public RecordingMetadata RecordingMetadataModel => this._recordingMetadataModel;
 
         public bool HasErrors => this._errors.Count > 0;
@@ -95,7 +95,7 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
             }
         }
 
-        public DateTime RecordCreationDate
+        public DateTime RecordCreationDateTime
         {
             get => this._recordCreationDateTime;
             set => this.Set(ref this._recordCreationDateTime, value);
@@ -118,7 +118,20 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
             this._recordName = "RecBinder_" + DateTime.Now.ToString("G");
             this._recordDescription = string.Empty;
             this._recordCreationDateTime = DateTime.Now;
+
             this._recordingMetadataModel = new RecordingMetadata(this._recordName, this._recordDescription, TimeSpan.MaxValue, DateTime.Now);
+        }
+
+        public RecordingMetadataViewModel(RecordingMetadata recordingMetadata) // TODO плохой вариант будто бы
+        {
+            this._errors = new Dictionary<string, List<string>>();
+
+            this._recordName = recordingMetadata.Name;
+            this._recordDescription = recordingMetadata.Description;
+            this._recordDuration = recordingMetadata.Duration;
+            this._recordCreationDateTime = recordingMetadata.CreationDateTime;
+
+            this._recordingMetadataModel = recordingMetadata;
         }
 
         public void ApplyChanges()
@@ -134,7 +147,7 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
 
         protected void ValidateRecordName()
         {
-            if (RecordingMetadata.NameValidation(this.RecordName))
+            if (!string.IsNullOrWhiteSpace(this.RecordName))
             {
                 this.ClearErrors(nameof(this.RecordName));
             }
