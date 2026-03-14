@@ -8,20 +8,20 @@ using RecBinderProject.ViewModels;
 using RecBinderProject.Services.RecordService;
 using RecBinderProject.ViewModels.RecordViewModels;
 using RecBinderProject.Services.LocalizationService;
-using RecBinderProject.Models.RecordingRepository;
+using RecBinderProject.Models.MacroRepository;
 
 
 namespace RecBinderProject
 {
     public partial class MainWindow : Window
     {
-        private readonly IRecordingRepository _recordingRepository;
+        private readonly IMacroRepository _recordingRepository;
         private readonly ILocalizationService _localizationService;
 
         private SettingsPage _settingsPage;
-        private CreateRecordPage _createRecordPage;
+        private RecordingPage _createRecordPage;
 
-        public MainWindow(IRecordingRepository recordingRepository, ILocalizationService localizationService, SettingsPage settingsPage)
+        public MainWindow(IMacroRepository recordingRepository, ILocalizationService localizationService, SettingsPage settingsPage)
         {
             InitializeComponent();
 
@@ -31,13 +31,13 @@ namespace RecBinderProject
             this._settingsPage = settingsPage;
 
             // TODO костыль с созданием тут страницы, так как это позволяет сохранять "состояние" страницы (заполненные поля и выбранные настройки)
-            RecordingMetadata recordingMetadata = new RecordingMetadata();
-            RecordOptions recordOptions = new RecordOptions();
+            MacroMetadata recordingMetadata = new MacroMetadata();
+            MacroOptions recordOptions = new MacroOptions();
 
-            RecordingService recordingService = new RecordingService(recordingRepository, recordingMetadata, recordOptions);
+            MacroRecordService recordingService = new MacroRecordService(recordingRepository, recordingMetadata, recordOptions);
 
-            CreateRecordViewModel createRecordViewModel = new CreateRecordViewModel(recordingRepository, recordingService, localizationService, "Create");
-            this._createRecordPage = new CreateRecordPage(createRecordViewModel);
+            MacroRecordingViewModel createRecordViewModel = new MacroRecordingViewModel(recordingRepository, recordingService, localizationService, "Create");
+            this._createRecordPage = new RecordingPage(createRecordViewModel);
 
             this.UpdateRecordings();
         }
@@ -47,15 +47,15 @@ namespace RecBinderProject
             if (this.navigationView.SelectedItem is RecordControl recordControl)
             {
 
-                RecordingInput recordingInput = this._recordingRepository.Read(recordControl.RecordName) ?? throw new ArgumentException($"Record '{recordControl.RecordName}' not found");
+                Macro recordingInput = this._recordingRepository.Read(recordControl.RecordName) ?? throw new ArgumentException($"Record '{recordControl.RecordName}' not found");
 
-                RecordOptions recordOptions = new RecordOptions();
+                MacroOptions recordOptions = new MacroOptions();
 
-                PlaybackService playbackService = new PlaybackService(recordOptions, recordingInput);
+                MacroPlaybackService playbackService = new MacroPlaybackService(recordOptions, recordingInput);
 
-                PlayRecordViewModel playRecordViewModel = new PlayRecordViewModel(playbackService, recordingInput, this._localizationService, "Play");
+                MacroPlaybackViewModel playRecordViewModel = new MacroPlaybackViewModel(playbackService, recordingInput, this._localizationService, "Play");
 
-                PlayRecordPage recordPage = new PlayRecordPage(playRecordViewModel);
+                PlaybackPage recordPage = new PlaybackPage(playRecordViewModel);
                 this.frame.Navigate(recordPage);
             }
             else if (this.navigationView.SelectedItem is NavigationViewItem navigationViewItem)
@@ -92,7 +92,7 @@ namespace RecBinderProject
 
         private void UpdateRecordings()
         {
-            List<RecordingInput> recordingInputList = this._recordingRepository.LoadAll();
+            List<Macro> recordingInputList = this._recordingRepository.LoadAll();
 
             if (this.navigationView.MenuItems.Count > 0)
             {
@@ -101,9 +101,9 @@ namespace RecBinderProject
 
             if (recordingInputList.Count > 0)
             {
-                foreach (RecordingInput recordingInput in recordingInputList)
+                foreach (Macro recordingInput in recordingInputList)
                 {
-                    this.navigationView.MenuItems.Add(new RecordControl(recordingInput.RecordingMetadata.Name, recordingInput.RecordingMetadata.Description));
+                    this.navigationView.MenuItems.Add(new RecordControl(recordingInput.Metadata.Name, recordingInput.Metadata.Description));
                 }
             }
         }

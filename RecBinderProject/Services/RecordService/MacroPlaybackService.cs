@@ -5,28 +5,28 @@ using RecBinderProject.Models;
 
 namespace RecBinderProject.Services.RecordService
 {
-    public class PlaybackService : BaseRecordService
+    public class MacroPlaybackService : BaseRecordService
     {
         private readonly SynchronizationContext _syncContext;
 
         private Thread _playbackThread;
 
-        private readonly RecordingInput _recordingInput; // TODO имеет смысл хранить не саму запись, а только события из неё (так как метаданные тут не используются)
-        private readonly InputPlayer _inputPlayer;
+        private readonly Macro _macro; // TODO имеет смысл хранить не саму запись, а только события из неё (так как метаданные тут не используются)
+        private readonly MacroPlayer _macroPlayer;
 
-        public override TimeSpan TotalTime => this._recordingInput.RecordingMetadata.Duration;
-        public override TimeSpan ElapsedTime => this._inputPlayer.GetElapsedTime();
+        public override TimeSpan TotalTime => this._macro.Metadata.Duration;
+        public override TimeSpan ElapsedTime => this._macroPlayer.GetElapsedTime();
 
-        public override RecordingMetadata RecordingMetadata => this._recordingInput.RecordingMetadata;
+        public override MacroMetadata MacroMetadata => this._macro.Metadata;
 
-        public PlaybackService(RecordOptions recordOptions, RecordingInput recordingInput) : base(recordOptions)
+        public MacroPlaybackService(MacroOptions macroOptions, Macro macro) : base(macroOptions)
         {
             this._syncContext = SynchronizationContext.Current ?? throw new NullReferenceException("SynchronizationContext is null"); // TODO null
 
             this._playbackThread = new Thread(PlaybackWorker); // TODO заглушка (смысла в этой инициализации 0, только чтобы не ругалось на отсутствие инициализации в конструкторе)
 
-            this._recordingInput = recordingInput;
-            this._inputPlayer = new InputPlayer(this._recordingInput, recordOptions);
+            this._macro = macro;
+            this._macroPlayer = new MacroPlayer(this._macro, macroOptions);
         }
 
         public override void Start()    
@@ -49,7 +49,7 @@ namespace RecBinderProject.Services.RecordService
             if (this.State == PlaybackState.Playing)
             {
                 this.State = PlaybackState.Paused;
-                this._inputPlayer.Pause();
+                this._macroPlayer.Pause();
             }
         }
 
@@ -58,7 +58,7 @@ namespace RecBinderProject.Services.RecordService
             if (this.State == PlaybackState.Paused)
             {
                 this.State = PlaybackState.Playing;
-                this._inputPlayer.Resume();
+                this._macroPlayer.Resume();
             }
         }
 
@@ -67,7 +67,7 @@ namespace RecBinderProject.Services.RecordService
             if (this.State == PlaybackState.Playing || this.State == PlaybackState.Paused)
             {
                 this.State = PlaybackState.Stopped;
-                this._inputPlayer.Stop();
+                this._macroPlayer.Stop();
             }
         }
 
@@ -75,7 +75,7 @@ namespace RecBinderProject.Services.RecordService
         {
             try
             {
-                this._inputPlayer.Start();
+                this._macroPlayer.Start();
                 this._syncContext.Post(_ => State = PlaybackState.Completed, null);
             }
             catch (OperationCanceledException)

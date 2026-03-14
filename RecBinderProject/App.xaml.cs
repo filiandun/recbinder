@@ -3,9 +3,9 @@ using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Pages;
-using RecBinderProject.Models.RecordingRepository;
 using RecBinderProject.Services.AppSettingsService;
 using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.Models.MacroRepository;
 
 
 namespace RecBinderProject
@@ -21,7 +21,7 @@ namespace RecBinderProject
         {
             ServiceCollection services = new ServiceCollection();
 
-            services.AddSingleton<IRecordingRepository, RecordingRepository>();
+            services.AddSingleton<IMacroRepository, MacroRepository>();
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddSingleton<ILocalizationService, LocalizationService>();
 

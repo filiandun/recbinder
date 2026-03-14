@@ -1,30 +1,30 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
 
-using RecBinderProject.Models;
-using RecBinderProject.Models.Inputs;
-
 using Gma.System.MouseKeyHook;
+
+using RecBinderProject.Models;
+using RecBinderProject.Models.InputEvents;
 
 
 namespace RecBinderProject.Services.RecordService
 {
-    public class InputRecorder
+    public class MacroRecorder
     {
-        private IKeyboardMouseEvents? _globalHook; // TODO отличия
+        private IKeyboardMouseEvents? _globalHook;
 
         private readonly Stopwatch _stopwatch;
 
-        private readonly RecordingInput _recordingInput;
-        private readonly RecordOptions _recordOptions;
+        private readonly Macro _macro;
+        private readonly MacroOptions _recordOptions;
 
-        public InputRecorder(RecordingInput recordingInput, RecordOptions recordOptions)
+        public MacroRecorder(Macro recordingInput, MacroOptions recordOptions)
         {
             this._globalHook = null;
 
             this._stopwatch = new Stopwatch();
 
-            this._recordingInput = recordingInput;
+            this._macro = recordingInput;
             this._recordOptions = recordOptions;
         }
 
@@ -46,7 +46,6 @@ namespace RecBinderProject.Services.RecordService
         public void Stop()
         {
             this.Pause();
-            Debug.WriteLine($"InputRecorder: {this._recordingInput.InputEvents.InputEventsList.Count}");
 
             this._globalHook?.Dispose();
         }
@@ -85,7 +84,7 @@ namespace RecBinderProject.Services.RecordService
         {
             if (!this._recordOptions.KeyboardPressEnabled)
             {
-                this._recordingInput.InputEvents.Add(InputEvent.From(new KeyboardPressInput((int)e.KeyCode, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(InputEvent.From(new KeyboardPressEvent((int)e.KeyCode, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
             }
         }
 
@@ -93,7 +92,7 @@ namespace RecBinderProject.Services.RecordService
         {
             if (!this._recordOptions.KeyboardPressEnabled)
             {
-                this._recordingInput.InputEvents.Add(InputEvent.From(new KeyboardPressInput((int)e.KeyCode, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(InputEvent.From(new KeyboardPressEvent((int)e.KeyCode, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
             }
         }
 
@@ -102,7 +101,7 @@ namespace RecBinderProject.Services.RecordService
         {
             if (!this._recordOptions.MousePressEnabled)
             {
-                this._recordingInput.InputEvents.Add(InputEvent.From(new MousePressInput(e.Button, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(InputEvent.From(new MousePressEvent(e.Button, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
             }
         }
 
@@ -110,7 +109,7 @@ namespace RecBinderProject.Services.RecordService
         {
             if (!this._recordOptions.MousePressEnabled)
             {
-                this._recordingInput.InputEvents.Add(InputEvent.From(new MousePressInput(e.Button, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(InputEvent.From(new MousePressEvent(e.Button, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
             }
         }
 
@@ -119,7 +118,7 @@ namespace RecBinderProject.Services.RecordService
         {
             if (!this._recordOptions.MouseMoveEnabled)
             {
-                this._recordingInput.InputEvents.Add(InputEvent.From(new MouseMoveInput(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(InputEvent.From(new MouseMoveEvent(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds)));
             }
         }
 
@@ -127,7 +126,7 @@ namespace RecBinderProject.Services.RecordService
         {
             if (!this._recordOptions.MouseWheelEnabled)
             {
-                this._recordingInput.InputEvents.Add(InputEvent.From(new MouseWheelInput(e.Delta / 120, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(InputEvent.From(new MouseWheelEvent(e.Delta / 120, (int)this._stopwatch.ElapsedMilliseconds)));
             }
         }
     }

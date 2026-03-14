@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Windows.Forms;
 
 using RecBinderProject.Models;
-using RecBinderProject.Models.Inputs;
+using RecBinderProject.Models.InputEvents;
 
 
 namespace RecBinderProject.Services.RecordService
 {
-    public class InputPlayer
+    public class MacroPlayer
     {
         private CancellationTokenSource _playbackCancellationTokenSource;
 
@@ -19,10 +19,10 @@ namespace RecBinderProject.Services.RecordService
         private readonly Stopwatch _stopwatch;
         private volatile bool _isPaused;
 
-        private readonly RecordingInput _recordingInput;
-        private readonly RecordOptions _recordOptions;
+        private readonly Macro _macro;
+        private readonly MacroOptions _macroOptions;
 
-        public InputPlayer(RecordingInput recordingInput, RecordOptions recordOptions)
+        public MacroPlayer(Macro recordingInput, MacroOptions recordOptions)
         {
             this._playbackCancellationTokenSource = new CancellationTokenSource();
 
@@ -31,8 +31,8 @@ namespace RecBinderProject.Services.RecordService
             this._stopwatch = new Stopwatch();
             this._isPaused = false;
 
-            this._recordingInput = recordingInput;
-            this._recordOptions = recordOptions;
+            this._macro = recordingInput;
+            this._macroOptions = recordOptions;
         }
 
         public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
@@ -45,7 +45,7 @@ namespace RecBinderProject.Services.RecordService
 
                 this._stopwatch.Restart();
 
-                foreach (InputEvent inputEvent in this._recordingInput.InputEvents.InputEventsList)
+                foreach (InputEvent inputEvent in this._macro.Events)
                 {
                     this.PlayDelay(inputEvent.TimeOffset, this._playbackCancellationTokenSource.Token);
 
@@ -96,10 +96,10 @@ namespace RecBinderProject.Services.RecordService
         {
             switch (inputEvent.Kind) // TODO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
             {
-                case InputEventKind.KeyboardPress: this.PlayKeyboardPress((KeyboardPressInput)inputEvent.KeyboardPress); break;
-                case InputEventKind.MousePress: this.PlayMousePress((MousePressInput)inputEvent.MousePress); break;
-                case InputEventKind.MouseMove: this.PlayMouseMove((MouseMoveInput)inputEvent.MouseMove); break;
-                case InputEventKind.MouseWheel: this.PlayMouseWheel((MouseWheelInput)inputEvent.MouseWheel); break;
+                case InputEventKind.KeyboardPress: this.PlayKeyboardPress((KeyboardPressEvent)inputEvent.KeyboardPress); break;
+                case InputEventKind.MousePress: this.PlayMousePress((MousePressEvent)inputEvent.MousePress); break;
+                case InputEventKind.MouseMove: this.PlayMouseMove((MouseMoveEvent)inputEvent.MouseMove); break;
+                case InputEventKind.MouseWheel: this.PlayMouseWheel((MouseWheelEvent)inputEvent.MouseWheel); break;
 
                 default: throw new Exception("Ошибка. Неизвестное событие, запись повреждена.");
             }
@@ -127,9 +127,9 @@ namespace RecBinderProject.Services.RecordService
             }
         }
 
-        private void PlayKeyboardPress(KeyboardPressInput keyboardPressInput)
+        private void PlayKeyboardPress(KeyboardPressEvent keyboardPressInput)
         {
-            if (!this._recordOptions.KeyboardPressEnabled)
+            if (!this._macroOptions.KeyboardPressEnabled)
             {
                 if (keyboardPressInput.KeyState == KeyState.Down)
                 {
@@ -142,9 +142,9 @@ namespace RecBinderProject.Services.RecordService
             }
         }
 
-        private void PlayMousePress(MousePressInput mousePressInput)
+        private void PlayMousePress(MousePressEvent mousePressInput)
         {
-            if (!this._recordOptions.MousePressEnabled)
+            if (!this._macroOptions.MousePressEnabled)
             {
                 if (mousePressInput.KeyState == KeyState.Down)
                 {
@@ -171,14 +171,14 @@ namespace RecBinderProject.Services.RecordService
             }
         }
 
-        private void PlayMouseMove(MouseMoveInput mouseMoveInput)
+        private void PlayMouseMove(MouseMoveEvent mouseMoveInput)
         {
-            if (!this._recordOptions.MouseMoveEnabled)
+            if (!this._macroOptions.MouseMoveEnabled)
             {
                 Point startPosition = Cursor.Position;
 
-                int targetX = this._recordOptions.RelativeMouseMovementEnabled ? (startPosition.X - (int)mouseMoveInput.X) + (int)mouseMoveInput.X : (int)mouseMoveInput.X;
-                int targetY = this._recordOptions.RelativeMouseMovementEnabled ? (startPosition.Y - (int)mouseMoveInput.Y) + (int)mouseMoveInput.Y : (int)mouseMoveInput.Y;
+                int targetX = this._macroOptions.RelativeMouseMovementEnabled ? (startPosition.X - (int)mouseMoveInput.X) + (int)mouseMoveInput.X : (int)mouseMoveInput.X;
+                int targetY = this._macroOptions.RelativeMouseMovementEnabled ? (startPosition.Y - (int)mouseMoveInput.Y) + (int)mouseMoveInput.Y : (int)mouseMoveInput.Y;
 
                 int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width; // TODO подтягивать разрешение монитора не из системы текущее, а из настроек
                 int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
@@ -187,9 +187,9 @@ namespace RecBinderProject.Services.RecordService
             }
         }
 
-        private void PlayMouseWheel(MouseWheelInput mouseWheelInput)
+        private void PlayMouseWheel(MouseWheelEvent mouseWheelInput)
         {
-            if (!this._recordOptions.MouseWheelEnabled)
+            if (!this._macroOptions.MouseWheelEnabled)
             {
                 this._inputSimulator.Mouse.VerticalScroll(mouseWheelInput.Delta);
             }

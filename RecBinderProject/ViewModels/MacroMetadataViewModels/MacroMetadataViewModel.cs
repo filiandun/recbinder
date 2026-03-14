@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using RecBinderProject.Models;
 
 
-namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
+namespace RecBinderProject.ViewModels.MacroMetadataViewModels
 {
     enum RecordDurationUnit
     {
@@ -18,7 +18,7 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
     // TODO пересмотреть архитектуру.
     // В текущем исполнении можно обращаться что к set, get полей так и к модели recordingMetadataModel самой:
     // из этого вытекает то, что свойство тут изменили, а саму модель recordingMetadataModel никто менять и не заставляет, соответсвенно, в модели свойства не валидировались.
-    public class RecordingMetadataViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
+    public class MacroMetadataViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
@@ -31,8 +31,8 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
         private int _recordDurationUnitIndex; // TO DO создать enum, чтобы магические числа не использовать
         private DateTime _recordCreationDateTime;
 
-        private readonly RecordingMetadata _recordingMetadataModel;
-        public RecordingMetadata RecordingMetadataModel => this._recordingMetadataModel;
+        private readonly MacroMetadata _recordingMetadataModel;
+        public MacroMetadata RecordingMetadataModel => this._recordingMetadataModel;
 
         public bool HasErrors => this._errors.Count > 0;
 
@@ -111,7 +111,7 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
             get => this._recordCreationDateTime.ToString("G");
         }
 
-        public RecordingMetadataViewModel()
+        public MacroMetadataViewModel()
         {
             this._errors = new Dictionary<string, List<string>>();
 
@@ -119,10 +119,10 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
             this._recordDescription = string.Empty;
             this._recordCreationDateTime = DateTime.Now;
 
-            this._recordingMetadataModel = new RecordingMetadata(this._recordName, this._recordDescription, TimeSpan.MaxValue, DateTime.Now);
+            this._recordingMetadataModel = new MacroMetadata(this._recordName, this._recordDescription, TimeSpan.MaxValue, DateTime.Now);
         }
 
-        public RecordingMetadataViewModel(RecordingMetadata recordingMetadata) // TODO плохой вариант будто бы
+        public MacroMetadataViewModel(MacroMetadata recordingMetadata) // TODO плохой вариант будто бы
         {
             this._errors = new Dictionary<string, List<string>>();
 

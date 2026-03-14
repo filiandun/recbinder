@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
+
 
 namespace RecBinderProject.Models
 {
-    public class RecordOptions : INotifyPropertyChanged
+    public class MacroOptions : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

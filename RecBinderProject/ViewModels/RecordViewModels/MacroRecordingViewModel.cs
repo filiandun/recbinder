@@ -2,21 +2,21 @@
 using ModernWpf.Controls;
 
 using RecBinderProject.Models;
-using RecBinderProject.Models.RecordingRepository;
-using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.Models.MacroRepository;
 using RecBinderProject.Services.RecordService;
-using RecBinderProject.ViewModels.RecordingMetadataViewModels;
+using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.ViewModels.MacroMetadataViewModels;
 
 
 namespace RecBinderProject.ViewModels.RecordViewModels
 {
-    public class CreateRecordViewModel : BaseRecordViewModel
+    public class MacroRecordingViewModel : BaseRecordViewModel
     {
-        public CreateRecordViewModel(IRecordingRepository recordingRepository, IRecordProcess recordProcess, ILocalizationService localizationService, string localizationPrefix) : base(recordProcess, localizationService, localizationPrefix)
+        public MacroRecordingViewModel(IMacroRepository recordingRepository, IRecordProcess recordProcess, ILocalizationService localizationService, string localizationPrefix) : base(recordProcess, localizationService, localizationPrefix)
         {
-            this._recordingMetadataViewModel = new RecordingMetadataViewModel();
+            this._recordingMetadataViewModel = new MacroMetadataViewModel();
 
-            this._recordOptions = new RecordOptions();
+            this._recordOptions = new MacroOptions();
         }
 
         protected override void Start()
@@ -30,10 +30,10 @@ namespace RecBinderProject.ViewModels.RecordViewModels
                 else
                 {
                     this.RecordingMetadataViewModel.ApplyChanges();
-                    RecordingMetadata recordingMetadata = this.RecordingMetadataViewModel.RecordingMetadataModel;
+                    MacroMetadata recordingMetadata = this.RecordingMetadataViewModel.RecordingMetadataModel;
                     Debug.WriteLine($"metadata:\n\tname: {recordingMetadata.Name}\n\tdecription: {recordingMetadata.Description}\n\tduration {recordingMetadata.Duration}\n\tdate {recordingMetadata.CreationDateTime}");
 
-                    (this._recordProcess as RecordingService).UpdateMetadata(recordingMetadata); // TODO костыль
+                    (this._recordProcess as MacroRecordService).UpdateMetadata(recordingMetadata); // TODO костыль
                     this._recordProcess.Start();
                 }
             }

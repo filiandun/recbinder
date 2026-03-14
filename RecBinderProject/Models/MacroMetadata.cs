@@ -8,14 +8,14 @@ namespace RecBinderProject.Models
         DateTime CreationDateTime
     );
 
-    public class RecordingMetadata
+    public class MacroMetadata
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public TimeSpan Duration { get; set; }
         public DateTime CreationDateTime { get; set; }
 
-        public RecordingMetadata()
+        public MacroMetadata()
         {
             this.Name = string.Empty;
             this.Description = string.Empty;
@@ -23,7 +23,7 @@ namespace RecBinderProject.Models
             this.CreationDateTime = DateTime.MinValue;
         }
         
-        public RecordingMetadata(string name, string description, TimeSpan duration, DateTime creationDateTime)
+        public MacroMetadata(string name, string description, TimeSpan duration, DateTime creationDateTime)
         {
             this.Name = name;
             this.Description = description;
@@ -36,9 +36,9 @@ namespace RecBinderProject.Models
             return new RecordingMetadataSnapshot(this.Name, this.Description, this.Duration, this.CreationDateTime);
         }
 
-        public static RecordingMetadata FromSnapshot(RecordingMetadataSnapshot snapshot)
+        public static MacroMetadata FromSnapshot(RecordingMetadataSnapshot snapshot)
         {
-            return new RecordingMetadata(snapshot.Name, snapshot.Description, snapshot.Duration, snapshot.CreationDateTime);
+            return new MacroMetadata(snapshot.Name, snapshot.Description, snapshot.Duration, snapshot.CreationDateTime);
         }
     }
 }

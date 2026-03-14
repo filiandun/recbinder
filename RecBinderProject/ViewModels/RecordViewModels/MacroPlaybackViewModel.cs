@@ -1,20 +1,20 @@
 ﻿using System.Diagnostics;
 
 using RecBinderProject.Models;
-using RecBinderProject.Services.LocalizationService;
 using RecBinderProject.Services.RecordService;
-using RecBinderProject.ViewModels.RecordingMetadataViewModels;
+using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.ViewModels.MacroMetadataViewModels;
 
 
 namespace RecBinderProject.ViewModels.RecordViewModels
 {
-    public class PlayRecordViewModel : BaseRecordViewModel
+    public class MacroPlaybackViewModel : BaseRecordViewModel
     {
-        public PlayRecordViewModel(IRecordProcess recordProcess, RecordingInput recordingInput, ILocalizationService localizationService, string localizationPrefix) : base(recordProcess, localizationService, localizationPrefix)
+        public MacroPlaybackViewModel(IRecordProcess recordProcess, Macro recordingInput, ILocalizationService localizationService, string localizationPrefix) : base(recordProcess, localizationService, localizationPrefix)
         {
             this._recordProcess = recordProcess;
 
-            this._recordingMetadataViewModel = new RecordingMetadataViewModel(recordingInput.RecordingMetadata);
+            this._recordingMetadataViewModel = new MacroMetadataViewModel(recordingInput.Metadata);
         }
 
         protected override void Start()

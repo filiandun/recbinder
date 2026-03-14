@@ -4,7 +4,7 @@ using System.ComponentModel;
 using RecBinderProject.Models;
 using RecBinderProject.Services.RecordService;
 using RecBinderProject.Services.LocalizationService;
-using RecBinderProject.ViewModels.RecordingMetadataViewModels;
+using RecBinderProject.ViewModels.MacroMetadataViewModels;
 
 
 namespace RecBinderProject.ViewModels.RecordViewModels
@@ -13,16 +13,16 @@ namespace RecBinderProject.ViewModels.RecordViewModels
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected RecordingMetadataViewModel _recordingMetadataViewModel;
+        protected MacroMetadataViewModel _recordingMetadataViewModel;
 
         public LocalizationViewModel LocalizationViewModel { get; init; }
 
-        public RecordingStateViewModel RecordingStateViewModel { get; protected set; }
-        public RecordingMetadataViewModel RecordingMetadataViewModel => this._recordingMetadataViewModel;
+        public RecordStateViewModel RecordingStateViewModel { get; protected set; }
+        public MacroMetadataViewModel RecordingMetadataViewModel => this._recordingMetadataViewModel;
 
 
         protected IRecordProcess _recordProcess;
-        protected RecordOptions _recordOptions;
+        protected MacroOptions _recordOptions;
 
         public ICommand StartCommand { get; protected set; }
         public ICommand PauseCommand { get; protected set; }
@@ -34,19 +34,19 @@ namespace RecBinderProject.ViewModels.RecordViewModels
 
         public bool CanEditMetadata => CanStart();
 
-        public RecordOptions RecordOptions { get => this._recordOptions; }
+        public MacroOptions RecordOptions { get => this._recordOptions; }
 
 
         public BaseRecordViewModel(IRecordProcess recordProcess, ILocalizationService localizationService, string localizationPrefix)
         {
-            this._recordingMetadataViewModel = new RecordingMetadataViewModel();
+            this._recordingMetadataViewModel = new MacroMetadataViewModel();
 
             this.LocalizationViewModel = new LocalizationViewModel(localizationService);
 
             this._recordProcess = recordProcess;
-            this._recordOptions = new RecordOptions();
+            this._recordOptions = new MacroOptions();
 
-            this.RecordingStateViewModel = new RecordingStateViewModel(recordProcess, localizationService, localizationPrefix);
+            this.RecordingStateViewModel = new RecordStateViewModel(recordProcess, localizationService, localizationPrefix);
 
             this.StartCommand = new RelayCommand(Start, CanStart);
             this.PauseCommand = new RelayCommand(Pause, CanPause);

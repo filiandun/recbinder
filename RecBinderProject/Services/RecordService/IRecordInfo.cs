@@ -31,16 +31,16 @@ namespace RecBinderProject.Services.RecordService
         public void Stop();
     }
 
-    public interface IRecordingMetadataSource
+    public interface IMacroMetadataSource
     {
-        public RecordingMetadata RecordingMetadata { get; }
+        public MacroMetadata MacroMetadata { get; }
     }
 
-    public abstract class BaseRecordService : IRecordProcess, IRecordingMetadataSource
+    public abstract class BaseRecordService : IRecordProcess, IMacroMetadataSource
     {
         public event Action<PlaybackState>? StateChanged;
 
-        protected RecordOptions _recordOptions;
+        protected MacroOptions _recordOptions;
 
         protected PlaybackState _state;
 
@@ -55,9 +55,9 @@ namespace RecBinderProject.Services.RecordService
 
         public abstract TimeSpan TotalTime { get; }
         public abstract TimeSpan ElapsedTime { get; }
-        public abstract RecordingMetadata RecordingMetadata { get; }
+        public abstract MacroMetadata MacroMetadata { get; }
 
-        public BaseRecordService(RecordOptions recordOptions)
+        public BaseRecordService(MacroOptions recordOptions)
         {
             this._recordOptions = recordOptions;
 

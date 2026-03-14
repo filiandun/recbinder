@@ -7,9 +7,9 @@ using RecBinderProject.Services.RecordService;
 using RecBinderProject.Services.LocalizationService;
 
 
-namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
+namespace RecBinderProject.ViewModels
 {
-    public class RecordingStateViewModel : INotifyPropertyChanged, IDisposable
+    public class RecordStateViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -45,7 +45,7 @@ namespace RecBinderProject.ViewModels.RecordingMetadataViewModels
         }
 
 
-        public RecordingStateViewModel(IRecordInfo recordService, ILocalizationService localizationService, string localizationPrefix)
+        public RecordStateViewModel(IRecordInfo recordService, ILocalizationService localizationService, string localizationPrefix)
         {
             this._timer = new DispatcherTimer();
             this._timer.Interval = TimeSpan.FromMilliseconds(33);
