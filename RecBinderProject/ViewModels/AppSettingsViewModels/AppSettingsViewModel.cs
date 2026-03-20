@@ -1,7 +1,8 @@
-﻿using ModernWpf;
-using ModernWpf.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.ComponentModel;
+
+using ModernWpf;
+using ModernWpf.Controls;
 
 using RecBinderProject.Services.AppSettingsService;
 
@@ -10,25 +11,52 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
 {
     public class AppSettingsViewModel
     {
-        private readonly IAppSettingsService _settingsService;
+        private readonly IAppSettingsService _appSettingsService;
+
+        private List<IAppSettingsSection> _sections;
+
+        public GeneralAppSettingsSectionViewModel GeneralAppSettingsSectionViewModel { get; }
+        //public ProfileAppSettingsSectionViewModel ProfileAppSettingsSectionViewModel { get; }
+        //public AdvancedAppSettingsSectionViewModel AdvancedAppSettingsSectionViewModel { get; }
 
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand ResetCommand { get; }
 
-        public AppSettingsEditorViewModel AppSettingsEditorViewModel { get; init; }
-        public AppSettingsStateViewModel AppSettingsStateViewModel { get; init; }
+        public bool CanSave => this._sections.Any(s => s.HasEdits) && this._sections.All(s => s.IsSaveAllowed);
+        public bool CanCancel => this._sections.Any(s => s.HasEdits) && this._sections.All(s => s.IsCancelAllowed);
+        public bool CanReset => this._sections.Any(s => s.IsResetAllowed);
 
         public AppSettingsViewModel(IAppSettingsService settingsService)
         {
-            this._settingsService = settingsService;
+            this._appSettingsService = settingsService;
 
-            this.AppSettingsEditorViewModel = new AppSettingsEditorViewModel(this._settingsService.AppSettings);
-            this.AppSettingsStateViewModel = new AppSettingsStateViewModel(this.AppSettingsEditorViewModel);
+            this._sections = new List<IAppSettingsSection>();
 
-            this.SaveCommand = new RelayCommand(Save, this.AppSettingsStateViewModel.CanSave);
-            this.CancelCommand = new RelayCommand(Cancel, this.AppSettingsStateViewModel.CanCancel);
-            this.ResetCommand = new RelayCommand(Reset, this.AppSettingsStateViewModel.CanReset);
+            this.GeneralAppSettingsSectionViewModel = new GeneralAppSettingsSectionViewModel(this._appSettingsService.AppSettings.General); // TODO: VM должны передаваться через DI, а не создаваться тут внутри
+
+            this._sections.Add(this.GeneralAppSettingsSectionViewModel); 
+
+            this.SaveCommand = new RelayCommand(Save, () => this.CanSave);
+            this.CancelCommand = new RelayCommand(Cancel, () => this.CanCancel);
+            this.ResetCommand = new RelayCommand(Reset, () => this.CanReset);
+
+            foreach (var section in this._sections)
+            {
+                section.PropertyChanged += OnSectionChanged;
+
+                if (section is INotifyDataErrorInfo errors)
+                {
+                    errors.ErrorsChanged += OnSectionChanged;
+                }
+            }
+        }
+
+        public void OnSectionChanged(object? sender, EventArgs e)
+        {
+            (this.SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (this.CancelCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (this.ResetCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
 
         public ApplicationTheme[] GetThemes()
@@ -36,13 +64,19 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
             return (ApplicationTheme[])Enum.GetValues(typeof(ApplicationTheme));
         }
 
+
         private async void Save()
         {
             try
             {
-                this.AppSettingsEditorViewModel.Save();
-                this._settingsService.AppSettings = this.AppSettingsEditorViewModel.GetValidatedModel();
-                this._settingsService.Save();
+                foreach (var section in this._sections)
+                {
+                    section.Save();
+                }
+
+                this.GeneralAppSettingsSectionViewModel.Save();
+                this._appSettingsService.AppSettings.General = this.GeneralAppSettingsSectionViewModel.GetValidatedModel();
+                this._appSettingsService.Save();
             }
             catch (Exception ex)
             {
@@ -57,12 +91,18 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
 
         private void Cancel()
         {
-            this.AppSettingsEditorViewModel.Cancel();
+            foreach (var section in this._sections)
+            {
+                section.Cancel();
+            }
         }
 
         private void Reset()
         {
-            this.AppSettingsEditorViewModel.Reset();
+            foreach (var section in this._sections)
+            {
+                section.Reset();
+            }
         }
     }
 }

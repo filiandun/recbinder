@@ -10,7 +10,7 @@ using RecBinderProject.ViewModels.MacroMetadataViewModels;
 
 namespace RecBinderProject.ViewModels.RecordViewModels
 {
-    public class MacroRecordingViewModel : BaseRecordViewModel
+    public class MacroRecordingViewModel : MacroBindingViewModel
     {
         public MacroRecordingViewModel(IMacroRepository recordingRepository, IRecordProcess recordProcess, ILocalizationService localizationService, string localizationPrefix) : base(recordProcess, localizationService, localizationPrefix)
         {

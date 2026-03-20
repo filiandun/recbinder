@@ -12,7 +12,7 @@ namespace RecBinderProject.Models.MacroRepository
 
         public MacroRepository(IAppSettingsService settingsService)
         {
-            this._folderPath = settingsService.AppSettings.SaveDirectory;
+            this._folderPath = settingsService.AppSettings.General.SaveDirectory;
 
             Directory.CreateDirectory(this._folderPath);
         }

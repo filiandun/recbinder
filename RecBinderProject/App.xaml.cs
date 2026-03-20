@@ -25,7 +25,7 @@ namespace RecBinderProject
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddSingleton<ILocalizationService, LocalizationService>();
 
-            services.AddSingleton<SettingsPage>();
+            services.AddSingleton<AppSettingsPage>();
 
             this.ServiceProvider = services.BuildServiceProvider();
 

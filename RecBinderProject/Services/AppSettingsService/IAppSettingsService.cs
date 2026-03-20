@@ -1,4 +1,4 @@
-﻿using RecBinderProject.Models;
+﻿using RecBinderProject.Models.AppSettings;
 
 namespace RecBinderProject.Services.AppSettingsService
 {

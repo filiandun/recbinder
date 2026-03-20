@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
-
-using RecBinderProject.Models;
+using RecBinderProject.Models.AppSettings;
 
 
 namespace RecBinderProject.Services.AppSettingsService

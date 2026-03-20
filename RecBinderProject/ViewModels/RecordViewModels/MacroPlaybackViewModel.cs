@@ -8,7 +8,7 @@ using RecBinderProject.ViewModels.MacroMetadataViewModels;
 
 namespace RecBinderProject.ViewModels.RecordViewModels
 {
-    public class MacroPlaybackViewModel : BaseRecordViewModel
+    public class MacroPlaybackViewModel : MacroBindingViewModel
     {
         public MacroPlaybackViewModel(IRecordProcess recordProcess, Macro recordingInput, ILocalizationService localizationService, string localizationPrefix) : base(recordProcess, localizationService, localizationPrefix)
         {

@@ -1,4 +1,4 @@
-﻿<Page x:Class="RecBinderProject.Pages.SettingsPage"
+﻿<Page x:Class="RecBinderProject.Pages.AppSettingsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,7 +23,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="Настройки" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontFamily="Segoe UI"/>
-            <TextBlock Text="{Binding AppSettingsStateViewModel.StatusText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="14" FontFamily="Segoe UI"/>
+            <TextBlock Text="{Binding GeneralAppSettingsSectionViewModel.StatusText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="14" FontFamily="Segoe UI"/>
 
             <StackPanel Grid.Row="1" Orientation="Vertical">
                 <Label Content="Тема" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
@@ -40,8 +40,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox x:Name="pathToRecordsTextBox" Text="{Binding AppSettingsEditorViewModel.SaveDirectory}" Grid.Column="0"/>
-                    <Button x:Name="openFileDialogButton" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="OpenFileDialogButton_Click"/>
+                    <TextBox Text="{Binding GeneralAppSettingsSectionViewModel.SaveDirectory}" Grid.Column="0"/>
+                    <Button Command="{Binding GeneralAppSettingsSectionViewModel.BrowseSaveDirectoryCommand}" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </Grid>
             </StackPanel>
 
@@ -53,8 +53,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Text="{Binding AppSettingsEditorViewModel.MonitorWidth}" Grid.Column="0"/>
-                    <TextBox Text="{Binding AppSettingsEditorViewModel.MonitorHeight}" Grid.Column="1"/>
+                    <TextBox Text="{Binding GeneralAppSettingsSectionViewModel.MonitorWidth}" Grid.Column="0"/>
+                    <TextBox Text="{Binding GeneralAppSettingsSectionViewModel.MonitorHeight}" Grid.Column="1"/>
                 </Grid>
             </StackPanel>
 

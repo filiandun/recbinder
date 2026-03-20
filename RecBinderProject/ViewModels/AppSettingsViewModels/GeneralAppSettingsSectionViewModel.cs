@@ -1,0 +1,204 @@
+﻿using System.IO;
+using Microsoft.Win32;
+using System.Collections;
+using System.Windows.Input;
+using System.ComponentModel;
+
+using ModernWpf;
+
+using RecBinderProject.Models.AppSettings;
+using RecBinderProject.Services.AppSettingsService;
+
+
+namespace RecBinderProject.ViewModels.AppSettingsViewModels
+{
+    public class GeneralAppSettingsSectionViewModel : IAppSettingsSection, INotifyDataErrorInfo
+    {
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        private readonly Dictionary<string, List<string>> _errors;
+
+        private GeneralAppSettings _generalAppSettingsOriginal;
+        private GeneralAppSettings _generalAppSettingsEditable;
+
+        public ICommand BrowseSaveDirectoryCommand { get; }
+
+        public bool IsSaveAllowed => !this.HasErrors;
+        public bool IsCancelAllowed => this.HasEdits;
+        public bool IsResetAllowed => !this._generalAppSettingsEditable.Equals(GeneralAppSettings.Default()); // TODO: подумать над названием, сейчас оно не соответствует действию
+
+        public bool HasEdits => !this._generalAppSettingsOriginal.Equals(this._generalAppSettingsEditable);
+        public bool HasErrors => this._errors.Count != 0;
+
+        public string StatusText => this.StatusTextContent(); // TODO: не реализовано, так как нет уведомления об изменении
+
+        public string SaveDirectory
+        {
+            get => this._generalAppSettingsEditable.SaveDirectory;
+            set
+            {
+                if (!Equals(this._generalAppSettingsEditable.SaveDirectory, value))
+                {
+                    this._generalAppSettingsEditable.SaveDirectory = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.SaveDirectory)));
+
+                    this.ValidateSaveDirectory();
+                }
+            }
+        }
+
+        public ApplicationTheme Theme
+        {
+            get => this._generalAppSettingsEditable.ApplicationTheme;
+            set
+            {
+                if (!Equals(this._generalAppSettingsEditable.ApplicationTheme, value))
+                {
+                    this._generalAppSettingsEditable.ApplicationTheme = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
+                }
+            }
+        }
+
+        public int MonitorWidth
+        {
+            get => this._generalAppSettingsEditable.MonitorSize.Width;
+            set
+            {
+                if (!Equals(this._generalAppSettingsEditable.MonitorSize.Width, value))
+                {
+                    this._generalAppSettingsEditable.MonitorSize = new System.Drawing.Size(value, this._generalAppSettingsEditable.MonitorSize.Height);
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
+                }
+            }
+        }
+
+        public int MonitorHeight
+        {
+            get => this._generalAppSettingsEditable.MonitorSize.Height;            
+            set
+            {
+                if (!Equals(this._generalAppSettingsEditable.MonitorSize.Height, value))
+                {
+                    this._generalAppSettingsEditable.MonitorSize = new System.Drawing.Size(this._generalAppSettingsEditable.MonitorSize.Width, value);
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
+                }
+            }
+        }
+
+
+        public GeneralAppSettingsSectionViewModel(GeneralAppSettings appSettings)
+        {
+            this._errors = new Dictionary<string, List<string>>();
+
+            this._generalAppSettingsOriginal = appSettings;
+            this._generalAppSettingsEditable = (GeneralAppSettings)appSettings.Clone();
+
+            this.BrowseSaveDirectoryCommand = new RelayCommand(BrowseSaveDirectory);
+        }
+
+        public GeneralAppSettings GetValidatedModel()
+        {
+            //if (this.HasErrors) throw new InvalidOperationException("AppSettingsEditorViewModel has error(s)");
+
+            return (GeneralAppSettings)this._generalAppSettingsEditable.Clone();
+        }
+
+        public void Save()
+        {
+            if (this.HasErrors) throw new InvalidOperationException("GeneralAppSettingsSectionsViewModel has error(s)");
+
+            this._generalAppSettingsOriginal = (GeneralAppSettings)_generalAppSettingsEditable.Clone();
+
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
+        }
+
+        public void Cancel()
+        {
+            this._generalAppSettingsEditable = (GeneralAppSettings)this._generalAppSettingsOriginal.Clone();
+
+            this.RaiseAll();
+        }
+
+        public void Reset() // TODO: не сбрасываются ошибки на самой странице (выделение поля желтым остаётся)
+        {
+            this._generalAppSettingsEditable = GeneralAppSettings.Default();
+
+            this.RaiseAll();
+        }
+
+        public void BrowseSaveDirectory()
+        {
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog();
+            if (openFolderDialog.ShowDialog() == true)
+            {
+                this.SaveDirectory = openFolderDialog.FolderName;
+            }
+        }
+
+
+        public IEnumerable GetErrors(string? propertyName)
+        {
+            if (propertyName != null && this._errors.TryGetValue(propertyName, out List<string>? value))
+            {
+                return value;
+            }
+
+            return null;
+        }
+
+        private void AddError(string propertyName, string error)
+        {
+            if (!this._errors.ContainsKey(propertyName))
+            {
+                this._errors[propertyName] = new List<string>();
+            }
+            if (!this._errors[propertyName].Contains(error))
+            {
+                this._errors[propertyName].Add(error);
+                this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            }
+        }
+
+        private void ClearErrors(string propertyName)
+        {
+            if (this._errors.ContainsKey(propertyName))
+            {
+                this._errors.Remove(propertyName);
+                this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            }
+        }
+
+        private void ValidateSaveDirectory()
+        {
+            if (string.IsNullOrWhiteSpace(this._generalAppSettingsEditable.SaveDirectory) || !Directory.Exists(this._generalAppSettingsEditable.SaveDirectory)) 
+            {
+                this.AddError(nameof(this.SaveDirectory), "Указанный путь некорректен или не существует");
+            }
+            else
+            {
+                this.ClearErrors(nameof(this.SaveDirectory));
+            }
+        }
+
+        private void RaiseAll()
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.SaveDirectory)));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Theme)));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MonitorWidth)));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MonitorHeight)));
+
+            this._errors.Clear();
+            this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(null));
+        }
+
+        private string StatusTextContent()
+        {
+            return  this.HasErrors ? "Есть ошибки" :
+                    this.HasEdits ? "Есть несохранённые изменения" :
+                    "Настройки сохранены";
+        }
+    }
+}

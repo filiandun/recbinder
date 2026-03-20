@@ -9,7 +9,7 @@ using RecBinderProject.ViewModels.MacroMetadataViewModels;
 
 namespace RecBinderProject.ViewModels.RecordViewModels
 {
-    public abstract class BaseRecordViewModel : INotifyPropertyChanged // TODO подумать над уровнем открытости (public, protected, private) многих полей
+    public abstract class MacroBindingViewModel : INotifyPropertyChanged // TODO подумать над уровнем открытости (public, protected, private) многих полей
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -37,7 +37,7 @@ namespace RecBinderProject.ViewModels.RecordViewModels
         public MacroOptions RecordOptions { get => this._recordOptions; }
 
 
-        public BaseRecordViewModel(IRecordProcess recordProcess, ILocalizationService localizationService, string localizationPrefix)
+        public MacroBindingViewModel(IRecordProcess recordProcess, ILocalizationService localizationService, string localizationPrefix)
         {
             this._recordingMetadataViewModel = new MacroMetadataViewModel();
 

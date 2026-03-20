@@ -18,10 +18,10 @@ namespace RecBinderProject
         private readonly IMacroRepository _recordingRepository;
         private readonly ILocalizationService _localizationService;
 
-        private SettingsPage _settingsPage;
+        private AppSettingsPage _settingsPage;
         private RecordingPage _createRecordPage;
 
-        public MainWindow(IMacroRepository recordingRepository, ILocalizationService localizationService, SettingsPage settingsPage)
+        public MainWindow(IMacroRepository recordingRepository, ILocalizationService localizationService, AppSettingsPage settingsPage)
         {
             InitializeComponent();
 
