@@ -12,57 +12,52 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
 {
     public class MacroPlayer
     {
-        private CancellationTokenSource _playbackCancellationTokenSource;
+        private readonly CancellationToken _cancellationToken;
 
         private readonly InputSimulator _inputSimulator;
 
         private readonly Stopwatch _stopwatch;
-        private volatile bool _isPaused;
 
         private readonly Macro _macro;
         private readonly MacroOptions _macroOptions;
 
-        public MacroPlayer(Macro recordingInput, MacroOptions recordOptions)
+        private volatile bool _isPaused;
+
+
+        public MacroPlayer(Macro recordingInput, MacroOptions recordOptions, CancellationToken cancellationToken)
         {
-            this._playbackCancellationTokenSource = new CancellationTokenSource();
+            this._cancellationToken = cancellationToken;
 
             this._inputSimulator = new InputSimulator();
 
             this._stopwatch = new Stopwatch();
-            this._isPaused = false;
 
             this._macro = recordingInput;
             this._macroOptions = recordOptions;
+
+            this._isPaused = false;
         }
+
 
         public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
 
-        public void Start()
+
+        public async Task Start()
         {
-            try
+            this._stopwatch.Restart();
+
+            foreach (InputEvent inputEvent in this._macro.Events)
             {
-                this._playbackCancellationTokenSource = new CancellationTokenSource();
+                await this.PlayDelay(inputEvent.TimeOffset, this._cancellationToken);
 
-                this._stopwatch.Restart();
+                this._cancellationToken.ThrowIfCancellationRequested();
 
-                foreach (InputEvent inputEvent in this._macro.Events)
-                {
-                    this.PlayDelay(inputEvent.TimeOffset, this._playbackCancellationTokenSource.Token);
+                await this.WaitIfPausedTask();
 
-                    this._playbackCancellationTokenSource.Token.ThrowIfCancellationRequested();
-                    this.WaitIfPaused();
-
-                    this.PlayEvent(inputEvent);
-                }
+                this.PlayEvent(inputEvent);
             }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                this._stopwatch.Stop();
-            }
+
+            this._stopwatch.Stop();
         }
 
         public void Resume()
@@ -80,15 +75,15 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
         public void Stop()
         {
             this._isPaused = false;
-            this._playbackCancellationTokenSource.Cancel();
+            this._stopwatch.Stop();
         }
 
-        private void WaitIfPaused()
+
+        private async Task WaitIfPausedTask()
         {
             while (this._isPaused)
             {
-                this._playbackCancellationTokenSource.Token.ThrowIfCancellationRequested();
-                Thread.Sleep(50);
+                await Task.Delay(50, this._cancellationToken);
             }
         }
 
@@ -105,25 +100,16 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
             }
         }
 
-        private void PlayDelay(double timeOffset, CancellationToken cancellationToken) // TODO попытаться оптимизировать, так как очень важная функция при воспроизведении
+        private async Task PlayDelay(double timeOffset, CancellationToken cancellationToken) // TODO попытаться оптимизировать, так как очень важная функция при воспроизведении
         {
-            long targetTime = this._stopwatch.ElapsedMilliseconds + (long)timeOffset;
+            long targetTime = (long)timeOffset;
 
-            while (this._stopwatch.ElapsedMilliseconds < timeOffset)
+            while (this._stopwatch.ElapsedMilliseconds < targetTime)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                this.WaitIfPaused();
 
-                long remaining = targetTime - this._stopwatch.ElapsedMilliseconds;
-
-                if (remaining > 15)
-                {
-                    Thread.Sleep(1);
-                }
-                else if (remaining > 0)
-                {
-                    Thread.SpinWait(100);
-                }
+                await WaitIfPausedTask();
+                await Task.Delay(1, cancellationToken);
             }
         }
 

@@ -20,6 +20,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
         public override TimeSpan TotalTime => this._macro.Metadata.Duration;
         public override TimeSpan ElapsedTime => this._recorder.GetElapsedTime();
 
+
         public MacroRecordingService(IMacroRepository repository, MacroMetadata macroMetadata, MacroOptions macroOptions)
         {
             this._cancellationToken = new CancellationTokenSource();
