@@ -1,59 +1,82 @@
 ﻿using System.Windows;
+using System.Diagnostics;
+using System.Collections.ObjectModel;
+
 using ModernWpf.Controls;
-using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Pages;
 using RecBinderProject.Models;
 using RecBinderProject.ViewModels;
-using RecBinderProject.Services.RecordService;
-using RecBinderProject.ViewModels.RecordViewModels;
-using RecBinderProject.Services.LocalizationService;
 using RecBinderProject.Models.MacroRepository;
+using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.ViewModels.MacroMetadataViewModels;
+using RecBinderProject.ViewModels.MacroExecutionViewModels;
+using RecBinderProject.Services.MacroExecutionService.Implementations;
 
 
 namespace RecBinderProject
 {
     public partial class MainWindow : Window
     {
-        private readonly IMacroRepository _recordingRepository;
+        private readonly IMacroRepository _macroRepository;
         private readonly ILocalizationService _localizationService;
 
         private AppSettingsPage _settingsPage;
-        private RecordingPage _createRecordPage;
+        private RecordingPage _recordingPage;
+
+        public ObservableCollection<Macro> Macros { get; private set; }
 
         public MainWindow(IMacroRepository recordingRepository, ILocalizationService localizationService, AppSettingsPage settingsPage)
         {
             InitializeComponent();
 
-            this._recordingRepository = recordingRepository;
+            this._macroRepository = recordingRepository;
             this._localizationService = localizationService;
 
             this._settingsPage = settingsPage;
 
             // TODO костыль с созданием тут страницы, так как это позволяет сохранять "состояние" страницы (заполненные поля и выбранные настройки)
-            MacroMetadata recordingMetadata = new MacroMetadata();
-            MacroOptions recordOptions = new MacroOptions();
 
-            MacroRecordService recordingService = new MacroRecordService(recordingRepository, recordingMetadata, recordOptions);
+            LocalizationViewModel localizationViewModel = new LocalizationViewModel(localizationService);
 
-            MacroRecordingViewModel createRecordViewModel = new MacroRecordingViewModel(recordingRepository, recordingService, localizationService, "Create");
-            this._createRecordPage = new RecordingPage(createRecordViewModel);
+            MacroMetadataViewModel macroMetadataViewModel = new MacroMetadataViewModel();
 
-            this.UpdateRecordings();
+            MacroMetadata macroMetadata = new MacroMetadata();
+            MacroOptions macroOptions = new MacroOptions();
+            MacroRecordingService macroRecordingService = new MacroRecordingService(recordingRepository, macroMetadata, macroOptions);
+
+            MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroRecordingService, localizationService, "Create");
+
+            MacroRecordingViewModel macroRecordingViewModel = new MacroRecordingViewModel(localizationViewModel, macroMetadataViewModel, macroExecutionStatusViewModel, macroRecordingService);
+
+            this._recordingPage = new RecordingPage(macroRecordingViewModel);
+
+            this.Macros = new ObservableCollection<Macro>();
+
+            macroRecordingViewModel.MacroRecorded += MacroRecordingViewModel_MacroRecorded;
+
+            this.Macros.CollectionChanged += Macros_CollectionChanged;
+
+            this.MacroRecordingViewModel_MacroRecorded();
         }
 
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            if (this.navigationView.SelectedItem is RecordControl recordControl)
+            if (this.navigationView.SelectedItem is RecordControl recordControl)    
             {
-
-                Macro recordingInput = this._recordingRepository.Read(recordControl.RecordName) ?? throw new ArgumentException($"Record '{recordControl.RecordName}' not found");
+                Macro recordingInput = this._macroRepository.Read(recordControl.RecordName) ?? throw new ArgumentException($"Record '{recordControl.RecordName}' not found");
 
                 MacroOptions recordOptions = new MacroOptions();
 
-                MacroPlaybackService playbackService = new MacroPlaybackService(recordOptions, recordingInput);
+                LocalizationViewModel localizationViewModel = new LocalizationViewModel(this._localizationService);
 
-                MacroPlaybackViewModel playRecordViewModel = new MacroPlaybackViewModel(playbackService, recordingInput, this._localizationService, "Play");
+                MacroMetadataViewModel macroMetadataViewModel = new MacroMetadataViewModel();
+
+                MacroPlaybackService macroPlaybackService = new MacroPlaybackService(recordOptions, recordingInput);
+
+                MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroPlaybackService, this._localizationService, "Play");
+
+                MacroPlaybackViewModel playRecordViewModel = new MacroPlaybackViewModel(localizationViewModel, macroMetadataViewModel, macroExecutionStatusViewModel, macroPlaybackService);
 
                 PlaybackPage recordPage = new PlaybackPage(playRecordViewModel);
                 this.frame.Navigate(recordPage);
@@ -63,7 +86,7 @@ namespace RecBinderProject
                 switch (navigationViewItem.Tag)
                 {
                     case "createRecord":
-                        this.frame.Navigate(this._createRecordPage);
+                        this.frame.Navigate(this._recordingPage);
                         break;
 
                     case "help":
@@ -89,23 +112,43 @@ namespace RecBinderProject
             //this.UpdateRecordings();
         }
 
-
-        private void UpdateRecordings()
+        private void MacroRecordingViewModel_MacroRecorded()
         {
-            List<Macro> recordingInputList = this._recordingRepository.LoadAll();
+            List<Macro> list = this._macroRepository.LoadAll();
 
-            if (this.navigationView.MenuItems.Count > 0)
+            Debug.WriteLine($"NEW MACROS: {list.Count}");
+
+            this.navigationView.MenuItems.Clear();
+
+            this.Macros.Clear();
+            foreach (var macro in list)
             {
-                this.navigationView.MenuItems.Clear();
+                this.Macros.Add(macro);
             }
+        }
 
-            if (recordingInputList.Count > 0)
-            {
-                foreach (Macro recordingInput in recordingInputList)
+        private void Macros_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Debug.WriteLine("NEW MACRO");
+
+            if (e.NewItems != null)
+                foreach (Macro macro in e.NewItems)
                 {
-                    this.navigationView.MenuItems.Add(new RecordControl(recordingInput.Metadata.Name, recordingInput.Metadata.Description));
+                    this.navigationView.MenuItems.Add(new RecordControl(macro.Metadata.Name, macro.Metadata.Description));
                 }
-            }
+
+            if (e.OldItems != null)
+                foreach (Macro macro in e.OldItems)
+                {
+                    var item = this.navigationView.MenuItems
+                        .OfType<RecordControl>()
+                        .FirstOrDefault(x => x.RecordName == macro.Metadata.Name);
+
+                    if (item != null)
+                    {
+                        this.navigationView.MenuItems.Remove(item);
+                    }
+                }
         }
     }
 }

@@ -7,7 +7,7 @@ using RecBinderProject.Models;
 using RecBinderProject.Models.InputEvents;
 
 
-namespace RecBinderProject.Services.RecordService
+namespace RecBinderProject.Services.MacroExecutionService.Helpers
 {
     public class MacroRecorder
     {

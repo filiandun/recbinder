@@ -7,9 +7,8 @@ namespace RecBinderProject.Models
 {
     public class Macro
     {
-        public List<InputEvent> Events { get; }
-
-        public MacroMetadata Metadata { get; }
+        public List<InputEvent> Events { get; private set; } // TODO в идеале, тут должен быть IReadOnlyList, но и-за json сериализации я не смог сделать так, чтобы он при этом не выдавал ошибок
+        public MacroMetadata Metadata { get; private set; }
 
         public Macro(MacroMetadata metadata)
         {
@@ -25,6 +24,16 @@ namespace RecBinderProject.Models
         }
 
         public void AddEvent(InputEvent userEvent) => this.Events.Add(userEvent);
-        public void ClearEvents() => this.Events.Clear();
+
+        public void UpdateMetadata(MacroMetadata metadata)
+        {
+            this.Metadata = new MacroMetadata
+            {
+                Name = metadata.Name,
+                Description = metadata.Description,
+                Duration = metadata.Duration,
+                CreationDateTime = metadata.CreationDateTime
+            };
+        }
     }
 }

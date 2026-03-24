@@ -24,12 +24,12 @@
 
             <StackPanel Grid.Row="1">
                 <Label Content="Название" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox x:Name="TextBox" Text="{Binding RecordingMetadataViewModel.RecordName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="TextBox" Text="{Binding MacroMetadataViewModel.RecordName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <DockPanel Grid.Row="2">
                 <Label Content="Описание" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox Text="{Binding RecordingMetadataViewModel.RecordDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox Text="{Binding MacroMetadataViewModel.RecordDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </DockPanel>
 
             <Grid x:Name="durationGrid" Grid.Row="3">
@@ -45,8 +45,8 @@
 
                 <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Продолительность записи" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
 
-                <ui:NumberBox Value="{Binding RecordingMetadataViewModel.RecordDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline"/>
-                <ComboBox SelectedIndex="{Binding RecordingMetadataViewModel.RecordDurationUnitIndex}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="1" Grid.Row="1" >
+                <ui:NumberBox Value="{Binding MacroMetadataViewModel.RecordDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline"/>
+                <ComboBox SelectedIndex="{Binding MacroMetadataViewModel.RecordDurationUnitIndex}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="1" Grid.Row="1" >
                     <ComboBoxItem Content="мс."/>
                     <ComboBoxItem Content="сек."/>
                     <ComboBoxItem Content="мин." IsSelected="True"/>
@@ -56,10 +56,10 @@
             <Grid x:Name="settingsGrid" Grid.Row="4">
                 <Label Content="Настройки" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
                 <UniformGrid VerticalAlignment="Bottom">
-                    <CheckBox IsChecked="{Binding RecordOptions.KeyboardPressEnabled, Mode=TwoWay}" Content="Игнорировать нажатия клавиш клавиатуры"/>
-                    <CheckBox IsChecked="{Binding RecordOptions.MousePressEnabled, Mode=TwoWay}" Content="Игнорировать нажатия клавиш мыши"/>
-                    <CheckBox IsChecked="{Binding RecordOptions.MouseMoveEnabled, Mode=TwoWay}" Content="Игнорировать движения мыши"/>
-                    <CheckBox IsChecked="{Binding RecordOptions.MouseWheelEnabled, Mode=TwoWay}" Content="Игнорировать прокручивания колёсика мыши"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.KeyboardPressEnabled, Mode=TwoWay}" Content="Игнорировать нажатия клавиш клавиатуры"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MousePressEnabled, Mode=TwoWay}" Content="Игнорировать нажатия клавиш мыши"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MouseMoveEnabled, Mode=TwoWay}" Content="Игнорировать движения мыши"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MouseWheelEnabled, Mode=TwoWay}" Content="Игнорировать прокручивания колёсика мыши"/>
                 </UniformGrid>
             </Grid>
 
@@ -70,8 +70,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <ProgressBar Grid.Column="0" Value="{Binding RecordingStateViewModel.ProgressBarValue, Mode=OneWay}" Maximum="100" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="{Binding RecordingStateViewModel.ProgressBarColor}"/>
-                <Button Grid.Column="0" Command="{Binding StartCommand}" Content="{Binding RecordingStateViewModel.StatusText, Mode=OneWay}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <ProgressBar Grid.Column="0" Value="{Binding MacroExecutionStatusViewModel.ProgressBarValue, Mode=OneWay}" Maximum="100" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="{Binding MacroExecutionStatusViewModel.ProgressBarColor}"/>
+                <Button Grid.Column="0" Command="{Binding StartCommand}" Content="{Binding MacroExecutionStatusViewModel.StatusText, Mode=OneWay}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
                 <Button Grid.Column="1" Command="{Binding StopCommand}" Content="■" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FFD80505" Foreground="Black"/>
                 <Button Grid.Column="2" Command="{Binding PauseCommand}" Content="II" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontWeight="Bold"/>

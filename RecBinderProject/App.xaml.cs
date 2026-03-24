@@ -3,9 +3,10 @@ using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Pages;
+using RecBinderProject.Models.MacroRepository;
 using RecBinderProject.Services.AppSettingsService;
 using RecBinderProject.Services.LocalizationService;
-using RecBinderProject.Models.MacroRepository;
+using RecBinderProject.ViewModels.AppSettingsViewModels;
 
 
 namespace RecBinderProject
@@ -21,11 +22,22 @@ namespace RecBinderProject
         {
             ServiceCollection services = new ServiceCollection();
 
-            services.AddSingleton<IMacroRepository, MacroRepository>();
-            services.AddSingleton<IAppSettingsService, AppSettingsService>();
-            services.AddSingleton<ILocalizationService, LocalizationService>();
 
+            // services
+            services.AddSingleton<IMacroRepository, MacroRepository>();
+
+            services.AddSingleton<ILocalizationService, LocalizationService>();
+            services.AddSingleton<IAppSettingsService, AppSettingsService>();
+
+            // view models
+            services.AddSingleton<AppSettingsViewModel>();
+            services.AddSingleton<GeneralAppSettingsSectionViewModel>();
+            //services.AddSingleton<ProfileAppSettingsSectionViewModel>();
+            //services.AddSingleton<AdvancedAppSettingsSectionViewModel>();
+
+            // pages
             services.AddSingleton<AppSettingsPage>();
+
 
             this.ServiceProvider = services.BuildServiceProvider();
 

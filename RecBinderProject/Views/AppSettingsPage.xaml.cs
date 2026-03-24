@@ -7,17 +7,11 @@ namespace RecBinderProject.Pages
 {
     public partial class AppSettingsPage : Page
     {
-        private AppSettingsViewModel _appSettingsViewModel;
-
-        public AppSettingsPage(IAppSettingsService settingsService)
+        public AppSettingsPage(AppSettingsViewModel appSettingsViewModel)
         {
             InitializeComponent();
 
-            this._appSettingsViewModel = new AppSettingsViewModel(settingsService);
-            this.DataContext = this._appSettingsViewModel;
-
-            this.themeSelector.Items.Clear();
-            this.themeSelector.ItemsSource = this._appSettingsViewModel.GetThemes();
+            this.DataContext = appSettingsViewModel;
         }
     }
 }

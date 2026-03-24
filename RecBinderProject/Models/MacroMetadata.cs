@@ -1,5 +1,4 @@
-﻿
-namespace RecBinderProject.Models
+﻿namespace RecBinderProject.Models
 {
     public record RecordingMetadataSnapshot( // TODO for undo/redo
         string Name,

@@ -1,14 +1,14 @@
-﻿using WindowsInput;
-
-using System.Drawing;
+﻿using System.Drawing;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-using RecBinderProject.Models;
+using WindowsInput;
+
 using RecBinderProject.Models.InputEvents;
+using RecBinderProject.Models;
 
 
-namespace RecBinderProject.Services.RecordService
+namespace RecBinderProject.Services.MacroExecutionService.Helpers
 {
     public class MacroPlayer
     {

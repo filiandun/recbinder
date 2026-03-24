@@ -1,82 +1,86 @@
 ﻿using System.Diagnostics;
 
 using RecBinderProject.Models;
+using RecBinderProject.Services.MacroExecutionService.Helpers;
+using RecBinderProject.Services.MacroExecutionService.Interfaces;
 
 
-namespace RecBinderProject.Services.RecordService
+namespace RecBinderProject.Services.MacroExecutionService.Implementations
 {
-    public class MacroPlaybackService : BaseRecordService
+    public class MacroPlaybackService : MacroExecutionServiceBase, IMacroPlaybackService
     {
         private readonly SynchronizationContext _syncContext;
 
         private Thread _playbackThread;
 
+        private readonly MacroPlayer _player;
         private readonly Macro _macro; // TODO имеет смысл хранить не саму запись, а только события из неё (так как метаданные тут не используются)
-        private readonly MacroPlayer _macroPlayer;
 
         public override TimeSpan TotalTime => this._macro.Metadata.Duration;
-        public override TimeSpan ElapsedTime => this._macroPlayer.GetElapsedTime();
+        public override TimeSpan ElapsedTime => this._player.GetElapsedTime();
 
-        public override MacroMetadata MacroMetadata => this._macro.Metadata;
-
-        public MacroPlaybackService(MacroOptions macroOptions, Macro macro) : base(macroOptions)
+        public MacroPlaybackService(MacroOptions macroOptions, Macro macro)
         {
             this._syncContext = SynchronizationContext.Current ?? throw new NullReferenceException("SynchronizationContext is null"); // TODO null
 
             this._playbackThread = new Thread(PlaybackWorker); // TODO заглушка (смысла в этой инициализации 0, только чтобы не ругалось на отсутствие инициализации в конструкторе)
 
             this._macro = macro;
-            this._macroPlayer = new MacroPlayer(this._macro, macroOptions);
+            this._player = new MacroPlayer(this._macro, macroOptions);
+
+            this.State = MacroExecutionState.Completed;
         }
 
-        public override void Start()    
+        public void Start()
         {
-            if (this.State == PlaybackState.Stopped || this.State == PlaybackState.Completed) 
+            if (this.CanStart()) 
             {
-                this.State = PlaybackState.Playing;
+                this.SetState(MacroExecutionState.Playing);
 
                 this._playbackThread = new Thread(PlaybackWorker)
                 {
                     Name = "PlaybackThread",
                     IsBackground = true
                 };
+
                 this._playbackThread.Start();
             }
         }
 
-        public override void Pause()
+        public void Pause()
         {
-            if (this.State == PlaybackState.Playing)
+            if (this.CanPause())
             {
-                this.State = PlaybackState.Paused;
-                this._macroPlayer.Pause();
+                this.SetState(MacroExecutionState.Paused);
+                this._player.Pause();
             }
         }
 
-        public override void Resume()
+        public void Resume()
         {
-            if (this.State == PlaybackState.Paused)
+            if (this.CanResume())
             {
-                this.State = PlaybackState.Playing;
-                this._macroPlayer.Resume();
+                this.SetState(MacroExecutionState.Playing);
+                this._player.Resume();
             }
         }
 
-        public override void Stop()
+        public void Stop()
         {
-            if (this.State == PlaybackState.Playing || this.State == PlaybackState.Paused)
+            if (this.CanStop())
             {
-                this.State = PlaybackState.Stopped;
-                this._macroPlayer.Stop();
+                this.SetState(MacroExecutionState.Stopped);
+                this._player.Stop();
             }
         }
+
 
         private void PlaybackWorker()
         {
             try
             {
-                this._macroPlayer.Start();
-                this._syncContext.Post(_ => State = PlaybackState.Completed, null);
+                this._player.Start();
+                this._syncContext.Post(_ => State = MacroExecutionState.Completed, null);
             }
             catch (OperationCanceledException)
             {
@@ -85,9 +89,8 @@ namespace RecBinderProject.Services.RecordService
             catch (Exception ex)
             {
                 Debug.WriteLine(ex); // DEBUG
-                this.State = PlaybackState.Stopped;
+                this.SetState(MacroExecutionState.Stopped);
             }
         }
-
     }
 }

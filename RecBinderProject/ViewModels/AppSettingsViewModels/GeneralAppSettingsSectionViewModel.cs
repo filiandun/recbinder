@@ -3,21 +3,25 @@ using Microsoft.Win32;
 using System.Collections;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 using ModernWpf;
 
 using RecBinderProject.Models.AppSettings;
 using RecBinderProject.Services.AppSettingsService;
+using System.Windows.Forms;
 
 
 namespace RecBinderProject.ViewModels.AppSettingsViewModels
 {
-    public class GeneralAppSettingsSectionViewModel : IAppSettingsSection, INotifyDataErrorInfo
+    public class GeneralAppSettingsSectionViewModel : IAppSettingsSectionViewModel, INotifyDataErrorInfo
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         private readonly Dictionary<string, List<string>> _errors;
+
+        private readonly IAppSettingsService _appSettingsService;
 
         private GeneralAppSettings _generalAppSettingsOriginal;
         private GeneralAppSettings _generalAppSettingsEditable;
@@ -88,25 +92,34 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
             }
         }
 
+        public ApplicationTheme[] AvailableApplicationThemes => this.GetAvailableApplicationThemes();
 
-        public GeneralAppSettingsSectionViewModel(GeneralAppSettings appSettings)
+        public string ApplicationTheme
+        {
+            get => this._generalAppSettingsEditable.ApplicationTheme.ToString();
+        }
+
+        public Screen[] AvailableScreenResolutions => this.GetAvailableScreenResolutions(); // TODO: всё, что связано с разрешением должно быть в Advanced, а не тут
+        public String ScreenResolution
+        {
+            get => $"{this._generalAppSettingsEditable.MonitorSize.Width} x {this._generalAppSettingsEditable.MonitorSize.Height}";
+        }
+
+
+        public GeneralAppSettingsSectionViewModel(IAppSettingsService appSettingsService)
         {
             this._errors = new Dictionary<string, List<string>>();
 
-            this._generalAppSettingsOriginal = appSettings;
-            this._generalAppSettingsEditable = (GeneralAppSettings)appSettings.Clone();
+            this._appSettingsService = appSettingsService;
+
+            this._generalAppSettingsOriginal = this._appSettingsService.AppSettings.General;
+            this._generalAppSettingsEditable = (GeneralAppSettings)this._generalAppSettingsOriginal.Clone();
 
             this.BrowseSaveDirectoryCommand = new RelayCommand(BrowseSaveDirectory);
         }
 
-        public GeneralAppSettings GetValidatedModel()
-        {
-            //if (this.HasErrors) throw new InvalidOperationException("AppSettingsEditorViewModel has error(s)");
 
-            return (GeneralAppSettings)this._generalAppSettingsEditable.Clone();
-        }
-
-        public void Save()
+        public void SaveLocal()
         {
             if (this.HasErrors) throw new InvalidOperationException("GeneralAppSettingsSectionsViewModel has error(s)");
 
@@ -115,14 +128,21 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
         }
 
-        public void Cancel()
+        public void ApplyToService()
+        {
+            if (this.HasErrors) throw new InvalidOperationException("GeneralAppSettingsSectionsViewModel has error(s)");
+
+            this._appSettingsService.AppSettings.General = (GeneralAppSettings)this._generalAppSettingsEditable.Clone();
+        }
+
+        public void CancelLocal()
         {
             this._generalAppSettingsEditable = (GeneralAppSettings)this._generalAppSettingsOriginal.Clone();
 
             this.RaiseAll();
         }
 
-        public void Reset() // TODO: не сбрасываются ошибки на самой странице (выделение поля желтым остаётся)
+        public void ResetLocal() // TODO: не сбрасываются ошибки на самой странице (выделение поля желтым остаётся)
         {
             this._generalAppSettingsEditable = GeneralAppSettings.Default();
 
@@ -199,6 +219,17 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
             return  this.HasErrors ? "Есть ошибки" :
                     this.HasEdits ? "Есть несохранённые изменения" :
                     "Настройки сохранены";
+        }
+
+
+        private ApplicationTheme[] GetAvailableApplicationThemes()
+        {
+            return (ApplicationTheme[]) Enum.GetValues(typeof(ApplicationTheme));
+        }
+
+        public Screen[] GetAvailableScreenResolutions()
+        {
+            return System.Windows.Forms.Screen.AllScreens;
         }
     }
 }

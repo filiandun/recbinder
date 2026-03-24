@@ -13,7 +13,7 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
     {
         private readonly IAppSettingsService _appSettingsService;
 
-        private List<IAppSettingsSection> _sections;
+        private readonly List<IAppSettingsSectionViewModel> _sections;
 
         public GeneralAppSettingsSectionViewModel GeneralAppSettingsSectionViewModel { get; }
         //public ProfileAppSettingsSectionViewModel ProfileAppSettingsSectionViewModel { get; }
@@ -27,19 +27,23 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
         public bool CanCancel => this._sections.Any(s => s.HasEdits) && this._sections.All(s => s.IsCancelAllowed);
         public bool CanReset => this._sections.Any(s => s.IsResetAllowed);
 
-        public AppSettingsViewModel(IAppSettingsService settingsService)
+        public AppSettingsViewModel(IAppSettingsService settingsService, GeneralAppSettingsSectionViewModel generalAppSettingsSectionViewModel)
         {
             this._appSettingsService = settingsService;
 
-            this._sections = new List<IAppSettingsSection>();
+            this._sections = new List<IAppSettingsSectionViewModel>();
 
-            this.GeneralAppSettingsSectionViewModel = new GeneralAppSettingsSectionViewModel(this._appSettingsService.AppSettings.General); // TODO: VM должны передаваться через DI, а не создаваться тут внутри
+            this.GeneralAppSettingsSectionViewModel = generalAppSettingsSectionViewModel;
+            //this.ProfileAppSettingsSectionViewModel = profileAppSettingsSectionViewModel;
+            //this.AdvancedAppSettingsSectionViewModel = advancedAppSettingsSectionViewModel;
 
-            this._sections.Add(this.GeneralAppSettingsSectionViewModel); 
+            this._sections.Add(this.GeneralAppSettingsSectionViewModel);
+            //this._sections.Add(this.ProfileAppSettingsSectionViewModel);
+            //this._sections.Add(this.AdvancedAppSettingsSectionViewModel);
 
-            this.SaveCommand = new RelayCommand(Save, () => this.CanSave);
-            this.CancelCommand = new RelayCommand(Cancel, () => this.CanCancel);
-            this.ResetCommand = new RelayCommand(Reset, () => this.CanReset);
+            this.SaveCommand = new RelayCommand(OnSaveCommand, () => this.CanSave);
+            this.CancelCommand = new RelayCommand(OnCancelCommand, () => this.CanCancel);
+            this.ResetCommand = new RelayCommand(OnResetCommand, () => this.CanReset);
 
             foreach (var section in this._sections)
             {
@@ -59,23 +63,21 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
             (this.ResetCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
 
-        public ApplicationTheme[] GetThemes()
-        {
-            return (ApplicationTheme[])Enum.GetValues(typeof(ApplicationTheme));
-        }
 
-
-        private async void Save()
+        private async void OnSaveCommand()
         {
             try
             {
-                foreach (var section in this._sections)
+                foreach (var section in this._sections) // PS: два foreach типо для атомарности
                 {
-                    section.Save();
+                    section.SaveLocal();
                 }
 
-                this.GeneralAppSettingsSectionViewModel.Save();
-                this._appSettingsService.AppSettings.General = this.GeneralAppSettingsSectionViewModel.GetValidatedModel();
+                foreach (var section in this._sections)
+                {
+                    section.ApplyToService();
+                }
+
                 this._appSettingsService.Save();
             }
             catch (Exception ex)
@@ -89,19 +91,19 @@ namespace RecBinderProject.ViewModels.AppSettingsViewModels
             }
         }
 
-        private void Cancel()
+        private void OnCancelCommand()
         {
             foreach (var section in this._sections)
             {
-                section.Cancel();
+                section.CancelLocal();
             }
         }
 
-        private void Reset()
+        private void OnResetCommand()
         {
             foreach (var section in this._sections)
             {
-                section.Reset();
+                section.ResetLocal();
             }
         }
     }

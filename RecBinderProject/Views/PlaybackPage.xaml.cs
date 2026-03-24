@@ -1,8 +1,7 @@
 ﻿using System.Windows.Controls;
 
 using RecBinderProject.Models;
-using RecBinderProject.ViewModels.RecordViewModels;
-
+using RecBinderProject.ViewModels.MacroExecutionViewModels;
 
 namespace RecBinderProject
 {

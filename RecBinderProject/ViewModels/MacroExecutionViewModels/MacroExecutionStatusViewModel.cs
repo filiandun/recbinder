@@ -2,23 +2,23 @@
 using System.ComponentModel;
 using System.Windows.Threading;
 using System.Runtime.CompilerServices;
-
-using RecBinderProject.Services.RecordService;
 using RecBinderProject.Services.LocalizationService;
+using RecBinderProject.Services.MacroExecutionService.Interfaces;
+using RecBinderProject.Services.MacroExecutionService;
 
 
-namespace RecBinderProject.ViewModels
+namespace RecBinderProject.ViewModels.MacroExecutionViewModels
 {
-    public class RecordStateViewModel : INotifyPropertyChanged, IDisposable
+    public class MacroExecutionStatusViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly DispatcherTimer _timer;
 
-        private readonly ILocalizationService _localizationService;
+        private readonly ILocalizationService _localizationService; // TODO тут не сервис нужен, а VM
         private readonly string _localizationPrefix;
 
-        private readonly IRecordInfo _recordInfo;
+        private readonly IMacroExecutionInfo _recordInfo;
 
         private string _statusText;
 
@@ -45,7 +45,7 @@ namespace RecBinderProject.ViewModels
         }
 
 
-        public RecordStateViewModel(IRecordInfo recordService, ILocalizationService localizationService, string localizationPrefix)
+        public MacroExecutionStatusViewModel(IMacroExecutionInfo recordService, ILocalizationService localizationService, string localizationPrefix)
         {
             this._timer = new DispatcherTimer();
             this._timer.Interval = TimeSpan.FromMilliseconds(33);
@@ -102,14 +102,14 @@ namespace RecBinderProject.ViewModels
         }
 
 
-        private void Service_StateChanged(PlaybackState newPlaybackState)
+        private void Service_StateChanged(MacroExecutionState newProcessState)
         {
-            switch (newPlaybackState)
+            switch (newProcessState)
             {
-                case PlaybackState.Playing: this.SetPlayingState(); break;
-                case PlaybackState.Paused: this.SetPausedState(); break;
-                case PlaybackState.Completed: this.SetCompletedState(); break;
-                case PlaybackState.Stopped: this.SetStoppedState(); break;
+                case MacroExecutionState.Playing: this.SetPlayingState(); break;
+                case MacroExecutionState.Paused: this.SetPausedState(); break;
+                case MacroExecutionState.Completed: this.SetCompletedState(); break;
+                case MacroExecutionState.Stopped: this.SetStoppedState(); break;
             }
         }
 

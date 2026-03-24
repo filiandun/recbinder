@@ -27,8 +27,8 @@
 
             <StackPanel Grid.Row="1" Orientation="Vertical">
                 <Label Content="Тема" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <ComboBox x:Name="themeSelector" Grid.Row="1">
-                    <ComboBoxItem Content="Как в системе"/>
+                <ComboBox ItemsSource="{Binding GeneralAppSettingsSectionViewModel.AvailableApplicationThemes}" Grid.Row="1">
+                    <!--<ComboBoxItem Content="Как в системе"/>-->
                 </ComboBox>
             </StackPanel>
 
