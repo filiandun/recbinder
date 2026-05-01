@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
+
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Pages;
@@ -16,12 +18,16 @@ namespace RecBinderProject
     /// </summary>
     public partial class App : Application
     {
-        public IServiceProvider ServiceProvider { get; private set; }
+        public IServiceProvider ServiceProvider { get; private set; } = null!;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             ServiceCollection services = new ServiceCollection();
 
+            services.AddLogging(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Debug);
+            });
 
             // services
             services.AddSingleton<IMacroRepository, MacroRepository>();
