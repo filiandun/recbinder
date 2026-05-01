@@ -1,6 +1,9 @@
 ﻿using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
+using Microsoft.Extensions.Logging;
+
 using RecBinderProject.Services.AppSettingsService;
 
 
@@ -8,46 +11,80 @@ namespace RecBinderProject.Models.MacroRepository
 {
     public class MacroRepository : IMacroRepository
     {
-        public string _folderPath;
+        private readonly ILogger<MacroRepository> _logger;
 
-        public MacroRepository(IAppSettingsService settingsService)
+        private readonly IAppSettingsService _settingsService;
+
+        private string FolderPath => this._settingsService.AppSettings.General.SaveDirectory;
+
+        public MacroRepository(ILogger<MacroRepository> logger, IAppSettingsService settingsService)
         {
-            this._folderPath = settingsService.AppSettings.General.SaveDirectory;
+            this._logger = logger;
 
-            Directory.CreateDirectory(this._folderPath);
+            this._settingsService = settingsService;
+
+            Directory.CreateDirectory(this.FolderPath);
         }
 
-        // TO DO
-        // добавить, что если recordingInput => recordingInput != null && recordingInput.InputEvents != null && recordingInput.RecordingMetadata != null
-        // оповестить пользователя, что имеются "битые" файлы записи
-        public List<Macro> LoadAll()
+        public MacroLoadResult LoadAll()
         {
-            return Directory.EnumerateFiles(_folderPath, "*.json")
-                            .Select(file => JsonSerializer.Deserialize<Macro>(File.ReadAllText(file)))
-                            .Where(recordingInput => recordingInput != null && recordingInput.Events != null && recordingInput.Metadata != null)
-                            .ToList()!;
+            MacroLoadResult macroLoadResult = new();
+
+            foreach (string filePath in Directory.EnumerateFiles(this.FolderPath, "*.json"))
+            {
+                try
+                {
+                    using FileStream fileStream = File.OpenRead(filePath);
+                    Macro? macro = JsonSerializer.Deserialize<Macro>(fileStream);
+
+                    if (macro is not null && macro.Events is not null && macro.Metadata is not null)
+                    {
+                        macroLoadResult.Macros.Add(macro);
+                    }
+                    else
+                    {
+                        macroLoadResult.FailedFiles.Add(filePath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    macroLoadResult.FailedFiles.Add(filePath);
+                    this._logger.LogError(ex, $"file cannot be loaded: {filePath}");
+                }
+            }
+
+            return macroLoadResult;
         }
 
-        public Macro Read(string recordName)
+        public Macro Read(string macroName)
         {
-            string fileName = $"{SanitizeFileName(recordName)}.json";
-            string filePath = Path.Combine(_folderPath, fileName);
+            string fileName = $"{MacroRepository.SanitizeFileName(macroName)}.json";
+            string filePath = Path.Combine(this.FolderPath, fileName);
 
-            if (!File.Exists(filePath)) { throw new FileNotFoundException($"Файл записи, которую вы пытаетесь открыть - не существует, вероятно, он был удалён ({filePath})"); }
+            if (!File.Exists(filePath)) throw new FileNotFoundException($"read: file not found {filePath}");
 
-            Macro? recordingInput = JsonSerializer.Deserialize<Macro>(File.ReadAllText(filePath));
+            try
+            {
+                using FileStream fileStream = File.OpenRead(filePath);
+                Macro? macro = JsonSerializer.Deserialize<Macro>(fileStream);
 
-            if (recordingInput is null) { throw new FileNotFoundException($"Файл записи, которую вы пытаетесь открыть - не существует, вероятно, он был удалён ({filePath})"); }
+                if (macro is null) throw new InvalidDataException($"read: file is empty or corrupted {filePath}");
 
-            return recordingInput;
+                return macro;
+            }
+            catch (JsonException je)
+            {
+                throw new InvalidDataException($"read: file is corrupted {filePath}", je);
+            }
         }
 
-        // TO DO
-        // сделать проверку на то, что если файл уже существует с таким именем, то спросить пользователя, что с этим делать
-        public void Save(Macro recordingInput)
+        public void Save(Macro recordingInput, bool allowOverwrite = false)
         {
-            string fileName = $"{SanitizeFileName(recordingInput.Metadata.Name)}.json";
-            string filePath = Path.Combine(_folderPath, fileName);
+            string fileName = $"{MacroRepository.SanitizeFileName(recordingInput.Metadata.Name)}.json";
+            string filePath = Path.Combine(this.FolderPath, fileName);
+
+            if (!allowOverwrite && File.Exists(filePath)) throw new InvalidOperationException($"save: file already exist {filePath}");
+
             string json = JsonSerializer.Serialize(recordingInput, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
             File.WriteAllText(filePath, json);
@@ -55,14 +92,14 @@ namespace RecBinderProject.Models.MacroRepository
        
         public void Delete(Macro recordingInput)
         {
-            string fileName = $"{SanitizeFileName(recordingInput.Metadata.Name)}.json";
-            string filePath = Path.Combine(_folderPath, fileName);
+            string fileName = $"{MacroRepository.SanitizeFileName(recordingInput.Metadata.Name)}.json";
+            string filePath = Path.Combine(this.FolderPath, fileName);
 
-            if (!File.Exists(filePath)) { throw new FileNotFoundException($"Файл записи, который вы пытаетесь удалить - не существует, вероятно, он уже был удалён ({filePath})"); }
+            if (!File.Exists(filePath)) throw new FileNotFoundException($"delete: file not found {filePath}");
 
             File.Delete(filePath);
         }
 
-        private string SanitizeFileName(string name) => string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
+        private static string SanitizeFileName(string name) => string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
     }
 }
