@@ -1,10 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Windows.Input;
-using System.ComponentModel;
 
 using ModernWpf.Controls;
 
-using RecBinderProject.Models;
 using RecBinderProject.ViewModels.MacroMetadataViewModels;
 using RecBinderProject.Services.MacroExecutionService.Interfaces;
 using RecBinderProject.Services.MacroExecutionService;
@@ -12,59 +9,23 @@ using RecBinderProject.Services.MacroExecutionService;
 
 namespace RecBinderProject.ViewModels.MacroExecutionViewModels
 {
-    public class MacroRecordingViewModel : INotifyPropertyChanged
+    public class MacroRecordingViewModel : MacroExecutionViewModelBase
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         public event Action? MacroRecorded;
 
         private readonly IMacroRecordingService _macroRecordingService;
 
-        public LocalizationViewModel LocalizationViewModel { get; init; }
-        public MacroMetadataViewModel MacroMetadataViewModel { get; init; }
-        public MacroExecutionStatusViewModel MacroExecutionStatusViewModel { get; init; }
-        public MacroOptions MacroOptions { get; private set; }
-
-        public ICommand StartCommand { get; private set; }
-        public ICommand PauseCommand { get; private set; }
-        public ICommand StopCommand { get; private set; }
-
-        public bool CanStart() => this._macroRecordingService.State != MacroExecutionState.Playing;
-        public bool CanPause() => this._macroRecordingService.State == MacroExecutionState.Playing;
-        public bool CanStop() => this._macroRecordingService.State == MacroExecutionState.Playing || this._macroRecordingService.State == MacroExecutionState.Paused;
-
-        public bool CanEditMetadata => this._macroRecordingService.State != MacroExecutionState.Playing;
-
-
-        public MacroRecordingViewModel(LocalizationViewModel localizationViewModel, MacroMetadataViewModel macroMetadataViewModel, MacroExecutionStatusViewModel macroExecutionStatusViewModel, IMacroRecordingService macroRecordingService)
+        public MacroRecordingViewModel(
+            LocalizationViewModel localizationViewModel, 
+            MacroMetadataViewModel macroMetadataViewModel, 
+            MacroExecutionStatusViewModel macroExecutionStatusViewModel, 
+            IMacroRecordingService macroRecordingService) : base(localizationViewModel, macroMetadataViewModel, macroExecutionStatusViewModel, macroRecordingService)
         {
             this._macroRecordingService = macroRecordingService;
-
-            this.LocalizationViewModel = localizationViewModel;
-            this.MacroMetadataViewModel = macroMetadataViewModel;
-            this.MacroExecutionStatusViewModel = macroExecutionStatusViewModel;
-
-            this.MacroOptions = new MacroOptions();
-            
-            this.StartCommand = new RelayCommand(this.OnStartCommand, this.CanStart);
-            this.PauseCommand = new RelayCommand(this.OnPauseCommand, CanPause);
-            this.StopCommand = new RelayCommand(this.OnStopCommand, this.CanStop);
-
-            this._macroRecordingService.StateChanged += this.MacroRecordingService_StateChanged;
         }
 
 
-        private void MacroRecordingService_StateChanged(MacroExecutionState obj)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CanStart)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CanPause)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CanStop)));
-
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CanEditMetadata)));
-        }
-
-
-        public void OnStartCommand()
+        protected override void OnStartCommand()
         {
             try
             {
@@ -101,17 +62,17 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
             }
         }
 
-        public void OnResumeCommand() // TODO под вопросом, так как отдельной кнопки продолжить нет (реализуется всё через кнопку start)
+        protected override void OnResumeCommand() // TODO под вопросом, так как отдельной кнопки продолжить нет (реализуется всё через кнопку start)
         {
             Debug.WriteLine("Play resume TODO");
         }
 
-        public void OnPauseCommand()
+        protected override void OnPauseCommand()
         {
             this._macroRecordingService.Pause();
         }
 
-        public void OnStopCommand()
+        protected override void OnStopCommand()
         {
             this._macroRecordingService.Stop();
             this.MacroRecorded?.Invoke();
