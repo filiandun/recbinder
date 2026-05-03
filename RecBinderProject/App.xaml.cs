@@ -3,12 +3,13 @@ using System.Windows.Threading;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-
-using RecBinderProject.Pages;
+using RecBinderProject.ViewModels;
 using RecBinderProject.Models.MacroRepository;
 using RecBinderProject.Services.AppSettingsService;
 using RecBinderProject.Services.LocalizationService;
 using RecBinderProject.ViewModels.AppSettingsViewModels;
+using RecBinderProject.Views;
+using RecBinderProject.Services.MainWindowViewModelFactory;
 
 
 namespace RecBinderProject
@@ -36,13 +37,16 @@ namespace RecBinderProject
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
 
             // view models
+            services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<IMainWindowViewModelFactory, MainWindowViewModelFactory>();
+
             services.AddSingleton<AppSettingsViewModel>();
             services.AddSingleton<GeneralAppSettingsSectionViewModel>();
             //services.AddSingleton<ProfileAppSettingsSectionViewModel>();
             //services.AddSingleton<AdvancedAppSettingsSectionViewModel>();
 
             // pages
-            services.AddSingleton<AppSettingsPage>();
+            services.AddSingleton<AppSettingsControl>();
 
 
             this.ServiceProvider = services.BuildServiceProvider();
