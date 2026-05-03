@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 
-namespace RecBinderProject
+
+namespace RecBinderProject.Models
 {
     public class RelayCommand : ICommand
     {
