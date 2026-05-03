@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:RecBinderProject"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         
-        xmlns:vm="clr-namespace:RecBinderProject.ViewModels.MacroExecutionViewModels"
+        xmlns:exevm="clr-namespace:RecBinderProject.ViewModels.MacroExecutionViewModels"
         xmlns:appvm="clr-namespace:RecBinderProject.ViewModels.AppSettingsViewModels"
-        xmlns:views="clr-namespace:RecBinderProject.Views" 
+        xmlns:views="clr-namespace:RecBinderProject.Views"
        
         xmlns:viewmodels="clr-namespace:RecBinderProject.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
         
@@ -17,25 +17,29 @@
         Title="RecBinder" Height="600" Width="1200" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <DataTemplate DataType="{x:Type vm:MacroRecordingViewModel}">
+        <DataTemplate DataType="{x:Type exevm:MacroRecordingViewModel}">
             <views:RecordingControl />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vm:MacroPlaybackViewModel}">
+        <DataTemplate DataType="{x:Type exevm:MacroPlaybackViewModel}">
             <views:PlaybackControl />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type appvm:AppSettingsViewModel}">
             <views:AppSettingsControl />
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodels:MacroNavigationItemViewModel}">
+            <views:MacroNavigationItemControl />
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>
         <ContentControl Content="{Binding CurrentViewModel}" />
-        <ui:NavigationView x:Name="navigationView" PaneTitle="Список записей" PaneDisplayMode="LeftCompact" MenuItemsSource="{Binding MacroControls}" SelectedItem="{Binding SelectedMacro, Mode=TwoWay}">
+        <ui:NavigationView x:Name="navigationView" PaneTitle="Список записей" PaneDisplayMode="LeftCompact" MenuItemsSource="{Binding MacroItems}" ItemInvoked="NavigationView_ItemInvoked">
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="Создать новую запись" Icon="Video" Tag="createRecord"/>
-                <ui:NavigationViewItem Content="Помощь" Icon="Help" Tag="help"/>
+                <ui:NavigationViewItem Content="Создать запись" Icon="Video" Tag="Recording"/>
+                <ui:NavigationViewItem Content="Помощь" Icon="Help" Tag="Help"/>
             </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>
     </Grid>

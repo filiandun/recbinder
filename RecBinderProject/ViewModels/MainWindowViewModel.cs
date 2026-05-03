@@ -1,12 +1,14 @@
 ﻿using ModernWpf.Controls;
 
 using System.Diagnostics;
-using System.Windows.Input;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 
+using RecBinderProject.Views;
+
 using RecBinderProject.Models;
 using RecBinderProject.Models.MacroRepository;
+
 using RecBinderProject.Services.LocalizationService;
 using RecBinderProject.Services.MainWindowViewModelFactory;
 
@@ -24,23 +26,6 @@ namespace RecBinderProject.ViewModels
         private readonly IMainWindowViewModelFactory _viewModelFactory;
 
 
-        public List<Macro> _macros;
-        public ObservableCollection<MacroControl> MacroControls { get; private set; }
-
-
-        private MacroControl? _selectedMacro;
-        public MacroControl? SelectedMacro
-        {
-            get => this._selectedMacro;
-            set
-            {
-                if (this._selectedMacro is not null && this._selectedMacro.Equals(value)) return;
-
-                this._selectedMacro = value;
-                this.MacroSelectionChanged();
-            }
-        }
-
         private object? _currentViewModel;
 
         public object? CurrentViewModel
@@ -56,8 +41,8 @@ namespace RecBinderProject.ViewModels
         }
 
 
-        public ICommand OpenRecordingCommand { get; set; }
-        public ICommand OpenSettingsCommand { get; set; }
+        public List<Macro> _macros;
+        public ObservableCollection<MacroNavigationItemViewModel> MacroItems { get; private set; }
 
 
         public MainWindowViewModel(ILocalizationService localizationService, IMacroRepository macroRepository, IMainWindowViewModelFactory viewModelFactory)
@@ -69,44 +54,40 @@ namespace RecBinderProject.ViewModels
             this._viewModelFactory = viewModelFactory;
 
             this._macros = new();
+            this.MacroItems = new();
 
-            this.OpenRecordingCommand = new RelayCommand(this.OnOpenRecordingCommand);
-            this.OpenSettingsCommand = new RelayCommand(this.OnOpenSettingsCommand);
-
-            this.RefreshMacrosCommand();
+            this.RefreshMacros();
         }
 
-        public void MacroSelectionChanged()
+
+        public void OpenPlayback(Macro macro)
         {
-            if (this.SelectedMacro is null) throw new ArgumentNullException("selected macro is null");
-
-            Macro macro = this._macroRepository.Read(this.SelectedMacro.MacroName) ?? throw new ArgumentNullException("selected macro is not found");
-
             this.CurrentViewModel = this._viewModelFactory.CreatePlayback(macro);
         }
 
-        private void OnOpenRecordingCommand()
+        public void OpenRecording()
         {
             this.CurrentViewModel = this._viewModelFactory.CreateRecording();
         }
 
-        private void OnOpenSettingsCommand()
+        //public void OpenHelp()
+        //{
+        //    //this.CurrentViewModel = this._viewModelFactory.GetHelp();
+        //}
+
+        public void OpenSettings()
         {
             this.CurrentViewModel = this._viewModelFactory.GetAppSettings();
         }
 
 
-        public void RefreshMacrosCommand()
+        public void RefreshMacros()
         {
             MacroLoadResult macroLoadResult = this._macroRepository.LoadAll();
 
             Debug.WriteLine($"NEW MACROS: {macroLoadResult.Macros.Count}");
 
-            this._macros.Clear();
-            foreach (Macro macro in macroLoadResult.Macros)
-            {
-                this._macros.Add(macro);
-            }
+            this._macros = macroLoadResult.Macros;
 
             if (macroLoadResult.FailedFiles.Count > 0)
             {
@@ -124,14 +105,14 @@ namespace RecBinderProject.ViewModels
 
         private void UpdateMacrosControls()
         {
-            ObservableCollection<MacroControl> macroControls = new();
+            ObservableCollection<MacroNavigationItemViewModel> macroControls = new();
 
             foreach (Macro macro in this._macros)
             {
-                macroControls.Add(new MacroControl(macro.Metadata.Name, macro.Metadata.Description));
+                macroControls.Add(new MacroNavigationItemViewModel(macro));
             }
 
-            this.MacroControls = macroControls;
+            this.MacroItems = macroControls;
 
             Debug.WriteLine($"update macros controls {this._macros.Count}");
         }
