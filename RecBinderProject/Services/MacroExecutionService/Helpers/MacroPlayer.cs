@@ -4,16 +4,14 @@ using System.Windows.Forms;
 
 using WindowsInput;
 
-using RecBinderProject.Models.InputEvents;
 using RecBinderProject.Models;
+using RecBinderProject.Models.InputEvents;
 
 
 namespace RecBinderProject.Services.MacroExecutionService.Helpers
 {
     public class MacroPlayer
     {
-        private readonly CancellationToken _cancellationToken;
-
         private readonly InputSimulator _inputSimulator;
 
         private readonly Stopwatch _stopwatch;
@@ -24,10 +22,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
         private volatile bool _isPaused;
 
 
-        public MacroPlayer(Macro recordingInput, MacroOptions recordOptions, CancellationToken cancellationToken)
+        public MacroPlayer(Macro recordingInput, MacroOptions recordOptions)
         {
-            this._cancellationToken = cancellationToken;
-
             this._inputSimulator = new InputSimulator();
 
             this._stopwatch = new Stopwatch();
@@ -42,17 +38,17 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
         public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
 
 
-        public async Task Start()
+        public async Task Start(CancellationToken cancellationToken)
         {
             this._stopwatch.Restart();
 
             foreach (InputEvent inputEvent in this._macro.Events)
             {
-                await this.PlayDelay(inputEvent.TimeOffset, this._cancellationToken);
+                await this.PlayDelay(inputEvent.TimeOffset, cancellationToken);
 
-                this._cancellationToken.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
 
-                await this.WaitIfPausedTask();
+                await this.WaitIfPausedTask(cancellationToken);
 
                 this.PlayEvent(inputEvent);
             }
@@ -79,11 +75,11 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
         }
 
 
-        private async Task WaitIfPausedTask()
+        private async Task WaitIfPausedTask(CancellationToken cancellationToken)
         {
             while (this._isPaused)
             {
-                await Task.Delay(50, this._cancellationToken);
+                await Task.Delay(50, cancellationToken);
             }
         }
 
@@ -108,7 +104,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await WaitIfPausedTask();
+                await this.WaitIfPausedTask(cancellationToken);
                 await Task.Delay(1, cancellationToken);
             }
         }

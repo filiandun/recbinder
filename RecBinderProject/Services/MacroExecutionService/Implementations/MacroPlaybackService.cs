@@ -7,6 +7,7 @@ using RecBinderProject.Services.MacroExecutionService.Interfaces;
 
 namespace RecBinderProject.Services.MacroExecutionService.Implementations
 {
+    // TODO после ручной остановки запись больше нормально не воспроизводится
     public class MacroPlaybackService : MacroExecutionServiceBase, IMacroPlaybackService
     {
         private CancellationTokenSource _cancellationTokenSource;
@@ -23,7 +24,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
             this._cancellationTokenSource = new CancellationTokenSource();
 
             this._macro = macro;
-            this._player = new MacroPlayer(this._macro, macroOptions, this._cancellationTokenSource.Token);
+            this._player = new MacroPlayer(this._macro, macroOptions);
 
             this.State = MacroExecutionState.Completed;
         }
@@ -31,13 +32,15 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
 
         public async Task Start()
         {
-            if (this.CanStart()) 
+            if (this.CanStart())
             {
                 this.SetState(MacroExecutionState.Playing);
 
                 try
                 {
-                    await Task.Run(() => this._player.Start());
+                    this._cancellationTokenSource = new CancellationTokenSource();
+                    //await _player.Start(this._cancellationTokenSource.Token);
+                    await Task.Run(() => this._player.Start(this._cancellationTokenSource.Token));
 
                     this.SetState(MacroExecutionState.Completed);
                 }
@@ -58,8 +61,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
         {
             if (this.CanPause())
             {
-                this.SetState(MacroExecutionState.Paused);
                 this._player.Pause();
+                this.SetState(MacroExecutionState.Paused);
             }
         }
 
@@ -67,8 +70,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
         {
             if (this.CanResume())
             {
-                this.SetState(MacroExecutionState.Playing);
                 this._player.Resume();
+                this.SetState(MacroExecutionState.Playing);
             }
         }
 
@@ -76,10 +79,10 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
         {
             if (this.CanStop())
             {
-                this.SetState(MacroExecutionState.Stopped);
-
                 this._cancellationTokenSource.Cancel();
                 this._player.Stop();
+
+                this.SetState(MacroExecutionState.Stopped);
             }
         }
     }
