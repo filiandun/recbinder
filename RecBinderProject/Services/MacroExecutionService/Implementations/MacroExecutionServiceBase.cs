@@ -1,5 +1,6 @@
 ﻿using RecBinderProject.Services.MacroExecutionService.Interfaces;
 
+
 namespace RecBinderProject.Services.MacroExecutionService.Implementations
 {
     public abstract class MacroExecutionServiceBase : IMacroExecutionInfo

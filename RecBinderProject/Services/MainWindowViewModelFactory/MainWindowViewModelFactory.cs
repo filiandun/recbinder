@@ -7,8 +7,8 @@ using RecBinderProject.Services.MacroExecutionService.Implementations;
 
 using RecBinderProject.ViewModels;
 using RecBinderProject.ViewModels.AppSettingsViewModels;
-using RecBinderProject.ViewModels.MacroExecutionViewModels;
 using RecBinderProject.ViewModels.MacroMetadataViewModels;
+using RecBinderProject.ViewModels.MacroExecutionViewModels;
 
 
 namespace RecBinderProject.Services.MainWindowViewModelFactory

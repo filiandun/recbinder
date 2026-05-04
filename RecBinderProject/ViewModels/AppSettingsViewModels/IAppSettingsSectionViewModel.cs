@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 
+
 namespace RecBinderProject.ViewModels.AppSettingsViewModels
 {
     // TODO: сейчас интерфейс полурак полурыба, так как в нём есть методы, который подразумевают, что будет две модели данных (оригинальная и изменяемая),

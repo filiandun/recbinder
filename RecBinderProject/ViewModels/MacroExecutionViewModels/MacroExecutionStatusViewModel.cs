@@ -2,9 +2,10 @@
 using System.ComponentModel;
 using System.Windows.Threading;
 using System.Runtime.CompilerServices;
+
 using RecBinderProject.Services.LocalizationService;
-using RecBinderProject.Services.MacroExecutionService.Interfaces;
 using RecBinderProject.Services.MacroExecutionService;
+using RecBinderProject.Services.MacroExecutionService.Interfaces;
 
 
 namespace RecBinderProject.ViewModels.MacroExecutionViewModels

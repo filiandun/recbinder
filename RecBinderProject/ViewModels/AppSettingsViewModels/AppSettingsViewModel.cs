@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
 using System.ComponentModel;
 
-using ModernWpf;
 using ModernWpf.Controls;
 
+using RecBinderProject.Models;
 using RecBinderProject.Services.AppSettingsService;
 
 

@@ -101,10 +101,7 @@ namespace RecBinderProject.ViewModels.MacroMetadataViewModels
             set => this.Set(ref this._recordCreationDateTime, value);
         }
 
-        public string RecordDurationStr
-        {
-            get => this._recordDuration.ToString(@"hh\:mm\:ss\:ff");
-        }
+        public string RecordDurationStr => this._recordDuration.ToString(@"hh\:mm\:ss\:ff");
 
         public string RecordCreationDateTimeStr // TO DO не будет работать, так как в методе Set, который выше, нет вызова PropertyChanged для этого свойства. На самом деле, работает, почему - не знаю
         {

@@ -14,8 +14,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
 
         private readonly IMacroRepository _repository;
 
-        private readonly MacroRecorder _recorder;
         private readonly Macro _macro;
+        private readonly MacroRecorder _recorder;
 
         public override TimeSpan TotalTime => this._macro.Metadata.Duration;
         public override TimeSpan ElapsedTime => this._recorder.GetElapsedTime();
@@ -38,13 +38,13 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
         {
             if (this.CanStart())
             {
-                this.SetState(MacroExecutionState.Playing);
-
                 this._macro.UpdateMetadata(macroMetadata);
 
                 this._cancellationToken = new CancellationTokenSource();
 
                 this._recorder.Start();
+
+                this.SetState(MacroExecutionState.Playing);
 
                 _ = WaitAndStopAfterDurationAsync(this._cancellationToken.Token);
             }
@@ -54,8 +54,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
         {
             if (this.CanPause())
             {
-                this.SetState(MacroExecutionState.Paused);
                 this._recorder.Pause();
+                this.SetState(MacroExecutionState.Paused);
             }
         }
 
@@ -63,8 +63,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
         {
             if (this.CanResume())
             {
-                this.SetState(MacroExecutionState.Playing);
                 this._recorder.Resume();
+                this.SetState(MacroExecutionState.Playing);
             }
         }
 
@@ -77,7 +77,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
 
                 this.SaveMacro();
 
-                this.SetState(MacroExecutionState.Completed);
+                this.SetState(MacroExecutionState.Stopped);
             }
         }
 
@@ -87,7 +87,13 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
             try
             {
                 await Task.Delay(this._macro.Metadata.Duration, token);
-                this.Stop();
+
+                this._recorder.Stop();
+                this._cancellationToken.Cancel();
+
+                this.SaveMacro();
+
+                this.SetState(MacroExecutionState.Completed);
             }
             catch (OperationCanceledException)
             {

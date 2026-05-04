@@ -18,6 +18,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
         private readonly Macro _macro;
         private readonly MacroOptions _recordOptions;
 
+
         public MacroRecorder(Macro recordingInput, MacroOptions recordOptions)
         {
             this._globalHook = null;
@@ -28,7 +29,9 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
             this._recordOptions = recordOptions;
         }
 
+
         public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
+
 
         public void Start()
         {
@@ -49,6 +52,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
 
             this._globalHook?.Dispose();
         }
+
 
         public void Subscribe()
         {
