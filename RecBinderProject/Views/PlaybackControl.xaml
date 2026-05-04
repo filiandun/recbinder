@@ -4,7 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"   
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"   
       xmlns:local="clr-namespace:RecBinderProject.Views"  
-      xmlns:ui="http://schemas.modernwpf.com/2019"  
+      xmlns:ui="http://schemas.modernwpf.com/2019" 
+             
+      xmlns:macroexecutionviewmodels="clr-namespace:RecBinderProject.ViewModels.MacroExecutionViewModels" 
+      d:DataContext="{d:DesignInstance Type=macroexecutionviewmodels:MacroPlaybackViewModel}"
+      
       mc:Ignorable="d"   
       d:DesignHeight="450" d:DesignWidth="800">
 
@@ -24,22 +28,22 @@
 
             <StackPanel Grid.Row="1">
                 <Label Content="Название" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox x:Name="recordNameTextBox" Text="{Binding MacroMetadataViewModel.RecordName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Mode=TwoWay}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="recordNameTextBox" Text="{Binding MacroMetadataViewerViewModel.MacroName}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <DockPanel Grid.Row="2">
                 <Label Content="Описание" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox x:Name="recordDescriptionTextBox" Text="{Binding MacroMetadataViewModel.RecordDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Mode=TwoWay}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="recordDescriptionTextBox" Text="{Binding MacroMetadataViewerViewModel.MacroDescription}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </DockPanel>
 
             <StackPanel Grid.Row="3">
                 <Label Content="Продолжительность" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <Label x:Name="recordDurationLabel" Content="{Binding MacroMetadataViewModel.RecordDurationStr}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Label x:Name="recordDurationLabel" Content="{Binding MacroMetadataViewerViewModel.MacroDuration}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
             </StackPanel>
 
             <StackPanel Grid.Row="4">
                 <Label Content="Дата и время" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <Label x:Name="recordDateTimeLabel" Content="{Binding MacroMetadataViewModel.RecordCreationDateTimeStr}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Label x:Name="recordDateTimeLabel" Content="{Binding MacroMetadataViewerViewModel.MacroCreationDateTime}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
             </StackPanel>
 
             <Grid x:Name="settingsGrid" Grid.Row="5">

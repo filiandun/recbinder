@@ -16,7 +16,6 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
         protected readonly IMacroExecutionInfo _service;
 
         public LocalizationViewModel LocalizationViewModel { get; init; }
-        public MacroMetadataViewModel MacroMetadataViewModel { get; init; }
         public MacroExecutionStatusViewModel MacroExecutionStatusViewModel { get; init; }
 
         public MacroOptions MacroOptions { get; init; }
@@ -32,12 +31,11 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
         public bool CanEditMetadata => this._service.State != MacroExecutionState.Playing;
 
 
-        public MacroExecutionViewModelBase(LocalizationViewModel localizationViewModel, MacroMetadataViewModel macroMetadataViewModel, MacroExecutionStatusViewModel macroExecutionStatusViewModel, IMacroExecutionInfo service)
+        public MacroExecutionViewModelBase(LocalizationViewModel localizationViewModel, MacroExecutionStatusViewModel macroExecutionStatusViewModel, IMacroExecutionInfo service)
         {
             this._service = service;
 
             this.LocalizationViewModel = localizationViewModel;
-            this.MacroMetadataViewModel = macroMetadataViewModel;
             this.MacroExecutionStatusViewModel = macroExecutionStatusViewModel;
 
             this.MacroOptions = new MacroOptions();

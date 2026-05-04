@@ -28,12 +28,12 @@
 
             <StackPanel Grid.Row="1">
                 <Label Content="Название" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox x:Name="TextBox" Text="{Binding MacroMetadataViewModel.RecordName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox x:Name="TextBox" Text="{Binding MacroMetadataCreatorViewModel.MacroName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <DockPanel Grid.Row="2">
                 <Label Content="Описание" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBox Text="{Binding MacroMetadataViewModel.RecordDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <TextBox Text="{Binding MacroMetadataCreatorViewModel.MacroDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </DockPanel>
 
             <Grid x:Name="durationGrid" Grid.Row="3">
@@ -49,8 +49,8 @@
 
                 <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Продолительность записи" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
 
-                <ui:NumberBox Value="{Binding MacroMetadataViewModel.RecordDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline"/>
-                <ComboBox SelectedIndex="{Binding MacroMetadataViewModel.RecordDurationUnitIndex}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="1" Grid.Row="1" >
+                <ui:NumberBox Value="{Binding MacroMetadataCreatorViewModel.MacroDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline"/>
+                <ComboBox SelectedIndex="{Binding MacroMetadataCreatorViewModel.MacroDurationUnitIndex}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="1" Grid.Row="1" >
                     <ComboBoxItem Content="мс."/>
                     <ComboBoxItem Content="сек."/>
                     <ComboBoxItem Content="мин." IsSelected="True"/>

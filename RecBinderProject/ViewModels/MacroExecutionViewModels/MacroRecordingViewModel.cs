@@ -15,13 +15,18 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
 
         private readonly IMacroRecordingService _macroRecordingService;
 
+        public MacroMetadataCreatorViewModel MacroMetadataCreatorViewModel { get; init; }
+
+
         public MacroRecordingViewModel(
             LocalizationViewModel localizationViewModel, 
-            MacroMetadataViewModel macroMetadataViewModel, 
+            MacroMetadataCreatorViewModel macroMetadataCreatorViewModel, 
             MacroExecutionStatusViewModel macroExecutionStatusViewModel, 
-            IMacroRecordingService macroRecordingService) : base(localizationViewModel, macroMetadataViewModel, macroExecutionStatusViewModel, macroRecordingService)
+            IMacroRecordingService macroRecordingService) : base(localizationViewModel, macroExecutionStatusViewModel, macroRecordingService)
         {
             this._macroRecordingService = macroRecordingService;
+
+            this.MacroMetadataCreatorViewModel = macroMetadataCreatorViewModel;
         }
 
 
@@ -35,9 +40,9 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
                 }
                 else
                 {
-                    this.MacroMetadataViewModel.ApplyChanges(); // TODO сделать адекватнее как-нибудь
+                    this.MacroMetadataCreatorViewModel.ApplyChanges(); // TODO сделать адекватнее как-нибудь
 
-                    this._macroRecordingService.Start(this.MacroMetadataViewModel.RecordingMetadataModel);
+                    this._macroRecordingService.Start(this.MacroMetadataCreatorViewModel.MacroMetadataModel);
 
                     //this.MacroRecorded?.Invoke();
                 }

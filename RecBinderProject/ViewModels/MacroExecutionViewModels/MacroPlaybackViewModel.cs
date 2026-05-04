@@ -11,14 +11,20 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
     {
         private readonly IMacroPlaybackService _macroPlaybackService;
 
+        public MacroMetadataViewerViewModel MacroMetadataViewerViewModel { get; init; }
+
+
         public MacroPlaybackViewModel(
             LocalizationViewModel localizationViewModel, 
-            MacroMetadataViewModel macroMetadataViewModel, 
+            MacroMetadataViewerViewModel macroMetadataViewerViewModel, 
             MacroExecutionStatusViewModel macroExecutionStatusViewModel, 
-            IMacroPlaybackService macroPlaybackService) : base(localizationViewModel, macroMetadataViewModel, macroExecutionStatusViewModel, macroPlaybackService)
+            IMacroPlaybackService macroPlaybackService) : base(localizationViewModel, macroExecutionStatusViewModel, macroPlaybackService)
         {
             this._macroPlaybackService = macroPlaybackService;
+
+            this.MacroMetadataViewerViewModel = macroMetadataViewerViewModel;
         }
+
 
         protected override void OnStartCommand()
         {

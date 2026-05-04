@@ -34,14 +34,14 @@ namespace RecBinderProject.Services.MainWindowViewModelFactory
         {
             LocalizationViewModel localizationViewModel = new LocalizationViewModel(this._localizationService);
 
-            MacroMetadataViewModel macroMetadataViewModel = new MacroMetadataViewModel();
+            MacroMetadataViewerViewModel macroMetadataViewerViewModel = new MacroMetadataViewerViewModel(macro.Metadata);
 
             MacroOptions macroOptions = new MacroOptions();
             MacroPlaybackService macroPlaybackService = new MacroPlaybackService(macroOptions, macro);
 
             MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroPlaybackService, this._localizationService, "Play");
 
-            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(localizationViewModel, macroMetadataViewModel, macroExecutionStatusViewModel, macroPlaybackService);
+            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(localizationViewModel, macroMetadataViewerViewModel, macroExecutionStatusViewModel, macroPlaybackService);
 
             return macroPlaybackViewModel;
         }
@@ -50,7 +50,7 @@ namespace RecBinderProject.Services.MainWindowViewModelFactory
         {
             LocalizationViewModel localizationViewModel = new LocalizationViewModel(this._localizationService);
 
-            MacroMetadataViewModel macroMetadataViewModel = new MacroMetadataViewModel();
+            MacroMetadataCreatorViewModel macroMetadataCreatorViewModel = new MacroMetadataCreatorViewModel();
 
             MacroMetadata macroMetadata = new MacroMetadata();
             MacroOptions macroOptions = new MacroOptions();
@@ -58,7 +58,7 @@ namespace RecBinderProject.Services.MainWindowViewModelFactory
 
             MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroRecordingService, this._localizationService, "Create");
 
-            MacroRecordingViewModel macroRecordingViewModel = new MacroRecordingViewModel(localizationViewModel, macroMetadataViewModel, macroExecutionStatusViewModel, macroRecordingService);
+            MacroRecordingViewModel macroRecordingViewModel = new MacroRecordingViewModel(localizationViewModel, macroMetadataCreatorViewModel, macroExecutionStatusViewModel, macroRecordingService);
 
             return macroRecordingViewModel;
         }
