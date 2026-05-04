@@ -60,10 +60,10 @@
             <Grid x:Name="settingsGrid" Grid.Row="4">
                 <Label Content="Настройки" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
                 <UniformGrid VerticalAlignment="Bottom">
-                    <CheckBox IsChecked="{Binding MacroOptions.KeyboardPressEnabled, Mode=TwoWay}" Content="Игнорировать нажатия клавиш клавиатуры"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MousePressEnabled, Mode=TwoWay}" Content="Игнорировать нажатия клавиш мыши"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MouseMoveEnabled, Mode=TwoWay}" Content="Игнорировать движения мыши"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MouseWheelEnabled, Mode=TwoWay}" Content="Игнорировать прокручивания колёсика мыши"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="Игнорировать нажатия клавиш клавиатуры"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="Игнорировать нажатия клавиш мыши"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="Игнорировать движения мыши"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="Игнорировать прокручивания колёсика мыши"/>
                 </UniformGrid>
             </Grid>
 

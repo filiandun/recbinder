@@ -111,7 +111,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
 
         private void PlayKeyboardPress(KeyboardPressEvent keyboardPressInput)
         {
-            if (!this._macroOptions.KeyboardPressEnabled)
+            if (!this._macroOptions.KeyboardPressIgnored)
             {
                 if (keyboardPressInput.KeyState == KeyState.Down)
                 {
@@ -126,7 +126,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
 
         private void PlayMousePress(MousePressEvent mousePressInput)
         {
-            if (!this._macroOptions.MousePressEnabled)
+            if (!this._macroOptions.MousePressIgnored)
             {
                 if (mousePressInput.KeyState == KeyState.Down)
                 {
@@ -155,7 +155,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
 
         private void PlayMouseMove(MouseMoveEvent mouseMoveInput)
         {
-            if (!this._macroOptions.MouseMoveEnabled)
+            if (!this._macroOptions.MouseMoveIgnored)
             {
                 Point startPosition = Cursor.Position;
 
@@ -171,7 +171,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
 
         private void PlayMouseWheel(MouseWheelEvent mouseWheelInput)
         {
-            if (!this._macroOptions.MouseWheelEnabled)
+            if (!this._macroOptions.MouseWheelIgnored)
             {
                 this._inputSimulator.Mouse.VerticalScroll(mouseWheelInput.Delta);
             }

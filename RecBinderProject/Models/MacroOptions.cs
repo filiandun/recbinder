@@ -9,36 +9,38 @@ namespace RecBinderProject.Models
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private bool _keyboardPressEnabled = false;
-        private bool _mousePressEnabled = false;
-        private bool _mouseMoveEnabled = false;
-        private bool _mouseWheelEnabled = false;
+        private bool _keyboardPressIgnored = false;
+        private bool _mousePressIgnored = false;
+        private bool _mouseMoveIgnored = false;
+        private bool _mouseWheelIgnored = false;
 
         private bool _relativeMouseMovementEnabled = false;
 
-        public bool KeyboardPressEnabled
+
+        public bool KeyboardPressIgnored
         {
-            get => this._keyboardPressEnabled;
-            set => this.Set(ref this._keyboardPressEnabled, value);
+            get => this._keyboardPressIgnored;
+            set => this.Set(ref this._keyboardPressIgnored, value);
         }
 
-        public bool MousePressEnabled
+        public bool MousePressIgnored
         {
-            get => this._mousePressEnabled;
-            set => this.Set(ref this._mousePressEnabled, value);
+            get => this._mousePressIgnored;
+            set => this.Set(ref this._mousePressIgnored, value);
         }
 
-        public bool MouseMoveEnabled
+        public bool MouseMoveIgnored
         {
-            get => this._mouseMoveEnabled;
-            set => this.Set(ref this._mouseMoveEnabled, value);
+            get => this._mouseMoveIgnored;
+            set => this.Set(ref this._mouseMoveIgnored, value);
         }
 
-        public bool MouseWheelEnabled
+        public bool MouseWheelIgnored
         {
-            get => this._mouseWheelEnabled;
-            set => this.Set(ref this._mouseWheelEnabled, value);
+            get => this._mouseWheelIgnored;
+            set => this.Set(ref this._mouseWheelIgnored, value);
         }
+
 
         public bool RelativeMouseMovementEnabled
         {
@@ -46,7 +48,8 @@ namespace RecBinderProject.Models
             set => this.Set(ref this._relativeMouseMovementEnabled, value);
         }
 
-        protected void Set<T>(ref T field, T value, [CallerMemberName] string propName = "")
+
+        private void Set<T>(ref T field, T value, [CallerMemberName] string propName = "")
         {
             Debug.WriteLine($"Record option changed - {propName}");
             if (!Equals(field, value))
