@@ -157,12 +157,13 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
         {
             if (!this._macroOptions.MouseMoveIgnored)
             {
-                Point startPosition = Cursor.Position;
+                Point cursorPosition = Cursor.Position;
+                Point recordPosition = Cursor.Position;
 
-                int targetX = this._macroOptions.RelativeMouseMovementEnabled ? (startPosition.X - (int)mouseMoveInput.X) + (int)mouseMoveInput.X : (int)mouseMoveInput.X;
-                int targetY = this._macroOptions.RelativeMouseMovementEnabled ? (startPosition.Y - (int)mouseMoveInput.Y) + (int)mouseMoveInput.Y : (int)mouseMoveInput.Y;
+                int targetX = this._macroOptions.RelativeMouseMovementEnabled ? cursorPosition.X + ((int)mouseMoveInput.X - recordPosition.X) : (int)mouseMoveInput.X;
+                int targetY = this._macroOptions.RelativeMouseMovementEnabled ? cursorPosition.Y + ((int)mouseMoveInput.Y - recordPosition.Y) : (int)mouseMoveInput.Y;
 
-                int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width; // TODO подтягивать разрешение монитора не из системы текущее, а из настроек
+                int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width; // TODO подтягивать разрешение монитора надо из настроек
                 int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
 
                 this._inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
