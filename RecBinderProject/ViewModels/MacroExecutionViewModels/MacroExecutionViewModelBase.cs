@@ -31,14 +31,14 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
         public bool CanEditMetadata => this._service.State != MacroExecutionState.Playing;
 
 
-        public MacroExecutionViewModelBase(LocalizationViewModel localizationViewModel, MacroExecutionStatusViewModel macroExecutionStatusViewModel, IMacroExecutionInfo service)
+        public MacroExecutionViewModelBase(IMacroExecutionInfo service, LocalizationViewModel localizationViewModel, MacroExecutionStatusViewModel macroExecutionStatusViewModel, MacroOptions macroOptions)
         {
             this._service = service;
 
             this.LocalizationViewModel = localizationViewModel;
             this.MacroExecutionStatusViewModel = macroExecutionStatusViewModel;
 
-            this.MacroOptions = new MacroOptions();
+            this.MacroOptions = macroOptions;
 
             this.StartCommand = new RelayCommand(this.OnStartCommand, () => this.CanStart);
             this.PauseCommand = new RelayCommand(this.OnPauseCommand, () => this.CanPause);

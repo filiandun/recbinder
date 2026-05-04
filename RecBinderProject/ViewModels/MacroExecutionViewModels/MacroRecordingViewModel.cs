@@ -1,10 +1,9 @@
-﻿using System.Diagnostics;
-
-using ModernWpf.Controls;
-
-using RecBinderProject.ViewModels.MacroMetadataViewModels;
-using RecBinderProject.Services.MacroExecutionService.Interfaces;
+﻿using ModernWpf.Controls;
+using RecBinderProject.Models;
 using RecBinderProject.Services.MacroExecutionService;
+using RecBinderProject.Services.MacroExecutionService.Interfaces;
+using RecBinderProject.ViewModels.MacroMetadataViewModels;
+using System.Diagnostics;
 
 
 namespace RecBinderProject.ViewModels.MacroExecutionViewModels
@@ -19,10 +18,11 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
 
 
         public MacroRecordingViewModel(
+            IMacroRecordingService macroRecordingService,
             LocalizationViewModel localizationViewModel, 
             MacroMetadataCreatorViewModel macroMetadataCreatorViewModel, 
-            MacroExecutionStatusViewModel macroExecutionStatusViewModel, 
-            IMacroRecordingService macroRecordingService) : base(localizationViewModel, macroExecutionStatusViewModel, macroRecordingService)
+            MacroExecutionStatusViewModel macroExecutionStatusViewModel,
+            MacroOptions macroOptions) : base(macroRecordingService, localizationViewModel, macroExecutionStatusViewModel, macroOptions)
         {
             this._macroRecordingService = macroRecordingService;
 

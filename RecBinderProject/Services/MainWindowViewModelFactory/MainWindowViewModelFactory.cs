@@ -41,7 +41,7 @@ namespace RecBinderProject.Services.MainWindowViewModelFactory
 
             MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroPlaybackService, this._localizationService, "Play");
 
-            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(localizationViewModel, macroMetadataViewerViewModel, macroExecutionStatusViewModel, macroPlaybackService);
+            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(macroPlaybackService, localizationViewModel, macroMetadataViewerViewModel, macroExecutionStatusViewModel, macroOptions);
 
             return macroPlaybackViewModel;
         }
@@ -58,7 +58,7 @@ namespace RecBinderProject.Services.MainWindowViewModelFactory
 
             MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroRecordingService, this._localizationService, "Create");
 
-            MacroRecordingViewModel macroRecordingViewModel = new MacroRecordingViewModel(localizationViewModel, macroMetadataCreatorViewModel, macroExecutionStatusViewModel, macroRecordingService);
+            MacroRecordingViewModel macroRecordingViewModel = new MacroRecordingViewModel(macroRecordingService, localizationViewModel, macroMetadataCreatorViewModel, macroExecutionStatusViewModel, macroOptions);
 
             return macroRecordingViewModel;
         }
