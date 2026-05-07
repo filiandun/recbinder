@@ -1,9 +1,11 @@
-﻿using ModernWpf.Controls;
+﻿using System.Diagnostics;
+
+using ModernWpf.Controls;
+
 using RecBinderProject.Models;
 using RecBinderProject.Services.MacroExecutionService;
 using RecBinderProject.Services.MacroExecutionService.Interfaces;
 using RecBinderProject.ViewModels.MacroMetadataViewModels;
-using System.Diagnostics;
 
 
 namespace RecBinderProject.ViewModels.MacroExecutionViewModels
@@ -27,8 +29,15 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
             this._macroRecordingService = macroRecordingService;
 
             this.MacroMetadataCreatorViewModel = macroMetadataCreatorViewModel;
+
+            this._macroRecordingService.MacroSaved += this.MacroRecordingService_MacroSaved;
         }
 
+        private void MacroRecordingService_MacroSaved()
+        {
+            Debug.WriteLine("MACRO SAVED");
+            this.MacroRecorded?.Invoke();
+        }
 
         protected override void OnStartCommand()
         {
@@ -43,8 +52,6 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
                     this.MacroMetadataCreatorViewModel.ApplyChanges(); // TODO сделать адекватнее как-нибудь
 
                     this._macroRecordingService.Start(this.MacroMetadataCreatorViewModel.MacroMetadataModel);
-
-                    //this.MacroRecorded?.Invoke();
                 }
             }
             catch (ArgumentException ae)
@@ -80,7 +87,6 @@ namespace RecBinderProject.ViewModels.MacroExecutionViewModels
         protected override void OnStopCommand()
         {
             this._macroRecordingService.Stop();
-            this.MacroRecorded?.Invoke();
         }
     }
 }

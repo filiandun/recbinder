@@ -10,6 +10,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
 {
     public class MacroRecordingService : MacroExecutionServiceBase, IMacroRecordingService
     {
+        public event Action? MacroSaved;
+
         private CancellationTokenSource _cancellationToken;
 
         private readonly IMacroRepository _repository;
@@ -109,6 +111,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Implementations
             Debug.WriteLine($"RecordingService: {this._macro.Events.Count}");
 
             this._repository.Save(this._macro);
+
+            this.MacroSaved?.Invoke();
         }
     }
 }

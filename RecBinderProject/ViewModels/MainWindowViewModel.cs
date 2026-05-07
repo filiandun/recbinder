@@ -4,13 +4,12 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 
-using RecBinderProject.Views;
-
 using RecBinderProject.Models;
 using RecBinderProject.Models.MacroRepository;
 
 using RecBinderProject.Services.LocalizationService;
 using RecBinderProject.Services.MainWindowViewModelFactory;
+using RecBinderProject.ViewModels.MacroExecutionViewModels;
 
 
 namespace RecBinderProject.ViewModels
@@ -41,8 +40,19 @@ namespace RecBinderProject.ViewModels
         }
 
 
-        public List<Macro> _macros;
-        public ObservableCollection<MacroNavigationItemViewModel> MacroItems { get; private set; }
+        private ObservableCollection<MacroNavigationItemViewModel> _macroItems;
+        public ObservableCollection<MacroNavigationItemViewModel> MacroItems
+        {
+            get => this._macroItems;
+            set
+            {
+                if (ReferenceEquals(this._macroItems, value)) return;
+
+                this._macroItems = value;
+                Debug.WriteLine("MacroItems update");
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MacroItems)));
+            }
+        }
 
 
         public MainWindowViewModel(ILocalizationService localizationService, IMacroRepository macroRepository, IMainWindowViewModelFactory viewModelFactory)
@@ -53,9 +63,14 @@ namespace RecBinderProject.ViewModels
 
             this._viewModelFactory = viewModelFactory;
 
-            this._macros = new();
-            this.MacroItems = new();
+            this._macroItems = new ObservableCollection<MacroNavigationItemViewModel>();
 
+            this.RefreshMacros();
+        }
+
+        private void OnMacroRecorded()
+        {
+            Debug.WriteLine("MACRO RECORDED: REFRESH");
             this.RefreshMacros();
         }
 
@@ -67,7 +82,10 @@ namespace RecBinderProject.ViewModels
 
         public void OpenRecording()
         {
-            this.CurrentViewModel = this._viewModelFactory.CreateRecording();
+            MacroRecordingViewModel recordingViewModel = this._viewModelFactory.CreateRecording();
+            this.CurrentViewModel = recordingViewModel;
+
+            recordingViewModel.MacroRecorded += this.OnMacroRecorded;
         }
 
         //public void OpenHelp()
@@ -87,8 +105,6 @@ namespace RecBinderProject.ViewModels
 
             Debug.WriteLine($"NEW MACROS: {macroLoadResult.Macros.Count}");
 
-            this._macros = macroLoadResult.Macros;
-
             if (macroLoadResult.FailedFiles.Count > 0)
             {
                 ContentDialog contentDialog = new ContentDialog()
@@ -99,22 +115,22 @@ namespace RecBinderProject.ViewModels
                 contentDialog.ShowAsync();
             }
 
-            this.UpdateMacrosControls();
+            this.UpdateMacrosControls(macroLoadResult.Macros);
         }
 
 
-        private void UpdateMacrosControls()
+        private void UpdateMacrosControls(List<Macro> macros)
         {
-            ObservableCollection<MacroNavigationItemViewModel> macroControls = new();
+            ObservableCollection<MacroNavigationItemViewModel> macroItems = new();
 
-            foreach (Macro macro in this._macros)
+            foreach (Macro macro in macros)
             {
-                macroControls.Add(new MacroNavigationItemViewModel(macro));
+                macroItems.Add(new MacroNavigationItemViewModel(macro));
             }
 
-            this.MacroItems = macroControls;
+            this.MacroItems = macroItems;
 
-            Debug.WriteLine($"update macros controls {this._macros.Count}");
+            Debug.WriteLine($"update macros controls {macros.Count}");
         }
     }
 }
