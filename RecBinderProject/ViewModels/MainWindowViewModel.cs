@@ -1,12 +1,7 @@
-﻿using ModernWpf.Controls;
-
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
+﻿using System.ComponentModel;
+using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Models;
-using RecBinderProject.Models.MacroRepository;
-
 using RecBinderProject.Services.LocalizationService;
 using RecBinderProject.Services.MainWindowViewModelFactory;
 using RecBinderProject.ViewModels.MacroExecutionViewModels;
@@ -18,9 +13,10 @@ namespace RecBinderProject.ViewModels
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private readonly ILocalizationService _localizationService;
+        private readonly ILogger<MainWindowViewModel> _logger;
 
-        private readonly IMacroRepository _macroRepository;
+
+        private readonly ILocalizationService _localizationService;
 
         private readonly IMainWindowViewModelFactory _viewModelFactory;
 
@@ -39,98 +35,86 @@ namespace RecBinderProject.ViewModels
             }
         }
 
+        public MacroListViewModel MacroListViewModel { get; init; }
 
-        private ObservableCollection<MacroNavigationItemViewModel> _macroItems;
-        public ObservableCollection<MacroNavigationItemViewModel> MacroItems
+
+        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, ILocalizationService localizationService, MacroListViewModel macroListViewModel, IMainWindowViewModelFactory viewModelFactory)
         {
-            get => this._macroItems;
-            set
-            {
-                if (ReferenceEquals(this._macroItems, value)) return;
+            this._logger = logger;
 
-                this._macroItems = value;
-                Debug.WriteLine("MacroItems update");
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MacroItems)));
-            }
-        }
-
-
-        public MainWindowViewModel(ILocalizationService localizationService, IMacroRepository macroRepository, IMainWindowViewModelFactory viewModelFactory)
-        {
             this._localizationService = localizationService;
 
-            this._macroRepository = macroRepository;
+            this.MacroListViewModel = macroListViewModel;
 
             this._viewModelFactory = viewModelFactory;
 
-            this._macroItems = new ObservableCollection<MacroNavigationItemViewModel>();
+            this.MacroListViewModel.RefreshMacros();
+        }
 
-            this.RefreshMacros();
+
+        public void OnHotkeyPressed(HotkeyAction action)
+        {
+            this._logger.LogDebug("Hotkey action: {HotkeyAction}", action.ToString());
+
+            switch (action)
+            {
+                case HotkeyAction.StartRecording: break;
+                case HotkeyAction.StopRecording: break;
+
+                case HotkeyAction.StartPlaying: 
+                    if (this.CurrentViewModel is MacroPlaybackViewModel startPlaybackViewModel)
+                    {
+                        startPlaybackViewModel.StartCommand.Execute(this);
+                    }
+                    break;
+                case HotkeyAction.StopPlaying:
+                    if (this.CurrentViewModel is MacroPlaybackViewModel stopPlaybackViewModel)
+                    {
+                        stopPlaybackViewModel.StopCommand.Execute(this);
+                    }
+                    break;
+
+                default: break;
+            }
         }
 
         private void OnMacroRecorded()
         {
-            Debug.WriteLine("MACRO RECORDED: REFRESH");
-            this.RefreshMacros();
+            this._logger.LogDebug("On macro recorded");
+
+            this.MacroListViewModel.RefreshMacros();
         }
 
 
         public void OpenPlayback(Macro macro)
         {
+            this._logger.LogInformation("Opening playback for {MacroName}", macro.Metadata.Name);
+
             this.CurrentViewModel = this._viewModelFactory.CreatePlayback(macro);
         }
 
         public void OpenRecording()
         {
+            this._logger.LogInformation("Opening recording");
+
             MacroRecordingViewModel recordingViewModel = this._viewModelFactory.CreateRecording();
             this.CurrentViewModel = recordingViewModel;
 
             recordingViewModel.MacroRecorded += this.OnMacroRecorded;
         }
 
-        //public void OpenHelp()
-        //{
-        //    //this.CurrentViewModel = this._viewModelFactory.GetHelp();
-        //}
+        public void OpenHelp()
+        {
+            this._logger.LogInformation("Opening help");
+
+            //this.CurrentViewModel = this._viewModelFactory.GetHelp();
+        }
 
         public void OpenSettings()
         {
+            this._logger.LogInformation("Opening settings");
+
             this.CurrentViewModel = this._viewModelFactory.GetAppSettings();
-        }
-
-
-        public void RefreshMacros()
-        {
-            MacroLoadResult macroLoadResult = this._macroRepository.LoadAll();
-
-            Debug.WriteLine($"NEW MACROS: {macroLoadResult.Macros.Count}");
-
-            if (macroLoadResult.FailedFiles.Count > 0)
-            {
-                ContentDialog contentDialog = new ContentDialog()
-                {
-                    Content = $"Некоторые из записей не были загружены ({macroLoadResult.FailedFiles.Count})",
-                    CloseButtonText = "Закрыть",
-                };
-                contentDialog.ShowAsync();
-            }
-
-            this.UpdateMacrosControls(macroLoadResult.Macros);
-        }
-
-
-        private void UpdateMacrosControls(List<Macro> macros)
-        {
-            ObservableCollection<MacroNavigationItemViewModel> macroItems = new();
-
-            foreach (Macro macro in macros)
-            {
-                macroItems.Add(new MacroNavigationItemViewModel(macro));
-            }
-
-            this.MacroItems = macroItems;
-
-            Debug.WriteLine($"update macros controls {macros.Count}");
         }
     }
 }
