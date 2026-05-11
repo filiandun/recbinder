@@ -83,7 +83,7 @@ namespace RecBinderProject.Models.MacroRepository
             string fileName = $"{MacroRepository.SanitizeFileName(recordingInput.Metadata.Name)}.json";
             string filePath = Path.Combine(this.FolderPath, fileName);
 
-            if (!allowOverwrite && File.Exists(filePath)) throw new InvalidOperationException($"save: file already exist {filePath}");
+            //if (!allowOverwrite && File.Exists(filePath)) throw new InvalidOperationException($"save: file already exist {filePath}");
 
             string json = JsonSerializer.Serialize(recordingInput, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 

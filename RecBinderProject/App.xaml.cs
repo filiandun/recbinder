@@ -1,14 +1,18 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
-
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+
+using RecBinderProject.Views;
+
 using RecBinderProject.ViewModels;
+using RecBinderProject.ViewModels.AppSettingsViewModels;
+
 using RecBinderProject.Models.MacroRepository;
+
 using RecBinderProject.Services.AppSettingsService;
 using RecBinderProject.Services.LocalizationService;
-using RecBinderProject.ViewModels.AppSettingsViewModels;
-using RecBinderProject.Views;
+using RecBinderProject.Services.GlobalHotkeyService;
 using RecBinderProject.Services.MainWindowViewModelFactory;
 
 
@@ -36,9 +40,12 @@ namespace RecBinderProject
             services.AddSingleton<ILocalizationService, LocalizationService>();
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
 
+            services.AddSingleton<GlobalHotkeyService>();
+
             // view models
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<IMainWindowViewModelFactory, MainWindowViewModelFactory>();
+            services.AddSingleton<MacroListViewModel>();
 
             services.AddSingleton<AppSettingsViewModel>();
             services.AddSingleton<GeneralAppSettingsSectionViewModel>();

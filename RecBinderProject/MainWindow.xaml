@@ -36,7 +36,7 @@
 
     <Grid>
         <ContentControl Content="{Binding CurrentViewModel}" />
-        <ui:NavigationView x:Name="navigationView" PaneTitle="Список записей" PaneDisplayMode="LeftCompact" MenuItemsSource="{Binding MacroItems}" ItemInvoked="NavigationView_ItemInvoked">
+        <ui:NavigationView x:Name="navigationView" PaneTitle="Список записей" PaneDisplayMode="LeftCompact" MenuItemsSource="{Binding MacroListViewModel.MacroItems}" ItemInvoked="NavigationView_ItemInvoked">
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem Content="Создать запись" Icon="Video" Tag="Recording"/>
                 <ui:NavigationViewItem Content="Помощь" Icon="Help" Tag="Help"/>
