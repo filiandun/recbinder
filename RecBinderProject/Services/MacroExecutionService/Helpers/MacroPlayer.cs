@@ -42,6 +42,8 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
         {
             this._stopwatch.Restart();
 
+            Point startCursorPosition = Cursor.Position;
+
             foreach (InputEvent inputEvent in this._macro.Events)
             {
                 await this.PlayDelay(inputEvent.TimeOffset, cancellationToken);
@@ -50,7 +52,7 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
 
                 await this.WaitIfPausedTask(cancellationToken);
 
-                this.PlayEvent(inputEvent);
+                this.PlayEvent(inputEvent, startCursorPosition);
             }
 
             this._stopwatch.Stop();
@@ -83,16 +85,16 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
             }
         }
 
-        private void PlayEvent(InputEvent inputEvent)
+        private void PlayEvent(InputEvent inputEvent, Point cursorPosition)
         {
             switch (inputEvent.Kind) // TODO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
             {
                 case InputEventKind.KeyboardPress: this.PlayKeyboardPress((KeyboardPressEvent)inputEvent.KeyboardPress); break;
                 case InputEventKind.MousePress: this.PlayMousePress((MousePressEvent)inputEvent.MousePress); break;
-                case InputEventKind.MouseMove: this.PlayMouseMove((MouseMoveEvent)inputEvent.MouseMove); break;
+                case InputEventKind.MouseMove: this.PlayMouseMove((MouseMoveEvent)inputEvent.MouseMove, cursorPosition); break;
                 case InputEventKind.MouseWheel: this.PlayMouseWheel((MouseWheelEvent)inputEvent.MouseWheel); break;
 
-                default: throw new Exception("Ошибка. Неизвестное событие, запись повреждена.");
+                default: throw new ArgumentOutOfRangeException(inputEvent.Kind.GetType().Name, inputEvent.Kind, "error, unknown type input event");
             }
         }
 
@@ -153,15 +155,15 @@ namespace RecBinderProject.Services.MacroExecutionService.Helpers
             }
         }
 
-        private void PlayMouseMove(MouseMoveEvent mouseMoveInput)
+        private void PlayMouseMove(MouseMoveEvent mouseMoveInput, Point cursorPosition)
         {
             if (!this._macroOptions.MouseMoveIgnored)
             {
-                Point cursorPosition = Cursor.Position;
-                Point recordPosition = Cursor.Position;
+                InputEvent firstMoveEvent = this._macro.Events.OfType<InputEvent>().FirstOrDefault(ie => ie.MouseMove is not null);
+                Point firstPosition = new Point((int)firstMoveEvent.MouseMove.Value.X, (int)firstMoveEvent.MouseMove.Value.Y);
 
-                int targetX = this._macroOptions.RelativeMouseMovementEnabled ? cursorPosition.X + ((int)mouseMoveInput.X - recordPosition.X) : (int)mouseMoveInput.X;
-                int targetY = this._macroOptions.RelativeMouseMovementEnabled ? cursorPosition.Y + ((int)mouseMoveInput.Y - recordPosition.Y) : (int)mouseMoveInput.Y;
+                int targetX = this._macroOptions.RelativeMouseMovementEnabled ? cursorPosition.X + ((int)mouseMoveInput.X - firstPosition.X) : (int)mouseMoveInput.X;
+                int targetY = this._macroOptions.RelativeMouseMovementEnabled ? cursorPosition.Y + ((int)mouseMoveInput.Y - firstPosition.Y) : (int)mouseMoveInput.Y;
 
                 int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width; // TODO подтягивать разрешение монитора надо из настроек
                 int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
