@@ -5,10 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Views;
 
+using RecBinderProject.Models.MacroRepository;
+
 using RecBinderProject.ViewModels;
 using RecBinderProject.ViewModels.AppSettingsViewModels;
-
-using RecBinderProject.Models.MacroRepository;
 
 using RecBinderProject.Services.AppSettingsService;
 using RecBinderProject.Services.LocalizationService;
@@ -34,6 +34,7 @@ namespace RecBinderProject
                 builder.SetMinimumLevel(LogLevel.Debug);
             });
 
+
             // services
             services.AddSingleton<IMacroRepository, MacroRepository>();
 
@@ -52,11 +53,14 @@ namespace RecBinderProject
             //services.AddSingleton<ProfileAppSettingsSectionViewModel>();
             //services.AddSingleton<AdvancedAppSettingsSectionViewModel>();
 
-            // pages
+            // views
             services.AddSingleton<AppSettingsControl>();
 
 
             this.ServiceProvider = services.BuildServiceProvider();
+
+            var appSettingsService = this.ServiceProvider.GetRequiredService<IAppSettingsService>();
+            appSettingsService.Load();
 
             var mainWindow = ActivatorUtilities.CreateInstance<MainWindow>(this.ServiceProvider);
             mainWindow.Show();
