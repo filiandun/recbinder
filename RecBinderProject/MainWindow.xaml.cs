@@ -3,10 +3,10 @@ using System.Windows.Input;
 
 using ModernWpf.Controls;
 
-using RecBinderProject.Models;
-using RecBinderProject.ViewModels;
-using RecBinderProject.Services.GlobalHotkeyService;
-using RecBinderProject.Services.AppSettingsService;
+using RecBinderProject.Infrastructure.AppSettingsService;
+using RecBinderProject.Infrastructure.GlobalHotkeyService;
+
+using RecBinderProject.Presentation.ViewModels.MainWindow;
 
 
 namespace RecBinderProject
@@ -82,7 +82,7 @@ namespace RecBinderProject
 
         private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            if (args.InvokedItem is MacroNavigationItemViewModel macroItem)
+            if (args.InvokedItem is MacroListItemViewModel macroItem)
             {
                 this.ViewModel.OpenPlayback(macroItem.Macro);
                 return;

@@ -1,0 +1,74 @@
+﻿using RecBinderProject.Domain;
+
+using RecBinderProject.ApplicationLayer.MacroExecutionService;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
+
+using RecBinderProject.Presentation.ViewModels;
+using RecBinderProject.Presentation.ViewModels.AppSettings;
+using RecBinderProject.Presentation.ViewModels.MacroExecution;
+using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
+
+using RecBinderProject.Infrastructure.MacroRepository;
+using RecBinderProject.Infrastructure.AppSettingsService;
+using RecBinderProject.Infrastructure.LocalizationService;
+
+
+namespace RecBinderProject.Presentation.Factories
+{
+    public class MainWindowViewModelFactory : IMainWindowViewModelFactory
+    {
+        private readonly ILocalizationService _localizationService;
+
+        private readonly IMacroRepository _macroRepository;
+
+        private readonly IAppSettingsService _appSettingsService;
+
+
+        public MainWindowViewModelFactory(ILocalizationService localizationService, IMacroRepository macroRepository, IAppSettingsService appSettingsService)
+        {
+            this._localizationService = localizationService;
+            this._macroRepository = macroRepository;
+            this._appSettingsService = appSettingsService;
+        }
+
+
+        public MacroPlaybackViewModel CreatePlayback(Macro macro)
+        {
+            LocalizationViewModel localizationViewModel = new LocalizationViewModel(this._localizationService);
+
+            MacroMetadataViewerViewModel macroMetadataViewerViewModel = new MacroMetadataViewerViewModel(macro.Metadata);
+
+            MacroExecutionOptions macroOptions = new MacroExecutionOptions();
+            MacroPlaybackService macroPlaybackService = new MacroPlaybackService(macroOptions, macro);
+
+            MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroPlaybackService, this._localizationService, "Play");
+
+            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(macroPlaybackService, localizationViewModel, macroMetadataViewerViewModel, macroExecutionStatusViewModel, macroOptions);
+
+            return macroPlaybackViewModel;
+        }
+
+        public MacroRecordingViewModel CreateRecording()
+        {
+            LocalizationViewModel localizationViewModel = new LocalizationViewModel(this._localizationService);
+
+            MacroMetadataCreatorViewModel macroMetadataCreatorViewModel = new MacroMetadataCreatorViewModel();
+
+            MacroMetadata macroMetadata = new MacroMetadata();
+            MacroExecutionOptions macroOptions = new MacroExecutionOptions();
+            MacroRecordingService macroRecordingService = new MacroRecordingService(this._macroRepository, macroMetadata, macroOptions);
+
+            MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroRecordingService, this._localizationService, "Create");
+
+            MacroRecordingViewModel macroRecordingViewModel = new MacroRecordingViewModel(macroRecordingService, localizationViewModel, macroMetadataCreatorViewModel, macroExecutionStatusViewModel, macroOptions);
+
+            return macroRecordingViewModel;
+        }
+
+        public AppSettingsViewModel GetAppSettings()
+        {
+            return new AppSettingsViewModel(this._appSettingsService, new GeneralAppSettingsSectionViewModel(this._appSettingsService));
+        }
+    }
+}

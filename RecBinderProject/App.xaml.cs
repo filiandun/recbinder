@@ -5,15 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Views;
 
-using RecBinderProject.Models.MacroRepository;
+using RecBinderProject.Presentation.Factories;
+using RecBinderProject.Presentation.ViewModels.MainWindow;
+using RecBinderProject.Presentation.ViewModels.AppSettings;
 
-using RecBinderProject.ViewModels;
-using RecBinderProject.ViewModels.AppSettingsViewModels;
-
-using RecBinderProject.Services.AppSettingsService;
-using RecBinderProject.Services.LocalizationService;
-using RecBinderProject.Services.GlobalHotkeyService;
-using RecBinderProject.Services.MainWindowViewModelFactory;
+using RecBinderProject.Infrastructure.MacroRepository;
+using RecBinderProject.Infrastructure.AppSettingsService;
+using RecBinderProject.Infrastructure.LocalizationService;
+using RecBinderProject.Infrastructure.GlobalHotkeyService;
 
 
 namespace RecBinderProject
