@@ -12,6 +12,7 @@ using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 using RecBinderProject.Infrastructure.MacroRepository;
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.LocalizationService;
+using RecBinderProject.Presentation.Services;
 
 
 namespace RecBinderProject.Presentation.Factories
@@ -23,13 +24,17 @@ namespace RecBinderProject.Presentation.Factories
         private readonly IMacroRepository _macroRepository;
 
         private readonly IAppSettingsService _appSettingsService;
+        private readonly IThemeService _themeService;
 
 
-        public MainWindowViewModelFactory(ILocalizationService localizationService, IMacroRepository macroRepository, IAppSettingsService appSettingsService)
+        public MainWindowViewModelFactory(ILocalizationService localizationService, IMacroRepository macroRepository, IAppSettingsService appSettingsService, IThemeService themeService)
         {
             this._localizationService = localizationService;
+
             this._macroRepository = macroRepository;
+
             this._appSettingsService = appSettingsService;
+            this._themeService = themeService;
         }
 
 
@@ -68,7 +73,7 @@ namespace RecBinderProject.Presentation.Factories
 
         public AppSettingsViewModel GetAppSettings()
         {
-            return new AppSettingsViewModel(this._appSettingsService, new GeneralAppSettingsSectionViewModel(this._appSettingsService));
+            return new AppSettingsViewModel(this._appSettingsService, new GeneralAppSettingsSectionViewModel(this._appSettingsService, this._themeService));
         }
     }
 }

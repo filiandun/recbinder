@@ -2,36 +2,34 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using ModernWpf;
-
 
 namespace RecBinderProject.Infrastructure.AppSettingsService
 {
     public class GeneralAppSettings : IEquatable<GeneralAppSettings>, ICloneable
     {
         public string SaveDirectory { get; set; }
-        public ApplicationTheme ApplicationTheme { get; set; } // TO DO применение темы не совсем работает, так как тема подтягивается сначала с файла настроек,
-                                                               // а потом, когда уже main window запускается, то оно подтягивается как в системе из-за UI библиотеки
+        public AppTheme AppTheme { get; set; }
+
         public Size MonitorSize { get; set; }
 
         public GeneralAppSettings()
         {
             this.SaveDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Macros");
-            this.ApplicationTheme = ApplicationTheme.Light;
+            this.AppTheme = AppTheme.System;
             this.MonitorSize = SystemInformation.PrimaryMonitorSize;
         }
 
-        public GeneralAppSettings(string saveDirectory, ApplicationTheme theme, Size monitorSize)
+        public GeneralAppSettings(string saveDirectory, AppTheme theme, Size monitorSize)
         {
             this.SaveDirectory = saveDirectory;
-            this.ApplicationTheme = theme;
+            this.AppTheme = theme;
             this.MonitorSize = monitorSize;
         }
 
-        public GeneralAppSettings(string saveDirectory, ApplicationTheme theme, int monitorWidth, int monitorHeight)
+        public GeneralAppSettings(string saveDirectory, AppTheme theme, int monitorWidth, int monitorHeight)
         {
             this.SaveDirectory = saveDirectory;
-            this.ApplicationTheme = theme;
+            this.AppTheme = theme;
             this.MonitorSize = new Size(monitorWidth, monitorHeight);
         }
 
@@ -40,7 +38,7 @@ namespace RecBinderProject.Infrastructure.AppSettingsService
             return new GeneralAppSettings()
             {
                 SaveDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Macros"),
-                ApplicationTheme = ApplicationTheme.Light,
+                AppTheme = AppTheme.System,
                 MonitorSize = SystemInformation.PrimaryMonitorSize
             };
         }
@@ -50,11 +48,11 @@ namespace RecBinderProject.Infrastructure.AppSettingsService
             if (other is null) return false;
 
             return this.SaveDirectory == other.SaveDirectory &&
-                   this.ApplicationTheme == other.ApplicationTheme &&
+                   this.AppTheme == other.AppTheme &&
                    this.MonitorSize == other.MonitorSize;
         }
 
         // TODO может и не надо, просто сделать модель record, а не class
-        public object Clone() => new GeneralAppSettings(this.SaveDirectory, this.ApplicationTheme, this.MonitorSize);
+        public object Clone() => new GeneralAppSettings(this.SaveDirectory, this.AppTheme, this.MonitorSize);
     }
 }

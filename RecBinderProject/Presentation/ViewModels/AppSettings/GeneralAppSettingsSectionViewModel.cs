@@ -9,6 +9,8 @@ using ModernWpf;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Infrastructure.AppSettingsService;
+using System.Diagnostics;
+using RecBinderProject.Presentation.Services;
 
 
 namespace RecBinderProject.Presentation.ViewModels.AppSettings
@@ -21,6 +23,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         private readonly Dictionary<string, List<string>> _errors;
 
         private readonly IAppSettingsService _appSettingsService;
+        private readonly IThemeService _themeService;
 
         private GeneralAppSettings _generalAppSettingsOriginal;
         private GeneralAppSettings _generalAppSettingsEditable;
@@ -52,14 +55,17 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             }
         }
 
-        public ApplicationTheme Theme
+        public AppTheme AppTheme
         {
-            get => this._generalAppSettingsEditable.ApplicationTheme;
+            get => this._generalAppSettingsEditable.AppTheme;
             set
             {
-                if (!Equals(this._generalAppSettingsEditable.ApplicationTheme, value))
+                if (!Equals(this._generalAppSettingsEditable.AppTheme, value))
                 {
-                    this._generalAppSettingsEditable.ApplicationTheme = value;
+                    this._generalAppSettingsEditable.AppTheme = value;
+
+                    this._themeService.ApplyTheme(value);
+
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
                 }
             }
@@ -91,25 +97,22 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             }
         }
 
-        public ApplicationTheme[] AvailableApplicationThemes => this.GetAvailableApplicationThemes();
+        public AppTheme[] AvailableAppThemes => (AppTheme[])Enum.GetValues(typeof(AppTheme));
 
-        public string ApplicationTheme
-        {
-            get => this._generalAppSettingsEditable.ApplicationTheme.ToString();
-        }
 
-        public Screen[] AvailableScreenResolutions => this.GetAvailableScreenResolutions(); // TODO: всё, что связано с разрешением должно быть в Advanced, а не тут
+        public Screen[] AvailableScreenResolutions => Screen.AllScreens; // TODO: всё, что связано с разрешением должно быть в Advanced, а не тут
         public String ScreenResolution
         {
             get => $"{this._generalAppSettingsEditable.MonitorSize.Width} x {this._generalAppSettingsEditable.MonitorSize.Height}";
         }
 
 
-        public GeneralAppSettingsSectionViewModel(IAppSettingsService appSettingsService)
+        public GeneralAppSettingsSectionViewModel(IAppSettingsService appSettingsService, IThemeService themeService)
         {
             this._errors = new Dictionary<string, List<string>>();
 
             this._appSettingsService = appSettingsService;
+            this._themeService = themeService;
 
             this._generalAppSettingsOriginal = this._appSettingsService.AppSettings.General;
             this._generalAppSettingsEditable = (GeneralAppSettings)this._generalAppSettingsOriginal.Clone();
@@ -205,7 +208,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         private void RaiseAll()
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.SaveDirectory)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Theme)));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AppTheme)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MonitorWidth)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MonitorHeight)));
 
@@ -218,17 +221,6 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             return  this.HasErrors ? "Есть ошибки" :
                     this.HasEdits ? "Есть несохранённые изменения" :
                     "Настройки сохранены";
-        }
-
-
-        private ApplicationTheme[] GetAvailableApplicationThemes()
-        {
-            return (ApplicationTheme[]) Enum.GetValues(typeof(ApplicationTheme));
-        }
-
-        public Screen[] GetAvailableScreenResolutions()
-        {
-            return System.Windows.Forms.Screen.AllScreens;
         }
     }
 }

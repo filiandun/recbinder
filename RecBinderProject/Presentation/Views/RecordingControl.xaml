@@ -38,7 +38,7 @@
 
             <Grid x:Name="durationGrid" Grid.Row="3">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="9*"/>
+                    <ColumnDefinition Width="12*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
@@ -48,12 +48,12 @@
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Продолительность записи" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
-
-                <ui:NumberBox Value="{Binding MacroMetadataCreatorViewModel.MacroDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Inline"/>
-                <ComboBox SelectedIndex="{Binding MacroMetadataCreatorViewModel.MacroDurationUnitIndex}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="1" Grid.Row="1" >
-                    <ComboBoxItem Content="мс."/>
-                    <ComboBoxItem Content="сек."/>
-                    <ComboBoxItem Content="мин." IsSelected="True"/>
+                
+                <ui:NumberBox Value="{Binding MacroMetadataCreatorViewModel.MacroDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Hidden" VerticalAlignment="Top"/>
+                <ComboBox SelectedIndex="{Binding MacroMetadataCreatorViewModel.MacroDurationUnitIndex}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                    <ComboBoxItem Content="мс"/>
+                    <ComboBoxItem Content="сек"/>
+                    <ComboBoxItem Content="мин"/>
                 </ComboBox>
             </Grid>
 

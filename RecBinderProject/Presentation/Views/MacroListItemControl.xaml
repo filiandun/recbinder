@@ -19,8 +19,8 @@
         </Grid.ColumnDefinitions>
 
         <UniformGrid Rows="2">
-            <Label x:Name="recordNameLabel" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroName}" Foreground="White"/>
-            <Label x:Name="recordDescriptionLabel" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDescription}" FontSize="9" Foreground="White"/>
+            <Label x:Name="recordNameLabel" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroName}"/>
+            <Label x:Name="recordDescriptionLabel" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDescription}" FontSize="9"/>
         </UniformGrid>
 
         <Button x:Name="playRecordButton" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{x:Null}" Background="{x:Null}">
