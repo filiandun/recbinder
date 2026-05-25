@@ -93,6 +93,8 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
         public void SetStoppedState()
         {
+            this._timer.Stop();
+
             this.StatusText = $"{this.GetLocalization("Stopped")} - {this.GetTimeString()}";
             this.ProgressBarColor = new SolidColorBrush(Colors.Red);
         }
