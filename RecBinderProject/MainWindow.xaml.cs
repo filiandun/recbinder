@@ -99,6 +99,11 @@ namespace RecBinderProject
             }
         }
 
+        private void AutoSuggestBox_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            
+        }
+
 
         private void OnClosed(object? sender, EventArgs e)
         {

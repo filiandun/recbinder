@@ -25,16 +25,16 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Настройки" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" FontFamily="Segoe UI"/>
-            <TextBlock Text="{Binding GeneralAppSettingsSectionViewModel.StatusText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White" FontSize="14" FontFamily="Segoe UI"/>
+            <TextBlock Text="Настройки" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" FontFamily="Segoe UI"/>
+            <TextBlock Text="{Binding GeneralAppSettingsSectionViewModel.StatusText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="14" FontFamily="Segoe UI"/>
 
             <StackPanel Grid.Row="1" Orientation="Vertical">
-                <Label Content="Тема" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="Тема" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <ComboBox  Grid.Row="1"  ItemsSource="{Binding GeneralAppSettingsSectionViewModel.AvailableAppThemes}" SelectedItem="{Binding GeneralAppSettingsSectionViewModel.AppTheme, Mode=TwoWay}"/>
             </StackPanel>
 
             <StackPanel Grid.Row="2" Orientation="Vertical">
-                <Label Content="Путь к папке с сохранёнными записями" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="Путь к папке с сохранёнными записями" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*"/>
@@ -47,7 +47,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="3" Orientation="Vertical">
-                <Label Content="Разрешение монитора (ширина и высота)" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="Разрешение монитора (ширина и высота)" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
