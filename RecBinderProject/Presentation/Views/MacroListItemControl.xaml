@@ -18,21 +18,28 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="{Binding MacroName}" IsEnabled="False" FontWeight="Bold"/>
+                <Separator />
+                <MenuItem Header="Воспроизвести"/>
+                <MenuItem Header="Пауза"/>
+                <MenuItem Header="Остановить"/>
+                <Separator />
+                <MenuItem Header="Показать в проводнике"/>
+                <Separator />
+                <MenuItem Header="Редактировать"/>
+                <MenuItem Header="Удалить"/>
+            </ContextMenu>
+        </Grid.ContextMenu>
+
         <UniformGrid Rows="2">
             <Label x:Name="recordNameLabel" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroName}"/>
             <Label x:Name="recordDescriptionLabel" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDescription}" FontSize="9"/>
         </UniformGrid>
 
-        <Button x:Name="playRecordButton" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{x:Null}" Background="{x:Null}">
-            <StackPanel>
-                <ui:SymbolIcon Symbol="Play"/>
-            </StackPanel>
-        </Button>
-        
-        <Button x:Name="stopRecordButton" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}">
-            <StackPanel>
-                <ui:SymbolIcon Symbol="Stop"/>
-            </StackPanel>
-        </Button>
+        <Button Content="▶" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{x:Null}" Background="{x:Null}"/>
+
+        <Button Content="■" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}"/>
     </Grid>
 </UserControl>

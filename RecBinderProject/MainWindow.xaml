@@ -40,11 +40,11 @@
             <ui:NavigationView.PaneHeader>
                 <StackPanel Margin="-25, 40, 15, 0">
                     <DockPanel>
-                        <Button Margin="0, 5, 5, 5" Padding="5">
+                        <Button Margin="0, 5, 5, 5" Padding="5" Command="{Binding MacroListViewModel.OpenSaveFolderCommand}">
                             <ui:SymbolIcon Symbol="MoveToFolder"/>
                         </Button>
 
-                        <Button Padding="5">
+                        <Button Padding="5" Command="{Binding MacroListViewModel.RefreshMacrosCommand}">
                             <ui:SymbolIcon Symbol="Refresh"/>
                         </Button>
 
@@ -58,7 +58,10 @@
 
             <ui:NavigationView.PaneFooter>
                 <StackPanel Margin="12,0,12,12">
-                    <TextBlock Text="Записей: 0" Margin="0,0,0,6"/>
+                    <TextBlock Margin="0,0,0,6">
+                        <Run Text="Записей " />
+                        <Run Text="{Binding MacroListViewModel.MacrosCount, Mode=OneWay}"/>
+                    </TextBlock>
                 </StackPanel>
             </ui:NavigationView.PaneFooter>
 

@@ -15,7 +15,7 @@ namespace RecBinderProject.Infrastructure.MacroRepository
 
         private readonly IAppSettingsService _settingsService;
 
-        private string FolderPath => this._settingsService.AppSettings.General.SaveDirectory;
+        public string SaveDirectory => this._settingsService.AppSettings.General.SaveDirectory;
 
         public MacroRepository(ILogger<MacroRepository> logger, IAppSettingsService settingsService)
         {
@@ -23,14 +23,14 @@ namespace RecBinderProject.Infrastructure.MacroRepository
 
             this._settingsService = settingsService;
 
-            Directory.CreateDirectory(this.FolderPath);
+            Directory.CreateDirectory(this.SaveDirectory);
         }
 
         public MacroLoadResult LoadAll()
         {
             MacroLoadResult macroLoadResult = new();
 
-            foreach (string filePath in Directory.EnumerateFiles(this.FolderPath, "*.json"))
+            foreach (string filePath in Directory.EnumerateFiles(this.SaveDirectory, "*.json"))
             {
                 try
                 {
@@ -59,7 +59,7 @@ namespace RecBinderProject.Infrastructure.MacroRepository
         public Macro Read(string macroName)
         {
             string fileName = $"{MacroRepository.SanitizeFileName(macroName)}.json";
-            string filePath = Path.Combine(this.FolderPath, fileName);
+            string filePath = Path.Combine(this.SaveDirectory, fileName);
 
             if (!File.Exists(filePath)) throw new FileNotFoundException($"read: file not found {filePath}");
 
@@ -81,8 +81,9 @@ namespace RecBinderProject.Infrastructure.MacroRepository
         public void Save(Macro recordingInput, bool allowOverwrite = false)
         {
             string fileName = $"{MacroRepository.SanitizeFileName(recordingInput.Metadata.Name)}.json";
-            string filePath = Path.Combine(this.FolderPath, fileName);
+            string filePath = Path.Combine(this.SaveDirectory, fileName);
 
+            // TODO раскомментировать и добавить try-обработку в месте, где вызывается
             //if (!allowOverwrite && File.Exists(filePath)) throw new InvalidOperationException($"save: file already exist {filePath}");
 
             string json = JsonSerializer.Serialize(recordingInput, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
@@ -93,7 +94,7 @@ namespace RecBinderProject.Infrastructure.MacroRepository
         public void Delete(Macro recordingInput)
         {
             string fileName = $"{MacroRepository.SanitizeFileName(recordingInput.Metadata.Name)}.json";
-            string filePath = Path.Combine(this.FolderPath, fileName);
+            string filePath = Path.Combine(this.SaveDirectory, fileName);
 
             if (!File.Exists(filePath)) throw new FileNotFoundException($"delete: file not found {filePath}");
 

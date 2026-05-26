@@ -9,6 +9,7 @@ using RecBinderProject.Presentation.Factories;
 
 using RecBinderProject.Infrastructure.MacroRepository;
 using RecBinderProject.Infrastructure.LocalizationService;
+using RecBinderProject.Presentation.Commands;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MainWindow
@@ -29,10 +30,15 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
                 if (ReferenceEquals(this._macroItems, value)) return;
 
                 this._macroItems = value;
-                Debug.WriteLine("MacroItems update");
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MacroItems)));
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MacrosCount)));
             }
         }
+
+        public int MacrosCount => this._macroItems.Count;
+
+        public RelayCommand RefreshMacrosCommand { get; private set; }
+        public RelayCommand OpenSaveFolderCommand { get; private set; }
 
 
         public MacroListViewModel(ILocalizationService localizationService, IMacroRepository macroRepository, IMainWindowViewModelFactory viewModelFactory)
@@ -40,6 +46,9 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             this._macroRepository = macroRepository;
 
             this._macroItems = new ObservableCollection<MacroListItemViewModel>();
+
+            this.RefreshMacrosCommand = new RelayCommand(this.RefreshMacros);
+            this.OpenSaveFolderCommand = new RelayCommand(this.OpenSaveFolder);
         }
 
 
@@ -60,6 +69,15 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             }
 
             this.UpdateMacrosControls(macroLoadResult.Macros);
+        }
+
+        public void OpenSaveFolder()
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = this._macroRepository.SaveDirectory,
+                UseShellExecute = true
+            });
         }
 
 

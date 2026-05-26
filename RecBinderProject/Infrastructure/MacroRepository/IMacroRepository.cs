@@ -5,6 +5,8 @@ namespace RecBinderProject.Infrastructure.MacroRepository
 {
     public interface IMacroRepository
     {
+        public string SaveDirectory { get; }
+
         public MacroLoadResult LoadAll();
 
         public Macro Read(string recordName);

@@ -61,8 +61,19 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
 
             switch (action)
             {
-                case HotkeyAction.StartRecording: break;
-                case HotkeyAction.StopRecording: break;
+                case HotkeyAction.StartRecording:
+                    if (this.CurrentViewModel is MacroRecordingViewModel startRecordingViewModel)
+                    {
+                        startRecordingViewModel.StartCommand.Execute(this);
+                    }
+                    break;
+
+                case HotkeyAction.StopRecording:
+                    if (this.CurrentViewModel is MacroRecordingViewModel stopRecordingViewModel)
+                    {
+                        stopRecordingViewModel.StartCommand.Execute(this);
+                    }
+                    break;
 
                 case HotkeyAction.StartPlaying: 
                     if (this.CurrentViewModel is MacroPlaybackViewModel startPlaybackViewModel)
@@ -70,6 +81,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
                         startPlaybackViewModel.StartCommand.Execute(this);
                     }
                     break;
+
                 case HotkeyAction.StopPlaying:
                     if (this.CurrentViewModel is MacroPlaybackViewModel stopPlaybackViewModel)
                     {
