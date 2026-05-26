@@ -67,9 +67,11 @@ namespace RecBinderProject
             var appSettingsService = this.ServiceProvider.GetRequiredService<IAppSettingsService>();
             appSettingsService.Load();
 
+            var localizationService = this.ServiceProvider.GetRequiredService<ILocalizationService>();
+            localizationService.ApplyLanguage(appSettingsService.AppSettings.General.AppLanguage);
+
             var themeService = this.ServiceProvider.GetRequiredService<IThemeService>();
             themeService.ApplyTheme(appSettingsService.AppSettings.General.AppTheme);
-
 
             var mainWindow = ActivatorUtilities.CreateInstance<MainWindow>(this.ServiceProvider);
             mainWindow.Show();

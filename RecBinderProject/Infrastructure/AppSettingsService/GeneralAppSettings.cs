@@ -7,38 +7,49 @@ namespace RecBinderProject.Infrastructure.AppSettingsService
 {
     public class GeneralAppSettings : IEquatable<GeneralAppSettings>, ICloneable
     {
-        public string SaveDirectory { get; set; }
+        public AppLanguage AppLanguage { get; set; }
         public AppTheme AppTheme { get; set; }
+        public string SaveDirectory { get; set; }
 
         public Size MonitorSize { get; set; }
 
+
         public GeneralAppSettings()
         {
-            this.SaveDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Macros");
+            this.AppLanguage = AppLanguage.System;
             this.AppTheme = AppTheme.System;
+            this.SaveDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Macros");
+
             this.MonitorSize = SystemInformation.PrimaryMonitorSize;
         }
 
-        public GeneralAppSettings(string saveDirectory, AppTheme theme, Size monitorSize)
+        public GeneralAppSettings(AppLanguage language, AppTheme theme, string saveDirectory, Size monitorSize)
         {
-            this.SaveDirectory = saveDirectory;
+            this.AppLanguage = language;
             this.AppTheme = theme;
+            this.SaveDirectory = saveDirectory;
+
             this.MonitorSize = monitorSize;
         }
 
-        public GeneralAppSettings(string saveDirectory, AppTheme theme, int monitorWidth, int monitorHeight)
+
+        public GeneralAppSettings(AppLanguage language, AppTheme theme, string saveDirectory, int monitorWidth, int monitorHeight)
         {
-            this.SaveDirectory = saveDirectory;
+            this.AppLanguage = language;
             this.AppTheme = theme;
+            this.SaveDirectory = saveDirectory;
+
             this.MonitorSize = new Size(monitorWidth, monitorHeight);
         }
+
 
         public static GeneralAppSettings Default()
         {
             return new GeneralAppSettings()
             {
-                SaveDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Macros"),
+                AppLanguage = AppLanguage.System,
                 AppTheme = AppTheme.System,
+                SaveDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Macros"),
                 MonitorSize = SystemInformation.PrimaryMonitorSize
             };
         }
@@ -47,12 +58,13 @@ namespace RecBinderProject.Infrastructure.AppSettingsService
         {
             if (other is null) return false;
 
-            return this.SaveDirectory == other.SaveDirectory &&
+            return this.AppLanguage == other.AppLanguage &&
                    this.AppTheme == other.AppTheme &&
+                   this.SaveDirectory == other.SaveDirectory &&
                    this.MonitorSize == other.MonitorSize;
         }
 
         // TODO может и не надо, просто сделать модель record, а не class
-        public object Clone() => new GeneralAppSettings(this.SaveDirectory, this.AppTheme, this.MonitorSize);
+        public object Clone() => new GeneralAppSettings(this.AppLanguage, this.AppTheme, this.SaveDirectory, this.MonitorSize);
     }
 }

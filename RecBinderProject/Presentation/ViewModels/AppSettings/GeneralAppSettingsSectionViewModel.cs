@@ -5,12 +5,10 @@ using System.Windows.Input;
 using System.Windows.Forms;
 using System.ComponentModel;
 
-using ModernWpf;
-
 using RecBinderProject.Presentation.Commands;
-using RecBinderProject.Infrastructure.AppSettingsService;
-using System.Diagnostics;
 using RecBinderProject.Presentation.Services;
+using RecBinderProject.Infrastructure.AppSettingsService;
+using RecBinderProject.Infrastructure.LocalizationService;
 
 
 namespace RecBinderProject.Presentation.ViewModels.AppSettings
@@ -21,6 +19,8 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         private readonly Dictionary<string, List<string>> _errors;
+
+        private readonly ILocalizationService _localizationService;
 
         private readonly IAppSettingsService _appSettingsService;
         private readonly IThemeService _themeService;
@@ -37,20 +37,21 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         public bool HasEdits => !this._generalAppSettingsOriginal.Equals(this._generalAppSettingsEditable);
         public bool HasErrors => this._errors.Count != 0;
 
-        public string StatusText => this.StatusTextContent(); // TODO: не реализовано, так как нет уведомления об изменении
+        public string StatusText => this.StatusTextContent(); // TODO реализован, но очень частично, нужно доделать
 
-        public string SaveDirectory
+
+        public AppLanguage AppLanguage
         {
-            get => this._generalAppSettingsEditable.SaveDirectory;
+            get => this._generalAppSettingsEditable.AppLanguage;
             set
             {
-                if (!Equals(this._generalAppSettingsEditable.SaveDirectory, value))
+                if (!Equals(this._generalAppSettingsEditable.AppLanguage, value))
                 {
-                    this._generalAppSettingsEditable.SaveDirectory = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.SaveDirectory)));
+                    this._generalAppSettingsEditable.AppLanguage = value;
 
-                    this.ValidateSaveDirectory();
+                    this._localizationService.ApplyLanguage(value);
+
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
                 }
             }
         }
@@ -67,6 +68,23 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
                     this._themeService.ApplyTheme(value);
 
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
+                }
+            }
+        }
+
+        public string SaveDirectory
+        {
+            get => this._generalAppSettingsEditable.SaveDirectory;
+            set
+            {
+                if (!Equals(this._generalAppSettingsEditable.SaveDirectory, value))
+                {
+                    this._generalAppSettingsEditable.SaveDirectory = value;
+
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.SaveDirectory)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
+
+                    this.ValidateSaveDirectory();
                 }
             }
         }
@@ -97,6 +115,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             }
         }
 
+        public AppLanguage[] AvailableAppLanguages => (AppLanguage[])Enum.GetValues(typeof(AppLanguage));
         public AppTheme[] AvailableAppThemes => (AppTheme[])Enum.GetValues(typeof(AppTheme));
 
 
@@ -107,9 +126,11 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         }
 
 
-        public GeneralAppSettingsSectionViewModel(IAppSettingsService appSettingsService, IThemeService themeService)
+        public GeneralAppSettingsSectionViewModel(ILocalizationService localizationService, IAppSettingsService appSettingsService, IThemeService themeService)
         {
             this._errors = new Dictionary<string, List<string>>();
+
+            this._localizationService = localizationService;
 
             this._appSettingsService = appSettingsService;
             this._themeService = themeService;
@@ -141,12 +162,20 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         {
             this._generalAppSettingsEditable = (GeneralAppSettings)this._generalAppSettingsOriginal.Clone();
 
+            this._localizationService.ApplyLanguage(this._generalAppSettingsEditable.AppLanguage);
+            this._themeService.ApplyTheme(this._generalAppSettingsEditable.AppTheme);
+
             this.RaiseAll();
         }
 
         public void ResetLocal() // TODO: не сбрасываются ошибки на самой странице (выделение поля желтым остаётся)
         {
             this._generalAppSettingsEditable = GeneralAppSettings.Default();
+
+            this._localizationService.ApplyLanguage(this._generalAppSettingsEditable.AppLanguage);
+            this._themeService.ApplyTheme(this._generalAppSettingsEditable.AppTheme);
+
+            this._errors.Clear();
 
             this.RaiseAll();
         }
@@ -203,12 +232,18 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             {
                 this.ClearErrors(nameof(this.SaveDirectory));
             }
+
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.StatusText)));
         }
 
         private void RaiseAll()
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.SaveDirectory)));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.StatusText)));
+
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AppLanguage)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.AppTheme)));
+
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.SaveDirectory)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MonitorWidth)));
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MonitorHeight)));
 

@@ -1,12 +1,14 @@
-﻿namespace RecBinderProject.Infrastructure.LocalizationService
+﻿using RecBinderProject.Infrastructure.AppSettingsService;
+
+namespace RecBinderProject.Infrastructure.LocalizationService
 {
     public interface ILocalizationService
     {
-        event Action? LanguageChanged;
+        public event Action? LanguageChanged;
 
-        void SetLanguage(string cultureCode);
+        public void ApplyLanguage(AppLanguage language);
 
-        string GetString(string key);
-        string GetString(string key, params object[] args);
+        public string GetString(string key);
+        public string GetString(string key, params object[] args);
     }
 }

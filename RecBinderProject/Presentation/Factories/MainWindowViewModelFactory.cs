@@ -73,7 +73,7 @@ namespace RecBinderProject.Presentation.Factories
 
         public AppSettingsViewModel GetAppSettings()
         {
-            return new AppSettingsViewModel(this._appSettingsService, new GeneralAppSettingsSectionViewModel(this._appSettingsService, this._themeService));
+            return new AppSettingsViewModel(this._appSettingsService, new GeneralAppSettingsSectionViewModel(this._localizationService, this._appSettingsService, this._themeService));
         }
     }
 }

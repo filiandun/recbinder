@@ -17,7 +17,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
         private readonly DispatcherTimer _timer;
 
-        private readonly ILocalizationService _localizationService; // TODO тут не сервис нужен, а VM
+        private readonly ILocalizationService _localizationService;
         private readonly string _localizationPrefix;
 
         private readonly IMacroExecutionInfo _recordInfo;
