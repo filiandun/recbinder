@@ -38,12 +38,12 @@
 
             <StackPanel Grid.Row="3">
                 <Label Content="Продолжительность" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
-                <Label x:Name="recordDurationLabel" Content="{Binding MacroMetadataViewerViewModel.MacroDuration}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Label x:Name="recordDurationLabel" Content="{Binding MacroMetadataViewerViewModel.MacroDuration}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
             </StackPanel>
 
             <StackPanel Grid.Row="4">
                 <Label Content="Дата и время" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
-                <Label x:Name="recordDateTimeLabel" Content="{Binding MacroMetadataViewerViewModel.MacroCreationDateTime}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Label x:Name="recordDateTimeLabel" Content="{Binding MacroMetadataViewerViewModel.MacroCreationDateTime}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
             </StackPanel>
 
             <Grid x:Name="settingsGrid" Grid.Row="5">

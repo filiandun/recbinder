@@ -47,7 +47,7 @@
                     <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 
                 <ui:NumberBox Value="{Binding MacroMetadataCreatorViewModel.MacroDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="0" Grid.Row="1" SpinButtonPlacementMode="Hidden" VerticalAlignment="Top"/>
                 <ComboBox SelectedIndex="{Binding MacroMetadataCreatorViewModel.MacroDurationUnitIndex}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
