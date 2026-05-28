@@ -1,21 +1,18 @@
-﻿using System.Windows;
-using System.Windows.Threading;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-
 using ModernWpf;
-
-using RecBinderProject.Views;
-
-using RecBinderProject.Presentation.Services;
-using RecBinderProject.Presentation.Factories;
-using RecBinderProject.Presentation.ViewModels.MainWindow;
-using RecBinderProject.Presentation.ViewModels.AppSettings;
-
-using RecBinderProject.Infrastructure.MacroRepository;
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.GlobalHotkeyService;
 using RecBinderProject.Infrastructure.LocalizationService;
+using RecBinderProject.Infrastructure.MacroRepository;
+using RecBinderProject.Presentation.Factories;
+using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.ViewModels.AppSettings;
+using RecBinderProject.Presentation.ViewModels.Localization;
+using RecBinderProject.Presentation.ViewModels.MainWindow;
+using RecBinderProject.Views;
+using System.Windows;
+using System.Windows.Threading;
 
 
 namespace RecBinderProject
@@ -43,9 +40,13 @@ namespace RecBinderProject
             services.AddSingleton<ILocalizationService, LocalizationService>();
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
 
+            services.AddSingleton<IThemeService, ThemeService>();
+
             services.AddSingleton<GlobalHotkeyService>();
 
             // view models
+            services.AddSingleton<LocalizationViewModel>();
+
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<IMainWindowViewModelFactory, MainWindowViewModelFactory>();
             services.AddSingleton<MacroListViewModel>();
@@ -54,7 +55,6 @@ namespace RecBinderProject
             services.AddSingleton<GeneralAppSettingsSectionViewModel>();
             //services.AddSingleton<ProfileAppSettingsSectionViewModel>();
             //services.AddSingleton<AdvancedAppSettingsSectionViewModel>();
-            services.AddSingleton<IThemeService, ThemeService>();
 
 
             // views

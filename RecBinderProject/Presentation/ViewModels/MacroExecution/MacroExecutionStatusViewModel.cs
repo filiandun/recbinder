@@ -125,7 +125,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
         private string GetTimeString() => $"{this._recordInfo.ElapsedTime.ToString(@"hh\:mm\:ss\.ff")} / {this._recordInfo.TotalTime.ToString(@"hh\:mm\:ss\.ff")}";
 
-        private string GetLocalization(string key) => this._localizationService.GetString(this._localizationPrefix + "_" + key);
+        private string GetLocalization(string key) => this._localizationService.GetString(LocalizationScope.MacroExecution, this._localizationPrefix + "_" + key);
 
         private void UpdateProgressBar()
         {

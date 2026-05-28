@@ -117,40 +117,70 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MainWindow_Title" xml:space="preserve">
-    <value>Rec Binder</value>
-  </data>
   <data name="Play_Playing" xml:space="preserve">
-    <value>Запись воспроизводится</value>
+    <value>Playing the recording</value>
   </data>
   <data name="Play_Paused" xml:space="preserve">
-    <value>Воспроизведение приостановлено</value>
+    <value>Playback paused</value>
   </data>
   <data name="Play_Completed" xml:space="preserve">
-    <value>Воспроизведение завершилось</value>
+    <value>Playback completed</value>
   </data>
   <data name="Play_Stopped" xml:space="preserve">
-    <value>Воспроизведение было остановлено</value>
+    <value>Playback stopped</value>
   </data>
   <data name="Play_ButtonHint" xml:space="preserve">
-    <value>Нажмите для воспроизведения</value>
+    <value>Click to start playback</value>
   </data>
   <data name="Create_Playing" xml:space="preserve">
-    <value>Идёт запись</value>
+    <value>Recording in progress</value>
   </data>
   <data name="Create_Paused" xml:space="preserve">
-    <value>Запись приостановлена</value>
+    <value>Recording paused</value>
   </data>
   <data name="Create_Completed" xml:space="preserve">
-    <value>Запись завершена</value>
+    <value>Recording completed</value>
   </data>
   <data name="Create_Stopped" xml:space="preserve">
-    <value>Запись была остановлена</value>
+    <value>Recording stopped</value>
   </data>
   <data name="Create_ButtonHint" xml:space="preserve">
-    <value>Нажмите для начала записи</value>
+    <value>Click to start recording</value>
   </data>
   <data name="Play_FirstLabel" xml:space="preserve">
-    <value>Просмотр, редактирование и воспроизведение записи</value>
+    <value>Playback macro</value>
+  </data>
+  <data name="MacroNameLabel" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="MacroDescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="MacroDurationLabel" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="MacroCreationDateTimeLabel" xml:space="preserve">
+    <value>Creation date time</value>
+  </data>
+  <data name="KeyboardPressIgnoredButton" xml:space="preserve">
+    <value>Ignoring keyboard buttons</value>
+  </data>
+  <data name="MouseMoveIgnoredButton" xml:space="preserve">
+    <value>Ignoring mouse move</value>
+  </data>
+  <data name="MousePressIgnoredButton" xml:space="preserve">
+    <value>Ignoring mouse buttons</value>
+  </data>
+  <data name="MouseWheelIgnoredButton" xml:space="preserve">
+    <value>Ignoring mouse wheel</value>
+  </data>
+  <data name="RelativeMouseMovementEnabledButton" xml:space="preserve">
+    <value>Play relative to current mouse cursor</value>
+  </data>
+  <data name="MacroOptionsLabel" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="Recording_FirstLabel" xml:space="preserve">
+    <value>Recording macro</value>
   </data>
 </root>

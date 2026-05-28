@@ -1,8 +1,9 @@
-﻿using System.Globalization;
+﻿using System.Resources;
+using System.Diagnostics;
+using System.Globalization;
 
 using RecBinderProject.Resources;
 using RecBinderProject.Infrastructure.AppSettingsService;
-using System.Diagnostics;
 
 
 namespace RecBinderProject.Infrastructure.LocalizationService
@@ -11,11 +12,21 @@ namespace RecBinderProject.Infrastructure.LocalizationService
     {
         public event Action? LanguageChanged;
 
+        private Dictionary<LocalizationScope, ResourceManager> _resourceManagers;
+
         private CultureInfo _currentCulture;
 
 
         public LocalizationService()
         {
+            this._resourceManagers = new Dictionary<LocalizationScope, ResourceManager>()
+            {
+                { LocalizationScope.MacroList, MacrosList.ResourceManager },
+
+                { LocalizationScope.MacroExecution, MacroExecution.ResourceManager },
+                { LocalizationScope.AppSettings, Resources.AppSettings.ResourceManager },
+            };
+
             this._currentCulture = CultureInfo.InvariantCulture; // TODO связать с настройками (брать оттуда)
         }
 
@@ -37,7 +48,12 @@ namespace RecBinderProject.Infrastructure.LocalizationService
         }
 
 
-        public string GetString(string key) => Strings.ResourceManager.GetString(key, this._currentCulture) ?? key;
-        public string GetString(string key, params object[] args) => string.Format(GetString(key), args);
+        public string GetString(LocalizationScope scope, string key)
+        {
+            ResourceManager resourceManager = this._resourceManagers.GetValueOrDefault(scope) ?? throw new ArgumentOutOfRangeException($"ResourseManager not found for localization scope {scope}");
+
+            return resourceManager.GetString(key, this._currentCulture) ?? key;
+        }
+        public string GetString(LocalizationScope scope, string key, params object[] args) => string.Format(this.GetString(scope, key), args);
     }
 }

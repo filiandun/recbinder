@@ -35,7 +35,7 @@
     </Window.Resources>
 
     <Grid>
-        <ui:NavigationView x:Name="navigationView" PaneTitle="Список макросов" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" MenuItemsSource="{Binding MacroListViewModel.MacroItems}" ItemInvoked="NavigationView_ItemInvoked">
+        <ui:NavigationView x:Name="navigationView" PaneTitle="{Binding LocalizationViewModel.MacroList[FirstLabel], Mode=OneWay}" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" MenuItemsSource="{Binding MacroListViewModel.MacroItems}" ItemInvoked="NavigationView_ItemInvoked">
             <ContentControl Content="{Binding CurrentViewModel}" />
             <ui:NavigationView.PaneHeader>
                 <StackPanel Margin="-25, 40, 15, 0">
@@ -48,7 +48,7 @@
                             <ui:SymbolIcon Symbol="Refresh"/>
                         </Button>
 
-                        <ui:AutoSuggestBox PlaceholderText="Поиск." Margin="5" HorizontalAlignment="Stretch" DataContextChanged="AutoSuggestBox_DataContextChanged"/>
+                        <ui:AutoSuggestBox PlaceholderText="{Binding LocalizationViewModel.MacroList[FinderField], Mode=OneWay}" Margin="5" HorizontalAlignment="Stretch" DataContextChanged="AutoSuggestBox_DataContextChanged"/>
                     </DockPanel>
                     
                     <Separator Margin="0, 10, 0, 5"/>
@@ -59,15 +59,15 @@
             <ui:NavigationView.PaneFooter>
                 <StackPanel Margin="12,0,12,12">
                     <TextBlock Margin="0,0,0,6">
-                        <Run Text="Записей " />
+                        <Run Text="{Binding LocalizationViewModel.MacroList[MacroCountLabel], Mode=OneWay}" />
                         <Run Text="{Binding MacroListViewModel.MacrosCount, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>
             </ui:NavigationView.PaneFooter>
 
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="Создать запись" Icon="Video" Tag="Recording"/>
-                <ui:NavigationViewItem Content="Помощь" Icon="Help" Tag="Help"/>
+                <ui:NavigationViewItem Content="{Binding LocalizationViewModel.MacroList[RecordingButton], Mode=OneWay}" Icon="Video" Tag="Recording"/>
+                <ui:NavigationViewItem Content="{Binding LocalizationViewModel.MacroList[HelpButton], Mode=OneWay}" Icon="Help" Tag="Help"/>
             </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>
     </Grid>

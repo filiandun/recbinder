@@ -19,17 +19,17 @@ namespace RecBinderProject.Resources {
     // с помощью такого средства, как ResGen или Visual Studio.
     // Чтобы добавить или удалить член, измените файл .ResX и снова запустите ResGen
     // с параметром /str или перестройте свой проект VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    internal class MacroExecution {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Strings() {
+        internal MacroExecution() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace RecBinderProject.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecBinderProject.Resources.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecBinderProject.Resources.MacroExecution", typeof(MacroExecution).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -106,11 +106,83 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Rec Binder.
+        ///   Ищет локализованную строку, похожую на Игнорировать нажатия клавиш клавиатуры.
         /// </summary>
-        internal static string MainWindow_Title {
+        internal static string KeyboardPressIgnoredButton {
             get {
-                return ResourceManager.GetString("MainWindow_Title", resourceCulture);
+                return ResourceManager.GetString("KeyboardPressIgnoredButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Дата и время создания.
+        /// </summary>
+        internal static string MacroCreationDateTimeLabel {
+            get {
+                return ResourceManager.GetString("MacroCreationDateTimeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Описание.
+        /// </summary>
+        internal static string MacroDescriptionLabel {
+            get {
+                return ResourceManager.GetString("MacroDescriptionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Длительность.
+        /// </summary>
+        internal static string MacroDurationLabel {
+            get {
+                return ResourceManager.GetString("MacroDurationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Название.
+        /// </summary>
+        internal static string MacroNameLabel {
+            get {
+                return ResourceManager.GetString("MacroNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Настройки.
+        /// </summary>
+        internal static string MacroOptionsLabel {
+            get {
+                return ResourceManager.GetString("MacroOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Игнорировать движения мыши.
+        /// </summary>
+        internal static string MouseMoveIgnoredButton {
+            get {
+                return ResourceManager.GetString("MouseMoveIgnoredButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Игнорировать нажатия клавиш мыши.
+        /// </summary>
+        internal static string MousePressIgnoredButton {
+            get {
+                return ResourceManager.GetString("MousePressIgnoredButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Игнорировать прокручивание колесика мыши.
+        /// </summary>
+        internal static string MouseWheelIgnoredButton {
+            get {
+                return ResourceManager.GetString("MouseWheelIgnoredButton", resourceCulture);
             }
         }
         
@@ -133,7 +205,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Просмотр, редактирование и воспроизведение записи.
+        ///   Ищет локализованную строку, похожую на Воспроизведение макроса.
         /// </summary>
         internal static string Play_FirstLabel {
             get {
@@ -165,6 +237,24 @@ namespace RecBinderProject.Resources {
         internal static string Play_Stopped {
             get {
                 return ResourceManager.GetString("Play_Stopped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Создание макроса.
+        /// </summary>
+        internal static string Recording_FirstLabel {
+            get {
+                return ResourceManager.GetString("Recording_FirstLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Воспроизвести относительного текущего положения курсора мыши.
+        /// </summary>
+        internal static string RelativeMouseMovementEnabledButton {
+            get {
+                return ResourceManager.GetString("RelativeMouseMovementEnabledButton", resourceCulture);
             }
         }
     }

@@ -6,6 +6,7 @@ using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
+using RecBinderProject.Presentation.ViewModels.Localization;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroExecution

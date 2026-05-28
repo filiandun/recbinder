@@ -25,17 +25,62 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\Strings.Designer.cs">
+    <Compile Update="Resources\AppSettings.en.Designer.cs">
+      <DependentUpon>AppSettings.en.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\AppSettings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppSettings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\MacroExecution.en.Designer.cs">
+      <DependentUpon>MacroExecution.en.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\MacrosList.en.Designer.cs">
+      <DependentUpon>MacrosList.en.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\MacrosList.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MacrosList.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\MacroExecution.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MacroExecution.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings.resx">
+    <EmbeddedResource Update="Resources\AppSettings.en.resx">
+      <LastGenOutput>AppSettings.en.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\AppSettings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppSettings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MacroExecution.en.resx">
+      <LastGenOutput>MacroExecution.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MacrosList.en.resx">
+      <LastGenOutput>MacrosList.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MacrosList.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MacrosList.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MacroExecution.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MacroExecution.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

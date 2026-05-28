@@ -24,36 +24,36 @@
                 <RowDefinition Height="*" MaxHeight="50"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="{Binding LocalizationViewModel[Play_FirstLabel]}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" FontFamily="Segoe UI"/>
+            <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[Play_FirstLabel]}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" FontFamily="Segoe UI"/>
 
             <StackPanel Grid.Row="1">
-                <Label Content="Название" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroNameLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <TextBox x:Name="recordNameTextBox" Text="{Binding MacroMetadataViewerViewModel.MacroName}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <DockPanel Grid.Row="2">
-                <Label Content="Описание" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroDescriptionLabel]}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <TextBox x:Name="recordDescriptionTextBox" Text="{Binding MacroMetadataViewerViewModel.MacroDescription}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </DockPanel>
 
             <StackPanel Grid.Row="3">
-                <Label Content="Продолжительность" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroDurationLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <Label x:Name="recordDurationLabel" Content="{Binding MacroMetadataViewerViewModel.MacroDuration}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
             </StackPanel>
 
             <StackPanel Grid.Row="4">
-                <Label Content="Дата и время" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroCreationDateTimeLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <Label x:Name="recordDateTimeLabel" Content="{Binding MacroMetadataViewerViewModel.MacroCreationDateTime}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
             </StackPanel>
 
             <Grid x:Name="settingsGrid" Grid.Row="5">
-                <Label Content="Настройки" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroOptionsLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <UniformGrid VerticalAlignment="Bottom" Columns="2">
-                    <CheckBox IsChecked="{Binding MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="Игнорировать нажатия клавиш клавиатуры"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="Игнорировать нажатия клавиш мыши"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="Игнорировать движения мыши"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="Игнорировать прокручивания колёсика мыши"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.RelativeMouseMovementEnabled, Mode=TwoWay}" Content="Воспроизвести относительно текущего положения курсора"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.RelativeMouseMovementEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[RelativeMouseMovementEnabledButton]}"/>
                 </UniformGrid>
             </Grid>
 

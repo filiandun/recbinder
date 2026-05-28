@@ -4,6 +4,7 @@ using System.ComponentModel;
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
+using RecBinderProject.Presentation.ViewModels.Localization;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroExecution

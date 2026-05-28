@@ -3,8 +3,6 @@
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
-
-using RecBinderProject.Presentation.ViewModels;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
@@ -13,6 +11,7 @@ using RecBinderProject.Infrastructure.MacroRepository;
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.LocalizationService;
 using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.ViewModels.Localization;
 
 
 namespace RecBinderProject.Presentation.Factories
@@ -20,6 +19,7 @@ namespace RecBinderProject.Presentation.Factories
     public class MainWindowViewModelFactory : IMainWindowViewModelFactory
     {
         private readonly ILocalizationService _localizationService;
+        private readonly LocalizationViewModel _localizationViewModel;
 
         private readonly IMacroRepository _macroRepository;
 
@@ -27,9 +27,10 @@ namespace RecBinderProject.Presentation.Factories
         private readonly IThemeService _themeService;
 
 
-        public MainWindowViewModelFactory(ILocalizationService localizationService, IMacroRepository macroRepository, IAppSettingsService appSettingsService, IThemeService themeService)
+        public MainWindowViewModelFactory(ILocalizationService localizationService, LocalizationViewModel localizationViewModel, IMacroRepository macroRepository, IAppSettingsService appSettingsService, IThemeService themeService)
         {
             this._localizationService = localizationService;
+            this._localizationViewModel = localizationViewModel;
 
             this._macroRepository = macroRepository;
 
@@ -73,7 +74,7 @@ namespace RecBinderProject.Presentation.Factories
 
         public AppSettingsViewModel GetAppSettings()
         {
-            return new AppSettingsViewModel(this._appSettingsService, new GeneralAppSettingsSectionViewModel(this._localizationService, this._appSettingsService, this._themeService));
+            return new AppSettingsViewModel(this._appSettingsService, this._localizationViewModel, new GeneralAppSettingsSectionViewModel(this._localizationService, this._appSettingsService, this._themeService));
         }
     }
 }

@@ -2,8 +2,10 @@
 using System.ComponentModel;
 
 using ModernWpf.Controls;
+
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Infrastructure.AppSettingsService;
+using RecBinderProject.Presentation.ViewModels.Localization;
 
 
 namespace RecBinderProject.Presentation.ViewModels.AppSettings
@@ -13,6 +15,8 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         private readonly IAppSettingsService _appSettingsService;
 
         private readonly List<IAppSettingsSectionViewModel> _sections;
+
+        public LocalizationViewModel LocalizatonViewModel { get; init; }
 
         public GeneralAppSettingsSectionViewModel GeneralAppSettingsSectionViewModel { get; }
         //public ProfileAppSettingsSectionViewModel ProfileAppSettingsSectionViewModel { get; }
@@ -26,11 +30,13 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         public bool CanCancel => this._sections.Any(s => s.HasEdits) && this._sections.All(s => s.IsCancelAllowed);
         public bool CanReset => this._sections.Any(s => s.IsResetAllowed);
 
-        public AppSettingsViewModel(IAppSettingsService settingsService, GeneralAppSettingsSectionViewModel generalAppSettingsSectionViewModel)
+        public AppSettingsViewModel(IAppSettingsService settingsService, LocalizationViewModel LocalizatonViewModel, GeneralAppSettingsSectionViewModel generalAppSettingsSectionViewModel)
         {
             this._appSettingsService = settingsService;
 
             this._sections = new List<IAppSettingsSectionViewModel>();
+
+            this.LocalizatonViewModel = LocalizatonViewModel;
 
             this.GeneralAppSettingsSectionViewModel = generalAppSettingsSectionViewModel;
             //this.ProfileAppSettingsSectionViewModel = profileAppSettingsSectionViewModel;
@@ -40,9 +46,9 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             //this._sections.Add(this.ProfileAppSettingsSectionViewModel);
             //this._sections.Add(this.AdvancedAppSettingsSectionViewModel);
 
-            this.SaveCommand = new RelayCommand(OnSaveCommand, () => this.CanSave);
-            this.CancelCommand = new RelayCommand(OnCancelCommand, () => this.CanCancel);
-            this.ResetCommand = new RelayCommand(OnResetCommand, () => this.CanReset);
+            this.SaveCommand = new RelayCommand(this.OnSaveCommand, () => this.CanSave);
+            this.CancelCommand = new RelayCommand(this.OnCancelCommand, () => this.CanCancel);
+            this.ResetCommand = new RelayCommand(this.OnResetCommand, () => this.CanReset);
 
             foreach (var section in this._sections)
             {
@@ -81,7 +87,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             }
             catch (Exception ex)
             {
-                ContentDialog contentDialog = new ContentDialog()
+                ContentDialog contentDialog = new ContentDialog() // TODO сделать менеджер-сервис contentDialog'ов, чтобы там и локализация подтяигвались, да и чтобы так много текста не было для оторбражения
                 {
                     Content = ex.Message,
                     CloseButtonText = "Закрыть",

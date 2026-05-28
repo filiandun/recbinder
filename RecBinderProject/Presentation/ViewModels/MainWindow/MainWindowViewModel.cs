@@ -7,6 +7,7 @@ using RecBinderProject.Infrastructure.GlobalHotkeyService;
 using RecBinderProject.Infrastructure.LocalizationService;
 
 using RecBinderProject.Presentation.Factories;
+using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 
 
@@ -39,9 +40,10 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         }
 
         public MacroListViewModel MacroListViewModel { get; init; }
+        public LocalizationViewModel LocalizationViewModel { get; init; }
 
 
-        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, ILocalizationService localizationService, MacroListViewModel macroListViewModel, IMainWindowViewModelFactory viewModelFactory)
+        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, ILocalizationService localizationService, MacroListViewModel macroListViewModel, IMainWindowViewModelFactory viewModelFactory, LocalizationViewModel LocalizationViewModel)
         {
             this._logger = logger;
 
@@ -50,6 +52,8 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             this.MacroListViewModel = macroListViewModel;
 
             this._viewModelFactory = viewModelFactory;
+
+            this.LocalizationViewModel = LocalizationViewModel;
 
             this.MacroListViewModel.RefreshMacros();
         }

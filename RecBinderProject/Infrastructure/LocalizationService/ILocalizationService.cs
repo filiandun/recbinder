@@ -8,7 +8,7 @@ namespace RecBinderProject.Infrastructure.LocalizationService
 
         public void ApplyLanguage(AppLanguage language);
 
-        public string GetString(string key);
-        public string GetString(string key, params object[] args);
+        public string GetString(LocalizationScope scope, string key);
+        public string GetString(LocalizationScope scope, string key, params object[] args);
     }
 }

@@ -25,21 +25,21 @@
                 <RowDefinition Height="*" MaxHeight="50"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Настройки" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" FontFamily="Segoe UI"/>
+            <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[FirstLabel], Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" FontFamily="Segoe UI"/>
             <TextBlock Text="{Binding GeneralAppSettingsSectionViewModel.StatusText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="14" FontFamily="Segoe UI"/>
 
             <StackPanel Grid.Row="1" Orientation="Vertical">
-                <Label Content="Язык" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizatonViewModel.AppSettings[LanguageLabel], Mode=OneWay}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <ComboBox  Grid.Row="1"  ItemsSource="{Binding GeneralAppSettingsSectionViewModel.AvailableAppLanguages}" SelectedItem="{Binding GeneralAppSettingsSectionViewModel.AppLanguage, Mode=TwoWay}"/>
             </StackPanel>
 
             <StackPanel Grid.Row="2" Orientation="Vertical">
-                <Label Content="Тема" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizatonViewModel.AppSettings[ThemeLabel], Mode=OneWay}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <ComboBox  Grid.Row="1"  ItemsSource="{Binding GeneralAppSettingsSectionViewModel.AvailableAppThemes}" SelectedItem="{Binding GeneralAppSettingsSectionViewModel.AppTheme, Mode=TwoWay}"/>
             </StackPanel>
 
             <StackPanel Grid.Row="3" Orientation="Vertical">
-                <Label Content="Путь к папке с сохранёнными записями" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizatonViewModel.AppSettings[SaveDirectoryLabel], Mode=OneWay}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*"/>
@@ -52,7 +52,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="4" Orientation="Vertical">
-                <Label Content="Разрешение монитора (ширина и высота)" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <Label Content="{Binding LocalizatonViewModel.AppSettings[ScreenResolutionLabel], Mode=OneWay}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -65,9 +65,9 @@
             </StackPanel>
 
             <StackPanel Grid.Row="7" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,0,0">
-                <Button Command="{Binding SaveCommand}" Content="Сохранить" Margin="0,0,10,0" VerticalAlignment="Stretch"/>
-                <Button Command="{Binding CancelCommand}" Content="Отменить"  Margin="0,0,20,0" VerticalAlignment="Stretch"/>
-                <Button Command="{Binding ResetCommand}" Content="Сбросить по умолчанию"  Margin="0,0,0,0" VerticalAlignment="Stretch"/>
+                <Button Command="{Binding SaveCommand}" Content="{Binding LocalizatonViewModel.AppSettings[SaveButton], Mode=OneWay}" Margin="0,0,10,0" VerticalAlignment="Stretch"/>
+                <Button Command="{Binding CancelCommand}" Content="{Binding LocalizatonViewModel.AppSettings[CancelButton], Mode=OneWay}"  Margin="0,0,20,0" VerticalAlignment="Stretch"/>
+                <Button Command="{Binding ResetCommand}" Content="{Binding LocalizatonViewModel.AppSettings[ResetToDefaultButton], Mode=OneWay}"  Margin="0,0,0,0" VerticalAlignment="Stretch"/>
             </StackPanel>
         </Grid>
     </Grid>
