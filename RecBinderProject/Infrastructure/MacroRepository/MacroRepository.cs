@@ -23,7 +23,7 @@ namespace RecBinderProject.Infrastructure.MacroRepository
 
             this._settingsService = settingsService;
 
-            Directory.CreateDirectory(this.SaveDirectory);
+            Directory.CreateDirectory(this.SaveDirectory); // TODO тихо падает, если не удаётся создать директорию - не порядок
         }
 
         public MacroLoadResult LoadAll()

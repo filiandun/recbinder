@@ -1,7 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-
-using ModernWpf.Controls;
 
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.GlobalHotkeyService;
@@ -71,44 +70,57 @@ namespace RecBinderProject
                 case AppSettingsLoadState.Failed: throw new Exception();
             }
 
-            ContentDialog contentDialog = new ContentDialog()
-            {
-                Content = content,
-                DefaultButton = ContentDialogButton.Close,
-                CloseButtonText = "Ok"
-            };
-            contentDialog.ShowAsync();
+            //ContentDialog contentDialog = new ContentDialog()
+            //{
+            //    Content = content,
+            //    DefaultButton = ContentDialogButton.Close,
+            //    CloseButtonText = "Ok"
+            //};
+            //contentDialog.ShowAsync();
         }
 
-        private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
-        {
-            if (args.InvokedItem is MacroListItemViewModel macroItem)
-            {
-                this.ViewModel.OpenPlayback(macroItem.Macro);
-                return;
-            }
+        //private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        //{
+        //    if (args.InvokedItem is MacroListItemViewModel macroItem)
+        //    {
+        //        this.ViewModel.OpenPlayback(macroItem.Macro);
+        //        return;
+        //    }
 
-            if (args.InvokedItemContainer is NavigationViewItem navItem)
-            {
-                switch (navItem.Tag?.ToString())
-                {
-                    case "Recording": this.ViewModel.OpenRecording(); break;
-                    case "Help": this.ViewModel.OpenHelp(); break;
-                    case "Settings": this.ViewModel.OpenSettings(); break;
-                }
-            }
-        }
-
-        private void AutoSuggestBox_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            
-        }
+        //    if (args.InvokedItemContainer is NavigationViewItem navItem)
+        //    {
+        //        switch (navItem.Tag?.ToString())
+        //        {
+        //            case "Recording": this.ViewModel.OpenRecording(); break;
+        //            case "Help": this.ViewModel.OpenHelp(); break;
+        //            case "Settings": this.ViewModel.OpenSettings(); break;
+        //        }
+        //    }
+        //}
 
 
         private void OnClosed(object? sender, EventArgs e)
         {
             this._globalHotkeyService.HotkeyPressed -= this.ViewModel.OnHotkeyPressed;
             this._globalHotkeyService.Dispose();
+        }
+
+
+        private void ListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                if (e.AddedItems[0] is ListBoxItem item)
+                {
+                    switch (item.Tag.ToString())
+                    {
+                        case "MacrosList": this.ViewModel.OpenLibrary(); break;
+                        case "Recording": this.ViewModel.OpenRecording(); break;
+                        case "Help": this.ViewModel.OpenHelp(); break;
+                        case "Settings": this.ViewModel.OpenSettings(); break;
+                    }
+                }
+            }
         }
     }
 }

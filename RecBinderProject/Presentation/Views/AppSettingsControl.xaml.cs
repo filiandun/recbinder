@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 
 
-namespace RecBinderProject.Views
+namespace RecBinderProject.Presentation.Views
 {
     public partial class AppSettingsControl : UserControl
     {

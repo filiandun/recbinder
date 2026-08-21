@@ -2,14 +2,12 @@
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 
-using ModernWpf.Controls;
-
 using RecBinderProject.Domain;
-using RecBinderProject.Presentation.Factories;
+
+using RecBinderProject.Presentation.Commands;
 
 using RecBinderProject.Infrastructure.MacroRepository;
 using RecBinderProject.Infrastructure.LocalizationService;
-using RecBinderProject.Presentation.Commands;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MainWindow
@@ -17,6 +15,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
     public class MacroListViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+        public event Action<Macro>? SelectedMacroChanged;
 
         private readonly IMacroRepository _macroRepository;
 
@@ -30,8 +29,22 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
                 if (ReferenceEquals(this._macroItems, value)) return;
 
                 this._macroItems = value;
+
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MacroItems)));
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.MacrosCount)));
+            }
+        }
+
+        private MacroListItemViewModel _selectedMacro;
+        public MacroListItemViewModel SelectedMacro
+        {
+            set
+            {
+                if (ReferenceEquals(this._selectedMacro, value)) return;
+
+                this._selectedMacro = value;
+
+                this.SelectedMacroChanged?.Invoke(this._selectedMacro.Macro);
             }
         }
 
@@ -41,7 +54,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         public RelayCommand OpenSaveFolderCommand { get; private set; }
 
 
-        public MacroListViewModel(ILocalizationService localizationService, IMacroRepository macroRepository, IMainWindowViewModelFactory viewModelFactory)
+        public MacroListViewModel(ILocalizationService localizationService, IMacroRepository macroRepository)
         {
             this._macroRepository = macroRepository;
 
@@ -60,12 +73,12 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
 
             if (macroLoadResult.FailedFiles.Count > 0)
             {
-                ContentDialog contentDialog = new ContentDialog()
-                {
-                    Content = $"Некоторые из записей не были загружены ({macroLoadResult.FailedFiles.Count})",
-                    CloseButtonText = "Закрыть",
-                };
-                contentDialog.ShowAsync();
+                //ContentDialog contentDialog = new ContentDialog()
+                //{
+                //    Content = $"Некоторые из записей не были загружены ({macroLoadResult.FailedFiles.Count})",
+                //    CloseButtonText = "Закрыть",
+                //};
+                //contentDialog.ShowAsync();
             }
 
             this.UpdateMacrosControls(macroLoadResult.Macros);

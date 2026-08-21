@@ -3,15 +3,18 @@
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
+
+using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.ViewModels.MainWindow;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
+using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 
 using RecBinderProject.Infrastructure.MacroRepository;
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.LocalizationService;
-using RecBinderProject.Presentation.Services;
-using RecBinderProject.Presentation.ViewModels.Localization;
+
 
 
 namespace RecBinderProject.Presentation.Factories
@@ -38,6 +41,21 @@ namespace RecBinderProject.Presentation.Factories
             this._themeService = themeService;
         }
 
+
+        public MacroLibraryViewModel CreateLibrary()
+        {
+            LocalizationViewModel localizationViewModel = new LocalizationViewModel(this._localizationService);
+
+            MacroListViewModel macroListViewModel = new MacroListViewModel(this._localizationService, this._macroRepository);
+
+            var macroLoadResult = this._macroRepository.LoadAll();
+
+            MacroPlaybackViewModel macroPlaybackViewModel = this.CreatePlayback(macroLoadResult.Macros[0]);
+
+            MacroLibraryViewModel macroLibraryViewModel = new MacroLibraryViewModel(this, localizationViewModel, macroListViewModel, macroPlaybackViewModel);
+
+            return macroLibraryViewModel;
+        }
 
         public MacroPlaybackViewModel CreatePlayback(Macro macro)
         {

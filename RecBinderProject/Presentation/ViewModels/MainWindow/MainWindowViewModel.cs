@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+
 using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Domain;
@@ -16,6 +17,8 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public LocalizationViewModel LocalizationViewModel { get; private set; }
 
         private readonly ILogger<MainWindowViewModel> _logger;
 
@@ -39,23 +42,19 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             }
         }
 
-        public MacroListViewModel MacroListViewModel { get; init; }
-        public LocalizationViewModel LocalizationViewModel { get; init; }
 
 
-        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, ILocalizationService localizationService, MacroListViewModel macroListViewModel, IMainWindowViewModelFactory viewModelFactory, LocalizationViewModel LocalizationViewModel)
+        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, ILocalizationService localizationService, IMainWindowViewModelFactory viewModelFactory, LocalizationViewModel LocalizationViewModel)
         {
             this._logger = logger;
 
             this._localizationService = localizationService;
 
-            this.MacroListViewModel = macroListViewModel;
-
             this._viewModelFactory = viewModelFactory;
 
-            this.LocalizationViewModel = LocalizationViewModel;
+            this._currentViewModel = this._viewModelFactory.CreateLibrary();
 
-            this.MacroListViewModel.RefreshMacros();
+            this.LocalizationViewModel = LocalizationViewModel;
         }
 
 
@@ -75,21 +74,21 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
                 case HotkeyAction.StopRecording:
                     if (this.CurrentViewModel is MacroRecordingViewModel stopRecordingViewModel)
                     {
-                        stopRecordingViewModel.StartCommand.Execute(this);
+                        stopRecordingViewModel.StopCommand.Execute(this);
                     }
                     break;
 
                 case HotkeyAction.StartPlaying: 
-                    if (this.CurrentViewModel is MacroPlaybackViewModel startPlaybackViewModel)
+                    if (this.CurrentViewModel is MacroLibraryViewModel startLibraryViewModel)
                     {
-                        startPlaybackViewModel.StartCommand.Execute(this);
+                        startLibraryViewModel.MacroPlaybackViewModel.StartCommand.Execute(this);
                     }
                     break;
 
                 case HotkeyAction.StopPlaying:
-                    if (this.CurrentViewModel is MacroPlaybackViewModel stopPlaybackViewModel)
+                    if (this.CurrentViewModel is MacroLibraryViewModel stopLibraryViewModel)
                     {
-                        stopPlaybackViewModel.StopCommand.Execute(this);
+                        stopLibraryViewModel.MacroPlaybackViewModel.StopCommand.Execute(this);
                     }
                     break;
 
@@ -101,9 +100,17 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         {
             this._logger.LogDebug("On macro recorded");
 
-            this.MacroListViewModel.RefreshMacros();
+            //this.MacroListViewModel.RefreshMacros();
         }
 
+
+        public void OpenLibrary()
+        {
+            this._logger.LogInformation("Opening library");
+
+            MacroLibraryViewModel libraryViewModel = this._viewModelFactory.CreateLibrary();
+            this.CurrentViewModel = libraryViewModel;
+        }
 
         public void OpenPlayback(Macro macro)
         {

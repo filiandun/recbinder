@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="RecBinderProject.Presentation.Views.MacroLibraryView"  
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"   
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"   
+      xmlns:local="clr-namespace:RecBinderProject.Presentation.Views"  
+             
+      xmlns:vm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroExecution" 
+      d:DataContext="{d:DesignInstance Type=vm:MacroLibraryViewModel}"
+      
+      mc:Ignorable="d"   
+      d:DesignHeight="450" d:DesignWidth="800">
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <!-- MACROS LIST -->
+        <Border Grid.Column="0" Grid.Row="0" Margin="5" Padding="20" Background="#33080000" CornerRadius="15">
+            <ListBox ItemsSource="{Binding MacroListViewModel.MacroItems}" SelectedItem="{Binding MacroListViewModel.SelectedMacro}" Background="#00000000"/>
+        </Border>
+
+        <!-- INSPECTOR BAR -->
+        <Border Grid.Column="1" Grid.Row="0" Margin="5" Padding="20" Background="#33080000" CornerRadius="15">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- METADATA -->
+                    <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[Play_FirstLabel]}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" FontFamily="Segoe UI"/>
+
+                    <StackPanel Grid.Row="1">
+                        <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroNameLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                        <TextBox x:Name="recordNameTextBox" Text="{Binding MacroPlaybackViewModel.MacroMetadataViewerViewModel.MacroName}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <DockPanel Grid.Row="2">
+                        <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroDescriptionLabel]}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                        <TextBox x:Name="recordDescriptionTextBox" Text="{Binding MacroPlaybackViewModel.MacroMetadataViewerViewModel.MacroDescription}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    </DockPanel>
+
+                    <StackPanel Grid.Row="3">
+                        <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroDurationLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                        <Label x:Name="recordDurationLabel" Content="{Binding MacroPlaybackViewModel.MacroMetadataViewerViewModel.MacroDuration}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="4">
+                        <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroCreationDateTimeLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                        <Label x:Name="recordDateTimeLabel" Content="{Binding MacroPlaybackViewModel.MacroMetadataViewerViewModel.MacroCreationDateTime}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                    </StackPanel>
+
+                    <!-- OPTIONS -->
+                    <StackPanel Grid.Row="5">
+                        <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroOptionsLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+
+                        <UniformGrid VerticalAlignment="Bottom" Columns="1">
+                            <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12" FontFamily="Segoe UI"/>
+                            <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12" FontFamily="Segoe UI"/>
+                            <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12" FontFamily="Segoe UI"/>
+                            <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12" FontFamily="Segoe UI"/>
+                            <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.RelativeMouseMovementEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[RelativeMouseMovementEnabledButton]}" FontSize="12" FontFamily="Segoe UI"/>
+                        </UniformGrid>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <!-- TRANSPORT BAR -->
+        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5" CornerRadius="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <ProgressBar Grid.Column="0" Value="{Binding MacroPlaybackViewModel.MacroExecutionStatusViewModel.ProgressBarValue, Mode=OneWay}" Background="#00F0F8FF" Foreground="{Binding MacroPlaybackViewModel.MacroExecutionStatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Button Grid.Column="0" Command="{Binding MacroPlaybackViewModel.StartCommand}" Content="{Binding MacroPlaybackViewModel.MacroExecutionStatusViewModel.StatusText, Mode=OneWay}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+                <Button Grid.Column="1" Command="{Binding MacroPlaybackViewModel.StopCommand}" Content="■" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="#FFD80505"/>
+                <Button Grid.Column="2" Command="{Binding MacroPlaybackViewModel.PauseCommand}" Content="II" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="#FFD8BD05" FontWeight="Bold"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

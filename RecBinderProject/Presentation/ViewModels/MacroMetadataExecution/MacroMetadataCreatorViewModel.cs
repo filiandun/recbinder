@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using System.Windows;
 using RecBinderProject.Domain;
 
 
@@ -11,8 +11,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
     {
         Milliseconds,
         Seconds,
-        Minutes,
-        Unlimited
+        Minutes
     }
 
 
@@ -27,8 +26,11 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
 
         private string _macroName;
         private string _macroDescription;
+
         private TimeSpan _macroDuration;
-        private int _macroDurationUnitIndex; // TO DO создать enum, чтобы магические числа не использовать
+        private bool _macroDurationLimitEnabled;
+        private int _macroDurationUnitIndex; // TODO создать enum, чтобы магические числа не использовать
+
         private DateTime _macroCreationDateTime;
 
         public MacroMetadata MacroMetadataModel => this._macroMetadataModel;    // TODO думаю, что лучше убрать свойство и сделать возврат модели только в ApplyChanges
@@ -53,6 +55,18 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             set => this.Set(ref this._macroDescription, value);
         }
 
+        public bool MacroDurationLimitEnabled 
+        {
+            get => this._macroDurationLimitEnabled;
+            set
+            {
+                this.Set(ref this._macroDurationLimitEnabled, value);
+
+                if (value is false) this.Set(ref this._macroDuration, TimeSpan.MaxValue);
+                else this.MacroDurationValue = 2; // TODO костыль
+            }
+        }
+
         public int MacroDurationValue
         {
             get
@@ -69,6 +83,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             set
             {
                 TimeSpan newMacroDuration = TimeSpan.MaxValue;
+
                 if (value > 0)
                 {
                     newMacroDuration = this._macroDurationUnitIndex switch
@@ -97,6 +112,11 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
 
             this._macroName = "RecBinder_" + DateTime.Now.ToString("G");
             this._macroDescription = string.Empty;
+
+            this._macroDurationLimitEnabled = false;
+            this._macroDuration = TimeSpan.MaxValue;
+            this._macroDurationUnitIndex = 1;
+
             this._macroCreationDateTime = DateTime.Now;
 
             this._macroMetadataModel = new MacroMetadata(this._macroName, this._macroDescription, TimeSpan.MaxValue, DateTime.Now);
