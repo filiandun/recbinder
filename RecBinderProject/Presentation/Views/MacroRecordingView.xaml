@@ -19,43 +19,45 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
+        <!-- HEADER LABEL -->
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding LocalizationViewModel.MacroExecution[Recording_FirstLabel]}" Margin="10, 20" Style="{DynamicResource TitleTextBlockStyle}"/>
+
         <!-- MAIN CONTENT -->
-        <Border Grid.Column="0" Grid.Row="0" Margin="5" Padding="20" Background="#33080000" CornerRadius="15">
+        <ScrollViewer Grid.Column="0" Grid.Row="1" Margin="5" Padding="5" VerticalScrollBarVisibility="Auto">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="2*"/>
-                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="1.5*"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="2*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[Recording_FirstLabel]}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" FontFamily="Segoe UI"/>
-
-                <StackPanel Grid.Row="1">
-                    <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroNameLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
-                    <TextBox x:Name="TextBox" Text="{Binding MacroMetadataCreatorViewModel.MacroName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <!-- METADATA -->
+                <StackPanel Grid.Row="0" Margin="0, 0, 0, 10">
+                    <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroNameLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Style="{StaticResource CaptionTextBlockStyle}"/>
+                    <TextBox x:Name="TextBox" Text="{Binding MacroMetadataCreatorViewModel.MacroName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextWrapping="Wrap"/>
                 </StackPanel>
 
-                <DockPanel Grid.Row="2">
-                    <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroDescriptionLabel]}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                <DockPanel Grid.Row="1" Margin="0, 0, 0, 10">
+                    <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroDescriptionLabel]}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Style="{StaticResource CaptionTextBlockStyle}"/>
                     <TextBox Text="{Binding MacroMetadataCreatorViewModel.MacroDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </DockPanel>
 
-                <Grid x:Name="durationGrid" Grid.Row="3">
+                <Grid Grid.Row="2" Margin="0, 0, 0, 10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroDurationLabel]}" Grid.Row="0" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+                    <TextBlock Grid.Row="0" Text="{Binding LocalizationViewModel.MacroExecution[MacroDurationLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Style="{StaticResource CaptionTextBlockStyle}"/>
 
-                    <CheckBox IsChecked="{Binding MacroMetadataCreatorViewModel.MacroDurationLimitEnabled}" Grid.Row="1" Content="Включить ограничение длительности"/>
+                    <CheckBox Grid.Row="1" IsChecked="{Binding MacroMetadataCreatorViewModel.MacroDurationLimitEnabled}" Content="Включить ограничение длительности"/>
 
                     <Grid Grid.Row="2" IsEnabled="{Binding MacroMetadataCreatorViewModel.MacroDurationLimitEnabled}">
                         <Grid.ColumnDefinitions>
@@ -63,8 +65,8 @@
                             <ColumnDefinition Width="100px"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox Text="{Binding MacroMetadataCreatorViewModel.MacroDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="0" VerticalAlignment="Top"/>
-                        <ComboBox SelectedIndex="{Binding MacroMetadataCreatorViewModel.MacroDurationUnitIndex}" IsEnabled="{Binding CanEditMetadata}" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <TextBox Grid.Column="0" Text="{Binding MacroMetadataCreatorViewModel.MacroDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Top"/>
+                        <ComboBox Grid.Column="1" SelectedIndex="{Binding MacroMetadataCreatorViewModel.MacroDurationUnitIndex}" Margin="10, 0, 0, 0" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                             <ComboBoxItem Content="мс"/>
                             <ComboBoxItem Content="сек"/>
                             <ComboBoxItem Content="мин"/>
@@ -72,42 +74,46 @@
                     </Grid>
                 </Grid>
 
-                <DockPanel Grid.Row="4">
-                    <Label DockPanel.Dock="Top" Content="Logging" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
-                    <ListBox VirtualizingStackPanel.IsVirtualizing="True" Focusable="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                <DockPanel Grid.Row="4" Margin="0, 0, 0, 0">
+                    <TextBlock DockPanel.Dock="Top" Text="Logging" Margin="0, 0, 0, 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Style="{StaticResource CaptionTextBlockStyle}"/>
+                    <ListBox VirtualizingStackPanel.IsVirtualizing="True" Focusable="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </DockPanel>
             </Grid>
-        </Border>
+        </ScrollViewer>
 
         <!-- OPTIONS -->
-        <Border Grid.Column="1" Grid.Row="0" Margin="5" Padding="20" Background="#33080000" CornerRadius="15">
-            <StackPanel Grid.Row="5">
-                <Label Content="{Binding LocalizationViewModel.MacroExecution[MacroOptionsLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="12" FontFamily="Segoe UI"/>
+        <ScrollViewer Grid.Column="1" Grid.Row="1" Margin="5" Padding="5" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroOptionsLabel]}" Margin="0, 0, 0, 5" Style="{StaticResource CaptionTextBlockStyle}"/>
 
                 <UniformGrid VerticalAlignment="Bottom" Columns="1">
-                    <CheckBox IsChecked="{Binding MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12" FontFamily="Segoe UI"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12" FontFamily="Segoe UI"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12" FontFamily="Segoe UI"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12" FontFamily="Segoe UI"/>
+                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.RelativeMouseMovementEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[RelativeMouseMovementEnabledButton]}" FontSize="12"/>
                 </UniformGrid>
             </StackPanel>
-        </Border>
+        </ScrollViewer>
 
         <!-- TRANSPORT BAR -->
-        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5" CornerRadius="15">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10, 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <ProgressBar Grid.Column="0" Value="{Binding MacroExecutionStatusViewModel.ProgressBarValue, Mode=OneWay}" Background="#00F0F8FF" Foreground="{Binding MacroExecutionStatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <Button Grid.Column="0" Command="{Binding StartCommand}" Content="{Binding MacroExecutionStatusViewModel.StatusText, Mode=OneWay}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <ProgressBar Grid.Column="0" Value="{Binding MacroExecutionStatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding MacroPlaybackViewModel.MacroExecutionStatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Button Grid.Column="0" Command="{Binding StartCommand}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE768;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
+                    <TextBlock Text="{Binding MacroExecutionStatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
 
-                <Button Grid.Column="1" Command="{Binding StopCommand}" Content="■" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="#FFD80505"/>
-                <Button Grid.Column="2" Command="{Binding PauseCommand}" Content="II" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="#FFD8BD05" FontWeight="Bold"/>
-            </Grid>
-        </Border>
+            <Button Grid.Column="1" Command="{Binding StopCommand}" Content="&#xE71A;" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCriticalBrush}"/>
+            <Button Grid.Column="2" Command="{Binding PauseCommand}" Content="&#xE769;" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCautionBrush}"/>
+        </Grid>
     </Grid>
 </UserControl>

@@ -118,34 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Play_Playing" xml:space="preserve">
-    <value>▶  Playing the recording</value>
+    <value>Playing the recording</value>
   </data>
   <data name="Play_Paused" xml:space="preserve">
-    <value>▶  Playback paused</value>
+    <value>Playback paused</value>
   </data>
   <data name="Play_Completed" xml:space="preserve">
-    <value>▶  Playback completed</value>
+    <value>Playback completed</value>
   </data>
   <data name="Play_Stopped" xml:space="preserve">
-    <value>▶  Playback stopped</value>
+    <value>Playback stopped</value>
   </data>
   <data name="Play_ButtonHint" xml:space="preserve">
-    <value>▶  Click to start playback</value>
+    <value>Click to start playback</value>
   </data>
   <data name="Create_Playing" xml:space="preserve">
-    <value>⚫  Recording in progress</value>
+    <value>Recording in progress</value>
   </data>
   <data name="Create_Paused" xml:space="preserve">
-    <value>⚫  Recording paused</value>
+    <value>Recording paused</value>
   </data>
   <data name="Create_Completed" xml:space="preserve">
-    <value>⚫  Recording completed</value>
+    <value>Recording completed</value>
   </data>
   <data name="Create_Stopped" xml:space="preserve">
-    <value>⚫  Recording stopped</value>
+    <value>Recording stopped</value>
   </data>
   <data name="Create_ButtonHint" xml:space="preserve">
-    <value>⚫  Click to start recording</value>
+    <value>Click to start recording</value>
   </data>
   <data name="Play_FirstLabel" xml:space="preserve">
     <value>Playback macro</value>

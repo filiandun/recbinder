@@ -118,34 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Play_Playing" xml:space="preserve">
-    <value>▶  Запись воспроизводится</value>
+    <value>Запись воспроизводится</value>
   </data>
   <data name="Play_Paused" xml:space="preserve">
-    <value>▶  Воспроизведение приостановлено</value>
+    <value>Воспроизведение приостановлено</value>
   </data>
   <data name="Play_Completed" xml:space="preserve">
-    <value>▶  Воспроизведение завершилось</value>
+    <value>Воспроизведение завершилось</value>
   </data>
   <data name="Play_Stopped" xml:space="preserve">
-    <value>▶  Воспроизведение было остановлено</value>
+    <value>Воспроизведение было остановлено</value>
   </data>
   <data name="Play_ButtonHint" xml:space="preserve">
-    <value>▶  Нажмите для воспроизведения</value>
+    <value>Нажмите для воспроизведения</value>
   </data>
   <data name="Create_Playing" xml:space="preserve">
-    <value>⚫  Идёт запись</value>
+    <value>Идёт запись</value>
   </data>
   <data name="Create_Paused" xml:space="preserve">
-    <value>⚫  Запись приостановлена</value>
+    <value>Запись приостановлена</value>
   </data>
   <data name="Create_Completed" xml:space="preserve">
-    <value>⚫  Запись завершена</value>
+    <value>Запись завершена</value>
   </data>
   <data name="Create_Stopped" xml:space="preserve">
-    <value>⚫  Запись была остановлена</value>
+    <value>Запись была остановлена</value>
   </data>
   <data name="Create_ButtonHint" xml:space="preserve">
-    <value>⚫  Нажмите для начала записи</value>
+    <value>Нажмите для начала записи</value>
   </data>
   <data name="Play_FirstLabel" xml:space="preserve">
     <value>Воспроизведение макроса</value>

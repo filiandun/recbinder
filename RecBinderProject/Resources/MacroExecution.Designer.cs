@@ -61,7 +61,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ⚫  Нажмите для начала записи.
+        ///   Looks up a localized string similar to Нажмите для начала записи.
         /// </summary>
         internal static string Create_ButtonHint {
             get {
@@ -70,7 +70,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ⚫  Запись завершена.
+        ///   Looks up a localized string similar to Запись завершена.
         /// </summary>
         internal static string Create_Completed {
             get {
@@ -79,7 +79,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ⚫  Запись приостановлена.
+        ///   Looks up a localized string similar to Запись приостановлена.
         /// </summary>
         internal static string Create_Paused {
             get {
@@ -88,7 +88,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ⚫  Идёт запись.
+        ///   Looks up a localized string similar to Идёт запись.
         /// </summary>
         internal static string Create_Playing {
             get {
@@ -97,7 +97,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ⚫  Запись была остановлена.
+        ///   Looks up a localized string similar to Запись была остановлена.
         /// </summary>
         internal static string Create_Stopped {
             get {
@@ -187,7 +187,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ▶  Нажмите для воспроизведения.
+        ///   Looks up a localized string similar to Нажмите для воспроизведения.
         /// </summary>
         internal static string Play_ButtonHint {
             get {
@@ -196,7 +196,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ▶  Воспроизведение завершилось.
+        ///   Looks up a localized string similar to Воспроизведение завершилось.
         /// </summary>
         internal static string Play_Completed {
             get {
@@ -214,7 +214,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ▶  Воспроизведение приостановлено.
+        ///   Looks up a localized string similar to Воспроизведение приостановлено.
         /// </summary>
         internal static string Play_Paused {
             get {
@@ -223,7 +223,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ▶  Запись воспроизводится.
+        ///   Looks up a localized string similar to Запись воспроизводится.
         /// </summary>
         internal static string Play_Playing {
             get {
@@ -232,7 +232,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ▶  Воспроизведение было остановлено.
+        ///   Looks up a localized string similar to Воспроизведение было остановлено.
         /// </summary>
         internal static string Play_Stopped {
             get {

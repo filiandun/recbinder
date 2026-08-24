@@ -13,14 +13,13 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
     {
         public event PropertyChangedEventHandler? PropertyChanged;
  
-        private readonly IMainWindowViewModelFactory _viewModelFactory;
+        private readonly IMacroLibraryViewModelFactory _viewModelFactory;
 
         public LocalizationViewModel LocalizationViewModel { get; private set; }
-
         public MacroListViewModel MacroListViewModel { get; private set; }
 
-        private MacroPlaybackViewModel _macroPlaybackViewModel;
-        public MacroPlaybackViewModel MacroPlaybackViewModel
+        private MacroPlaybackViewModel? _macroPlaybackViewModel;
+        public MacroPlaybackViewModel? MacroPlaybackViewModel
         {
             get => this._macroPlaybackViewModel;
             set
@@ -34,7 +33,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         }
 
 
-        public MacroLibraryViewModel(IMainWindowViewModelFactory viewModelFactory, LocalizationViewModel localizationViewModel, MacroListViewModel macroListViewModel, MacroPlaybackViewModel macroPlaybackViewModel)
+        public MacroLibraryViewModel(IMacroLibraryViewModelFactory viewModelFactory, LocalizationViewModel localizationViewModel, MacroListViewModel macroListViewModel, MacroPlaybackViewModel? macroPlaybackViewModel = null)
         {
             this._viewModelFactory = viewModelFactory;
 

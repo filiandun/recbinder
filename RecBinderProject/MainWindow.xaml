@@ -43,19 +43,50 @@
         </Grid.ColumnDefinitions>
 
         <!-- NAVIGATION BAR -->
-        <Border Grid.Column="0" Background="#33080000" BorderThickness="10" CornerRadius="15">
-            <ListBox Grid.Row="0"  Background="#00000000" SelectionChanged="ListBox_SelectionChanged">
-                <ListBoxItem Content="Список записей" Tag="MacrosList"/>
-                <ListBoxItem Content="{Binding LocalizationViewModel.MacroList[RecordingButton], Mode=OneWay}" Tag="Recording"/>
+        <Grid Grid.Column="0" Grid.Row="0" Margin="5, 20, 0, 5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- HEADER -->
+            <ListView Grid.Row="0" SelectionChanged="ListBox_SelectionChanged">
+                <ListViewItem Tag="MacrosList">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xEA37;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LocalizationViewModel.MacroList[FirstLabel]}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ListViewItem>
 
-                <ListBoxItem Content="{Binding LocalizationViewModel.MacroList[HelpButton], Mode=OneWay}" Tag="Help"/>
-                <ListBoxItem Content="{Binding LocalizationViewModel.MacroList[SettingsButton], Mode=OneWay}" Tag="Settings"/>
-            </ListBox>
-        </Border>
+                <ListViewItem Tag="Recording">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LocalizationViewModel.MacroList[RecordingButton]}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ListViewItem>
+            </ListView>
+            
+            <!-- FOOTER -->
+            <StackPanel Grid.Row="1">
+                <Button Margin="0,0,0,5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE897;" Margin="0, 0, 10 ,0" FontFamily="{StaticResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LocalizationViewModel.MacroList[HelpButton]}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE713;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LocalizationViewModel.MacroList[SettingsButton]}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <!-- MAIN CONTENT -->
-        <Border Grid.Column="1" BorderThickness="10" CornerRadius="15">
-            <ContentControl Grid.Column="1" Grid.Row="0" Content="{Binding CurrentViewModel}" />
+        <Border Grid.Column="1" Margin="5, 15, 0, 0" Padding="10" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="Transparent" CornerRadius="8, 0, 0, 0">
+            <ContentControl Content="{Binding CurrentViewModel}" />
         </Border>
     </Grid>
 </Window>

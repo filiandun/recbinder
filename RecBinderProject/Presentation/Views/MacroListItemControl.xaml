@@ -14,10 +14,9 @@
              d:DesignHeight="40" d:DesignWidth="350" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
 
-    <Grid>
-        <Border Padding="20, 5, 20, 5" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#33080000" CornerRadius="5">
-            <Grid>
-                <Grid.ContextMenu>
+    <Grid Width="auto" Margin="0">
+        <Border Padding="20, 5, 20, 5" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="5">
+            <Border.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{Binding MacroName}" IsEnabled="False" FontWeight="Bold"/>
                         <Separator />
@@ -30,14 +29,13 @@
                         <MenuItem Header="Редактировать"/>
                         <MenuItem Header="Удалить"/>
                     </ContextMenu>
-                </Grid.ContextMenu>
+                </Border.ContextMenu>
 
-                <UniformGrid Rows="2">
-                    <Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroName}"/>
-                    <!--<Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDescription}" FontSize="9"/>-->
-                    <Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDuration}" FontSize="9"/>
-                </UniformGrid>
-            </Grid>
+            <UniformGrid Rows="2">
+                <Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroName}"/>
+                <!--<Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDescription}" FontSize="9"/>-->
+                <Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDuration}" FontSize="9"/>
+            </UniformGrid>
         </Border>
     </Grid>
 </UserControl>

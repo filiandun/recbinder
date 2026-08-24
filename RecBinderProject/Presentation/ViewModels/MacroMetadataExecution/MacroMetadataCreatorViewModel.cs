@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
+
 using RecBinderProject.Domain;
 
 
@@ -63,7 +63,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
                 this.Set(ref this._macroDurationLimitEnabled, value);
 
                 if (value is false) this.Set(ref this._macroDuration, TimeSpan.MaxValue);
-                else this.MacroDurationValue = 2; // TODO костыль
+                else this.MacroDurationValue = 5; // TODO костыль (если не задать значение, то иначе на форме при выборе "Включить ограничение длительности", там, стоящая откуда-то 5 - не применится)
             }
         }
 
@@ -125,7 +125,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
 
         public void ApplyChanges()
         {
-            if (this.HasErrors) throw new InvalidOperationException("Невозможно применить изменения, так как имеются ошибки валидации.");
+            if (this.HasErrors) throw new InvalidOperationException("Metadata has error(s)");
 
             this._macroMetadataModel.Name = this._macroName;
             this._macroMetadataModel.Description = this._macroDescription;
@@ -163,6 +163,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             {
                 this._errors[propertyName] = new List<string>();
             }
+
             if (!this._errors[propertyName].Contains(error))
             {
                 this._errors[propertyName].Add(error);

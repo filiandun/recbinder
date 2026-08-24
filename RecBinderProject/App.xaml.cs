@@ -11,9 +11,8 @@ using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.GlobalHotkeyService;
 using RecBinderProject.Infrastructure.LocalizationService;
 
-using RecBinderProject.Presentation.Factories;
 using RecBinderProject.Presentation.Services;
-
+using RecBinderProject.Presentation.Factories;
 using RecBinderProject.Presentation.ViewModels.MainWindow;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.Localization;
@@ -56,6 +55,7 @@ namespace RecBinderProject
             services.AddSingleton<IMainWindowViewModelFactory, MainWindowViewModelFactory>();
             services.AddSingleton<MacroListViewModel>();
             services.AddSingleton<MacroLibraryViewModel>();
+            services.AddSingleton<IMacroLibraryViewModelFactory, MacroLibraryViewModelFactory>();
 
             services.AddSingleton<AppSettingsViewModel>();
             services.AddSingleton<GeneralAppSettingsSectionViewModel>();

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Controls;
 
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.GlobalHotkeyService;
@@ -53,7 +53,7 @@ namespace RecBinderProject
         }
 
 
-        private void OnContentRendered(object? sender, EventArgs e)
+        private void OnContentRendered(object? sender, EventArgs e) // TODO тут страшные вещи какие-то
         {
             string content = "";
 
@@ -63,11 +63,11 @@ namespace RecBinderProject
 
                 case AppSettingsLoadState.MissingFile: content = "Файл настроек не найден, загружены дефолтные"; break;
 
-                case AppSettingsLoadState.CorruptedFile: content = "Файл настроек повреждён, загруженые дефолтные"; break;
+                case AppSettingsLoadState.CorruptedFile: content = "Файл настроек повреждён, загружены дефолтные"; break;
 
-                case AppSettingsLoadState.AccessDenied: content = "Файл настроек недоступен, загруженые дефолтные"; break;
+                case AppSettingsLoadState.AccessDenied: content = "Файл настроек недоступен, загружены дефолтные"; break;
 
-                case AppSettingsLoadState.Failed: throw new Exception();
+                case AppSettingsLoadState.Failed: throw new Exception(); 
             }
 
             //ContentDialog contentDialog = new ContentDialog()
@@ -79,34 +79,9 @@ namespace RecBinderProject
             //contentDialog.ShowAsync();
         }
 
-        //private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
-        //{
-        //    if (args.InvokedItem is MacroListItemViewModel macroItem)
-        //    {
-        //        this.ViewModel.OpenPlayback(macroItem.Macro);
-        //        return;
-        //    }
-
-        //    if (args.InvokedItemContainer is NavigationViewItem navItem)
-        //    {
-        //        switch (navItem.Tag?.ToString())
-        //        {
-        //            case "Recording": this.ViewModel.OpenRecording(); break;
-        //            case "Help": this.ViewModel.OpenHelp(); break;
-        //            case "Settings": this.ViewModel.OpenSettings(); break;
-        //        }
-        //    }
-        //}
-
-
-        private void OnClosed(object? sender, EventArgs e)
-        {
-            this._globalHotkeyService.HotkeyPressed -= this.ViewModel.OnHotkeyPressed;
-            this._globalHotkeyService.Dispose();
-        }
-
-
-        private void ListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        // TODO нужно сделать SelectedIndex=0 по дефолту в xaml, однако этого не получается сделать,
+        // так как xaml грузится ещё до создания всех объектов, поэтому тут кидается NullReference на 'this.ViewModel.OpenLibrary();'
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
             {
@@ -121,6 +96,13 @@ namespace RecBinderProject
                     }
                 }
             }
+        }
+
+
+        private void OnClosed(object? sender, EventArgs e)
+        {
+            this._globalHotkeyService.HotkeyPressed -= this.ViewModel.OnHotkeyPressed;
+            this._globalHotkeyService.Dispose();
         }
     }
 }
