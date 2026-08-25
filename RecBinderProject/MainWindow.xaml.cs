@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Controls;
 
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.GlobalHotkeyService;
@@ -77,25 +76,6 @@ namespace RecBinderProject
             //    CloseButtonText = "Ok"
             //};
             //contentDialog.ShowAsync();
-        }
-
-        // TODO нужно сделать SelectedIndex=0 по дефолту в xaml, однако этого не получается сделать,
-        // так как xaml грузится ещё до создания всех объектов, поэтому тут кидается NullReference на 'this.ViewModel.OpenLibrary();'
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0)
-            {
-                if (e.AddedItems[0] is ListBoxItem item)
-                {
-                    switch (item.Tag.ToString())
-                    {
-                        case "MacrosList": this.ViewModel.OpenLibrary(); break;
-                        case "Recording": this.ViewModel.OpenRecording(); break;
-                        case "Help": this.ViewModel.OpenHelp(); break;
-                        case "Settings": this.ViewModel.OpenSettings(); break;
-                    }
-                }
-            }
         }
 
 

@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RecBinderProject"
-             xmlns:ui="http://schemas.modernwpf.com/2019" 
              
              xmlns:vm="clr-namespace:RecBinderProject.Presentation.ViewModels.MainWindow"
            
@@ -14,28 +13,51 @@
              d:DesignHeight="40" d:DesignWidth="350" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
 
-    <Grid Width="auto" Margin="0">
-        <Border Padding="20, 5, 20, 5" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="5">
+    <Grid>
+        <Border Margin="5" Padding="20, 5, 20, 5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" CornerRadius="{StaticResource ControlCornerRadius}">
             <Border.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{Binding MacroName}" IsEnabled="False" FontWeight="Bold"/>
-                        <Separator />
-                        <MenuItem Header="Воспроизвести"/>
-                        <MenuItem Header="Пауза"/>
-                        <MenuItem Header="Остановить"/>
-                        <Separator />
-                        <MenuItem Header="Показать в проводнике"/>
-                        <Separator />
-                        <MenuItem Header="Редактировать"/>
-                        <MenuItem Header="Удалить"/>
-                    </ContextMenu>
-                </Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{Binding MacroName}" IsEnabled="False" FontWeight="Bold"/>
+                    <Separator />
+                    <MenuItem Header="Воспроизвести"/>
+                    <MenuItem Header="Пауза"/>
+                    <MenuItem Header="Остановить"/>
+                    <Separator />
+                    <MenuItem Header="Показать в проводнике"/>
+                    <Separator />
+                    <MenuItem Header="Редактировать"/>
+                    <MenuItem Header="Удалить"/>
+                </ContextMenu>
+            </Border.ContextMenu>
 
-            <UniformGrid Rows="2">
-                <Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroName}"/>
-                <!--<Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDescription}" FontSize="9"/>-->
-                <Label HorizontalAlignment="Stretch" VerticalAlignment="Center" Content="{Binding MacroDuration}" FontSize="9"/>
-            </UniformGrid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding MacroName}" MaxWidth="300" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}"/>
+                <!-- TODO надо сделать ограничение по символами нормальное, пока оно колхохненько работает -->
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding MacroDescription}" MaxWidth="300" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}" FontSize="9"/>
+
+                <DockPanel Grid.Column="1" Grid.Row="0" Margin="5, 0, 0, 0">
+                    <TextBlock DockPanel.Dock="Right" Text="&#xE916;" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock DockPanel.Dock="Right" Text="{Binding MacroDuration}" Margin="0, 0, 5, 0" Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </DockPanel>
+
+                <DockPanel Grid.Column="1" Grid.Row="1" Margin="5, 0, 0, 0">
+                    <TextBlock DockPanel.Dock="Right" Text="&#xEE93;" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12"/>
+                    <TextBlock DockPanel.Dock="Right" Text="{Binding MacroCreationDateTime}" Margin="0, 0, 5, 0" Style="{StaticResource CaptionTextBlockStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="9"/>
+                </DockPanel>
+
+                <Separator Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="0, 5, 0, 0"/>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

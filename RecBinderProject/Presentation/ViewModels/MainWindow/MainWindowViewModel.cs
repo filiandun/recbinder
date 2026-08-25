@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Windows.Input;
 
 using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Infrastructure.GlobalHotkeyService;
 
+using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Factories;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
@@ -21,6 +23,28 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
 
         private readonly IMainWindowViewModelFactory _viewModelFactory;
 
+        private int _selectedMenuIndex;
+        public int SelectedMenuIndex 
+        {
+            get => this._selectedMenuIndex;
+            set
+            {
+                if (this._selectedMenuIndex == value) return;
+
+                this._selectedMenuIndex = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.SelectedMenuIndex)));
+
+                switch (value)
+                {
+                    case 0: this.ExecuteOpenLibrary(); break;
+                    case 1: this.ExecuteOpenRecording(); break;
+                }
+            }
+        }
+
+        public ICommand OpenSettingsCommand { get; private set; }
+        public ICommand OpenHelpCommand { get; private set; }
+
 
         private object? _currentViewModel;
 
@@ -37,7 +61,6 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         }
 
 
-
         public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IMainWindowViewModelFactory viewModelFactory, LocalizationViewModel LocalizationViewModel)
         {
             this._logger = logger;
@@ -47,6 +70,10 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             this._currentViewModel = this._viewModelFactory.CreateLibrary();
 
             this.LocalizationViewModel = LocalizationViewModel;
+
+            this._selectedMenuIndex = 0;
+            this.OpenSettingsCommand = new RelayCommand(this.ExecuteOpenSettings);
+            this.OpenHelpCommand = new RelayCommand(this.ExecuteOpenHelp);
         }
 
 
@@ -96,7 +123,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         //}
 
 
-        public void OpenLibrary()
+        public void ExecuteOpenLibrary()
         {
             this._logger.LogInformation("Opening library");
 
@@ -104,7 +131,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             this.CurrentViewModel = libraryViewModel;
         }
 
-        public void OpenRecording()
+        public void ExecuteOpenRecording()
         {
             this._logger.LogInformation("Opening recording");
 
@@ -114,17 +141,19 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             //recordingViewModel.MacroRecorded += this.OnMacroRecorded;
         }
 
-        public void OpenHelp()
+        public void ExecuteOpenHelp()
         {
             this._logger.LogInformation("Opening help");
 
+            //this.SelectedMenuIndex = -1;
             //this.CurrentViewModel = this._viewModelFactory.GetHelp();
         }
 
-        public void OpenSettings()
+        public void ExecuteOpenSettings()
         {
             this._logger.LogInformation("Opening settings");
 
+            this.SelectedMenuIndex = -1;
             this.CurrentViewModel = this._viewModelFactory.CreateAppSettings();
         }
     }
