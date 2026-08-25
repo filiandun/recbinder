@@ -7,6 +7,7 @@ using System.ComponentModel;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Services;
+
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.LocalizationService;
 
@@ -144,7 +145,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
 
         public void SaveLocal()
         {
-            if (this.HasErrors) throw new InvalidOperationException("GeneralAppSettingsSectionsViewModel has error(s)");
+            if (this.HasErrors) throw new InvalidOperationException("General app settings section has error(s)");
 
             this._generalAppSettingsOriginal = (GeneralAppSettings)_generalAppSettingsEditable.Clone();
 
@@ -153,7 +154,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
 
         public void ApplyToService()
         {
-            if (this.HasErrors) throw new InvalidOperationException("GeneralAppSettingsSectionsViewModel has error(s)");
+            if (this.HasErrors) throw new InvalidOperationException("General app settings section has error(s)");
 
             this._appSettingsService.AppSettings.General = (GeneralAppSettings)this._generalAppSettingsEditable.Clone();
         }
@@ -197,7 +198,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
                 return value;
             }
 
-            return null;
+            return Array.Empty<string>();
         }
 
         private void AddError(string propertyName, string error)

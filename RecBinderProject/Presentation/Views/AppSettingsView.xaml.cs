@@ -3,9 +3,9 @@
 
 namespace RecBinderProject.Presentation.Views
 {
-    public partial class AppSettingsControl : UserControl
+    public partial class AppSettingsView : UserControl
     {
-        public AppSettingsControl()
+        public AppSettingsView()
         {
             InitializeComponent();
         }

@@ -64,7 +64,7 @@ namespace RecBinderProject
 
 
             // views
-            services.AddSingleton<AppSettingsControl>();
+            services.AddSingleton<AppSettingsView>();
 
 
             this.ServiceProvider = services.BuildServiceProvider();
