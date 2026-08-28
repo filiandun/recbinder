@@ -1,8 +1,6 @@
 ﻿using System.Windows.Input;
 using System.ComponentModel;
 
-//using ModernWpf.Controls;
-
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Presentation.ViewModels.Localization;

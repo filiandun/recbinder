@@ -4,7 +4,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:RecBinderProject.Presentation.Views"
-      xmlns:ui="http://schemas.modernwpf.com/2019" 
              
       xmlns:appsettings="clr-namespace:RecBinderProject.Presentation.ViewModels.AppSettings"       
       d:DataContext="{d:DesignInstance Type=appsettings:AppSettingsViewModel}"
@@ -14,11 +13,6 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
@@ -31,78 +25,88 @@
         </StackPanel>
         
         <!-- GENERAL APP SETTINGS -->
+        <ScrollViewer Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- LANGUAGE -->
+                <Border Grid.Row="0" Margin="0, 0, 0, 10" Padding="15" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}"> 
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <TextBlock Text="&#xF2B7;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[LanguageLabel]}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding GeneralAppSettingsSectionViewModel.AvailableAppLanguages}" SelectedItem="{Binding GeneralAppSettingsSectionViewModel.AppLanguage, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
         
-         <!-- LANGUAGE -->
-        <Border Grid.Row="1" Margin="0, 0, 0, 10" Padding="15" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}"> 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                <!-- THEME -->
+                <Border Grid.Row="1" Margin="0, 0, 0, 10" Padding="15" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock Text="&#xF2B7;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[LanguageLabel]}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
-                </StackPanel>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <TextBlock Text="&#xE793;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[ThemeLabel]}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
-                <ComboBox Grid.Column="1" ItemsSource="{Binding GeneralAppSettingsSectionViewModel.AvailableAppLanguages}" SelectedItem="{Binding GeneralAppSettingsSectionViewModel.AppLanguage, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding GeneralAppSettingsSectionViewModel.AvailableAppThemes}" SelectedItem="{Binding GeneralAppSettingsSectionViewModel.AppTheme, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <!-- SAVE DIRECTORY -->
+                <Border Grid.Row="2" Margin="0, 0, 0, 10" Padding="15" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <TextBlock Text="&#xF89A;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[SaveDirectoryLabel]}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <TextBox Grid.Column="1" Margin="0, 0, 10, 0" Text="{Binding GeneralAppSettingsSectionViewModel.SaveDirectory}" MaxWidth="500" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <Button Grid.Column="2" Command="{Binding GeneralAppSettingsSectionViewModel.BrowseSaveDirectoryCommand}" Content="&#xE838;" FontFamily="{StaticResource SymbolThemeFontFamily}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    </Grid>
+                </Border>
+
+                <!-- SCREEN RESOLUTION -->
+                <Border Grid.Row="3" Margin="0, 0, 0, 10" Padding="15" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <TextBlock Text="&#xE799;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[ScreenResolutionLabel]}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <TextBox Grid.Column="1" Margin="0, 0, 10, 0" Text="{Binding GeneralAppSettingsSectionViewModel.MonitorWidth}"  HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="2" Text="{Binding GeneralAppSettingsSectionViewModel.MonitorHeight}"  HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
             </Grid>
-        </Border>
-        
-        <!-- THEME -->
-        <Border Grid.Row="2" Margin="0, 0, 0, 10" Padding="15" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE793;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[ThemeLabel]}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <ComboBox Grid.Column="1" ItemsSource="{Binding GeneralAppSettingsSectionViewModel.AvailableAppThemes}" SelectedItem="{Binding GeneralAppSettingsSectionViewModel.AppTheme, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            </Grid>
-        </Border>
-
-        <!-- SAVE DIRECTORY -->
-        <Border Grid.Row="3" Margin="0, 0, 0, 10" Padding="15" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock Text="&#xF89A;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[SaveDirectoryLabel]}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <TextBox Grid.Column="1" Margin="0, 0, 10, 0" Text="{Binding GeneralAppSettingsSectionViewModel.SaveDirectory}" MaxWidth="500" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <Button Grid.Column="2" Command="{Binding GeneralAppSettingsSectionViewModel.BrowseSaveDirectoryCommand}" Content="&#xE838;" FontFamily="{StaticResource SymbolThemeFontFamily}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            </Grid>
-        </Border>
-
-        <!-- SCREEN RESOLUTION -->
-        <Border Grid.Row="4" Margin="0, 0, 0, 10" Padding="15" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE799;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding LocalizatonViewModel.AppSettings[ScreenResolutionLabel]}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <TextBox Grid.Column="1" Margin="0, 0, 10, 0" Text="{Binding GeneralAppSettingsSectionViewModel.MonitorWidth}"  HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Column="2" Text="{Binding GeneralAppSettingsSectionViewModel.MonitorHeight}"  HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            </Grid>
-        </Border>
+        </ScrollViewer>
 
         <!-- CONTROL BUTTONS -->
         <!-- PS ломается стиль IsEnabled=false при установке Content с TextBlock, поэтому пришлось сделать Label -->
