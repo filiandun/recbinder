@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 
-//using ModernWpf.Controls;
-
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;

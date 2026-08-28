@@ -35,9 +35,10 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             }
         }
 
-        private MacroListItemViewModel _selectedMacro;
+        private MacroListItemViewModel _selectedMacro; // TODO сделать или null допустимым или ещё как-то
         public MacroListItemViewModel SelectedMacro
         {
+            get => this._selectedMacro;
             set
             {
                 if (ReferenceEquals(this._selectedMacro, value)) return;
