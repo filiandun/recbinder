@@ -7,6 +7,7 @@ using RecBinderProject.Infrastructure.GlobalHotkeyService;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Factories;
+using RecBinderProject.Presentation.Services;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 
@@ -20,6 +21,8 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         private readonly ILogger<MainWindowViewModel> _logger;
 
         public LocalizationViewModel LocalizationViewModel { get; private set; }
+
+        public IDialogService DialogService { get; private set; }
 
         private readonly IMainWindowViewModelFactory _viewModelFactory;
 
@@ -61,7 +64,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         }
 
 
-        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IMainWindowViewModelFactory viewModelFactory, LocalizationViewModel LocalizationViewModel)
+        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IMainWindowViewModelFactory viewModelFactory, LocalizationViewModel LocalizationViewModel, IDialogService dialogService)
         {
             this._logger = logger;
 
@@ -70,6 +73,8 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             this._currentViewModel = this._viewModelFactory.CreateLibrary();
 
             this.LocalizationViewModel = LocalizationViewModel;
+
+            this.DialogService = dialogService;
 
             this._selectedMenuIndex = 0;
             this.OpenSettingsCommand = new RelayCommand(this.ExecuteOpenSettings);

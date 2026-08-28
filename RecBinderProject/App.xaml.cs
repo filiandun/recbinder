@@ -46,6 +46,8 @@ namespace RecBinderProject
 
             services.AddSingleton<IThemeService, ThemeService>();
 
+            services.AddSingleton<IDialogService, DialogService>();
+
             services.AddSingleton<GlobalHotkeyService>();
 
             // view models

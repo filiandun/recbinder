@@ -87,11 +87,10 @@
                 <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroOptionsLabel]}" Margin="0, 0, 0, 5" Style="{StaticResource CaptionTextBlockStyle}"/>
 
                 <UniformGrid VerticalAlignment="Bottom" Columns="1">
-                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12"/>
-                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12"/>
-                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
-                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
-                    <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.RelativeMouseMovementEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[RelativeMouseMovementEnabledButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
                 </UniformGrid>
             </StackPanel>
         </ScrollViewer>
@@ -104,7 +103,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ProgressBar Grid.Column="0" Value="{Binding MacroExecutionStatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding MacroPlaybackViewModel.MacroExecutionStatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <ProgressBar Grid.Column="0" Value="{Binding MacroExecutionStatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding MacroExecutionStatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             <Button Grid.Column="0" Command="{Binding StartCommand}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE768;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
