@@ -58,9 +58,8 @@ namespace RecBinderProject.Presentation.Factories
         {
             MacroMetadataCreatorViewModel macroMetadataCreatorViewModel = new MacroMetadataCreatorViewModel();
 
-            MacroMetadata macroMetadata = new MacroMetadata();
             MacroExecutionOptions macroOptions = new MacroExecutionOptions();
-            MacroRecordingService macroRecordingService = new MacroRecordingService(this._macroRepository, macroMetadata, macroOptions);
+            MacroRecordingService macroRecordingService = new MacroRecordingService(this._macroRepository, macroOptions);
 
             MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroRecordingService, this._localizationService, "Create");
 

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+
 using RecBinderProject.Domain;
 
 using RecBinderProject.Infrastructure.MacroRepository;
@@ -17,21 +18,21 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
         private readonly IMacroRepository _repository;
 
-        private readonly Macro _macro;
-        private readonly MacroEventRecorder _recorder;
+        private Macro? _macro;
+        private MacroEventRecorder? _recorder;
+        private readonly MacroExecutionOptions _macroOptions;
 
-        public override TimeSpan TotalTime => this._macro.Metadata.Duration;
-        public override TimeSpan ElapsedTime => this._recorder.GetElapsedTime();
+        public override TimeSpan TotalTime => this._macro?.Metadata.Duration ?? TimeSpan.Zero;
+        public override TimeSpan ElapsedTime => this._recorder?.GetElapsedTime() ?? TimeSpan.Zero;
 
 
-        public MacroRecordingService(IMacroRepository repository, MacroMetadata macroMetadata, MacroExecutionOptions macroOptions)
+        public MacroRecordingService(IMacroRepository repository, MacroExecutionOptions macroOptions)
         {
             this._cancellationToken = new CancellationTokenSource();
 
             this._repository = repository;
 
-            this._macro = new Macro(macroMetadata);
-            this._recorder = new MacroEventRecorder(this._macro, macroOptions);
+            this._macroOptions = macroOptions;
 
             this.State = MacroExecutionState.Completed;
         }
@@ -41,7 +42,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         {
             if (this.CanStart())
             {
-                this._macro.UpdateMetadata(macroMetadata);
+                this._macro = new Macro(macroMetadata);
+                this._recorder = new MacroEventRecorder(this._macro, this._macroOptions);
 
                 this._cancellationToken = new CancellationTokenSource();
 
@@ -57,7 +59,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         {
             if (this.CanPause())
             {
-                this._recorder.Pause();
+                this._recorder!.Pause();
                 this.SetState(MacroExecutionState.Paused);
             }
         }
@@ -66,7 +68,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         {
             if (this.CanResume())
             {
-                this._recorder.Resume();
+                this._recorder!.Resume();
                 this.SetState(MacroExecutionState.Playing);
             }
         }
@@ -75,7 +77,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         {
             if (this.CanStop())
             {
-                this._recorder.Stop();
+                this._recorder!.Stop();
                 this._cancellationToken.Cancel();
 
                 this.SaveMacro();
@@ -89,9 +91,9 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         {
             try
             {
-                await Task.Delay(this._macro.Metadata.Duration, token);
+                await Task.Delay(this._macro!.Metadata.Duration, token);
 
-                this._recorder.Stop();
+                this._recorder!.Stop();
                 this._cancellationToken.Cancel();
 
                 this.SaveMacro();
@@ -106,7 +108,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
         private void SaveMacro()
         {
-            this._macro.Metadata.Duration = this._recorder.GetElapsedTime();
+            this._macro!.Metadata.Duration = this._recorder!.GetElapsedTime();
             this._macro.Metadata.CreationDateTime = DateTime.Now;
 
             Debug.WriteLine($"RecordingService: {this._macro.Events.Count}");

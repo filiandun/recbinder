@@ -36,7 +36,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
 
-
+        // TODO баг небольшой, что если запись длится условно 5 секунд, а последнее событие было на 3-ей секунде,
+        // то тогда воспроизведение остановится на 3-ей секунде (следовательно таймер тоже, поэтому на странице будет "00:00:03:00 / 00:00:05:00 - Воспроизведение завершено")
         public async Task Start(CancellationToken cancellationToken)
         {
             this._stopwatch.Restart();

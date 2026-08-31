@@ -24,16 +24,5 @@ namespace RecBinderProject.Domain
         }
 
         public void AddEvent(MacroEvent userEvent) => this.Events.Add(userEvent);
-
-        public void UpdateMetadata(MacroMetadata metadata)
-        {
-            this.Metadata = new MacroMetadata
-            {
-                Name = metadata.Name,
-                Description = metadata.Description,
-                Duration = metadata.Duration,
-                CreationDateTime = metadata.CreationDateTime
-            };
-        }
     }
 }
