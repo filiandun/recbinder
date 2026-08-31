@@ -1,8 +1,6 @@
 ﻿using System.Windows.Input;
 using System.ComponentModel;
 
-using ModernWpf.Controls;
-
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Presentation.ViewModels.Localization;
@@ -87,12 +85,12 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             }
             catch (Exception ex)
             {
-                ContentDialog contentDialog = new ContentDialog() // TODO сделать менеджер-сервис contentDialog'ов, чтобы там и локализация подтяигвались, да и чтобы так много текста не было для оторбражения
-                {
-                    Content = ex.Message,
-                    CloseButtonText = "Закрыть",
-                };
-                await contentDialog.ShowAsync();
+                //ContentDialog contentDialog = new ContentDialog() // TODO сделать менеджер-сервис contentDialog'ов, чтобы там и локализация подтяигвались, да и чтобы так много текста не было для оторбражения
+                //{
+                //    Content = ex.Message,
+                //    CloseButtonText = "Закрыть",
+                //};
+                //await contentDialog.ShowAsync();
             }
         }
 

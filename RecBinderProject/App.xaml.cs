@@ -1,18 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Windows;
+using System.Windows.Threading;
+
 using Microsoft.Extensions.Logging;
-using ModernWpf;
+using Microsoft.Extensions.DependencyInjection;
+
+using RecBinderProject.Presentation.Views;
+
+using RecBinderProject.Infrastructure.MacroRepository;
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.GlobalHotkeyService;
 using RecBinderProject.Infrastructure.LocalizationService;
-using RecBinderProject.Infrastructure.MacroRepository;
-using RecBinderProject.Presentation.Factories;
+
 using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.Factories;
+using RecBinderProject.Presentation.ViewModels.MainWindow;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.Localization;
-using RecBinderProject.Presentation.ViewModels.MainWindow;
-using RecBinderProject.Views;
-using System.Windows;
-using System.Windows.Threading;
+using RecBinderProject.Presentation.ViewModels.MacroExecution;
 
 
 namespace RecBinderProject
@@ -42,6 +46,8 @@ namespace RecBinderProject
 
             services.AddSingleton<IThemeService, ThemeService>();
 
+            services.AddSingleton<IDialogService, DialogService>();
+
             services.AddSingleton<GlobalHotkeyService>();
 
             // view models
@@ -50,6 +56,8 @@ namespace RecBinderProject
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<IMainWindowViewModelFactory, MainWindowViewModelFactory>();
             services.AddSingleton<MacroListViewModel>();
+            services.AddSingleton<MacroLibraryViewModel>();
+            services.AddSingleton<IMacroLibraryViewModelFactory, MacroLibraryViewModelFactory>();
 
             services.AddSingleton<AppSettingsViewModel>();
             services.AddSingleton<GeneralAppSettingsSectionViewModel>();
@@ -58,7 +66,7 @@ namespace RecBinderProject
 
 
             // views
-            services.AddSingleton<AppSettingsControl>();
+            services.AddSingleton<AppSettingsView>();
 
 
             this.ServiceProvider = services.BuildServiceProvider();
@@ -81,7 +89,7 @@ namespace RecBinderProject
 
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("Ошибка: " + e.Exception.Message);
+            MessageBox.Show("error: " + e.Exception.Message);
             e.Handled = true;
         }
     }

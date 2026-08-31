@@ -16,7 +16,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
         {
             this.MacroName = metadata.Name;
             this.MacroDescription = metadata.Description;
-            this.MacroDuration = metadata.Duration.ToString(@"hh\:mm\:ss\:ff"); ;
+            this.MacroDuration = metadata.Duration.ToString(@"hh\:mm\:ss\:ff");
             this.MacroCreationDateTime = metadata.CreationDateTime.ToString("G");
         }
     }

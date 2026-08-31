@@ -3,30 +3,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RecBinderProject"
-        xmlns:ui="http://schemas.modernwpf.com/2019"
         
-        xmlns:views="clr-namespace:RecBinderProject.Views"
+        xmlns:local="clr-namespace:RecBinderProject"
+        
+        xmlns:views="clr-namespace:RecBinderProject.Presentation.Views"
         xmlns:appvm="clr-namespace:RecBinderProject.Presentation.ViewModels.AppSettings"
         xmlns:exevm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroExecution"
        
-        xmlns:viewmodels="clr-namespace:RecBinderProject.Presentation.ViewModels.MainWindow" d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
+        xmlns:viewmodels="clr-namespace:RecBinderProject.Presentation.ViewModels.MainWindow" 
         
-        ui:WindowHelper.UseModernWindowStyle="True"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
+        
         mc:Ignorable="d"
         Title="RecBinder" Height="600" Width="1200" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type exevm:MacroRecordingViewModel}">
-            <views:RecordingControl />
+            <views:MacroRecordingView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type exevm:MacroPlaybackViewModel}">
-            <views:PlaybackControl />
+        <DataTemplate DataType="{x:Type exevm:MacroLibraryViewModel}">
+            <views:MacroLibraryView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type appvm:AppSettingsViewModel}">
-            <views:AppSettingsControl />
+            <views:AppSettingsView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type viewmodels:MacroListItemViewModel}">
@@ -34,41 +35,58 @@
         </DataTemplate>
     </Window.Resources>
 
+    
     <Grid>
-        <ui:NavigationView x:Name="navigationView" PaneTitle="{Binding LocalizationViewModel.MacroList[FirstLabel], Mode=OneWay}" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" MenuItemsSource="{Binding MacroListViewModel.MacroItems}" ItemInvoked="NavigationView_ItemInvoked">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="200px"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- NAVIGATION BAR -->
+        <Grid Grid.Column="0" Margin="5, 20, 0, 5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- HEADER -->
+            <ListView Grid.Row="0" SelectedIndex="{Binding SelectedMenuIndex}">
+                <ListViewItem Tag="MacrosList">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xEA37;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LocalizationViewModel.MacroList[FirstLabel]}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ListViewItem>
+
+                <ListViewItem Tag="Recording">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LocalizationViewModel.MacroList[RecordingButton]}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ListViewItem>
+            </ListView>
+            
+            <!-- FOOTER -->
+            <StackPanel Grid.Row="1">
+                <Button Command="{Binding OpenHelpCommand}" Margin="0,0,0,5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE897;" Margin="0, 0, 10 ,0" FontFamily="{StaticResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LocalizationViewModel.MacroList[HelpButton]}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Command="{Binding OpenSettingsCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="Transparent" BorderBrush="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE713;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LocalizationViewModel.MacroList[SettingsButton]}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- MAIN CONTENT -->
+        <Border Grid.Column="1" Margin="5, 15, 0, 0" Padding="10" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" BorderBrush="Transparent" CornerRadius="8, 0, 0, 0">
             <ContentControl Content="{Binding CurrentViewModel}" />
-            <ui:NavigationView.PaneHeader>
-                <StackPanel Margin="-25, 40, 15, 0">
-                    <DockPanel>
-                        <Button Margin="0, 5, 5, 5" Padding="5" Command="{Binding MacroListViewModel.OpenSaveFolderCommand}">
-                            <ui:SymbolIcon Symbol="MoveToFolder"/>
-                        </Button>
-
-                        <Button Padding="5" Command="{Binding MacroListViewModel.RefreshMacrosCommand}">
-                            <ui:SymbolIcon Symbol="Refresh"/>
-                        </Button>
-
-                        <ui:AutoSuggestBox PlaceholderText="{Binding LocalizationViewModel.MacroList[FinderField], Mode=OneWay}" Margin="5" HorizontalAlignment="Stretch" DataContextChanged="AutoSuggestBox_DataContextChanged"/>
-                    </DockPanel>
-                    
-                    <Separator Margin="0, 10, 0, 5"/>
-                </StackPanel>
-            </ui:NavigationView.PaneHeader>
-
-
-            <ui:NavigationView.PaneFooter>
-                <StackPanel Margin="12,0,12,12">
-                    <TextBlock Margin="0,0,0,6">
-                        <Run Text="{Binding LocalizationViewModel.MacroList[MacroCountLabel], Mode=OneWay}" />
-                        <Run Text="{Binding MacroListViewModel.MacrosCount, Mode=OneWay}"/>
-                    </TextBlock>
-                </StackPanel>
-            </ui:NavigationView.PaneFooter>
-
-            <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="{Binding LocalizationViewModel.MacroList[RecordingButton], Mode=OneWay}" Icon="Video" Tag="Recording"/>
-                <ui:NavigationViewItem Content="{Binding LocalizationViewModel.MacroList[HelpButton], Mode=OneWay}" Icon="Help" Tag="Help"/>
-            </ui:NavigationView.FooterMenuItems>
-        </ui:NavigationView>
+        </Border>
     </Grid>
 </Window>

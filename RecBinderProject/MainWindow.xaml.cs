@@ -1,8 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-using ModernWpf.Controls;
-
 using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Infrastructure.GlobalHotkeyService;
 
@@ -31,7 +29,7 @@ namespace RecBinderProject
             this._appSettingsService = appSettingsService;
 
             this.SourceInitialized += this.OnSourceInitialized;
-            this.ContentRendered += this.OnContentRendered;
+            //this.ContentRendered += this.OnContentRendered;
 
             this.Closed += this.OnClosed;
         }
@@ -54,55 +52,31 @@ namespace RecBinderProject
         }
 
 
-        private void OnContentRendered(object? sender, EventArgs e)
-        {
-            string content = "";
+        //private void OnContentRendered(object? sender, EventArgs e) // TODO просится в MainWindowViewModel
+        //{
+        //    string content = "";
 
-            switch (this._appSettingsService.LoadState)
-            {
-                case AppSettingsLoadState.LoadedFromFile: content = "Настройки были загружены из файла"; break;
+        //    switch (this._appSettingsService.LoadState)
+        //    {
+        //        case AppSettingsLoadState.LoadedFromFile: content = "Настройки были загружены из файла"; break;
 
-                case AppSettingsLoadState.MissingFile: content = "Файл настроек не найден, загружены дефолтные"; break;
+        //        case AppSettingsLoadState.MissingFile: content = "Файл настроек не найден, загружены дефолтные"; break;
 
-                case AppSettingsLoadState.CorruptedFile: content = "Файл настроек повреждён, загруженые дефолтные"; break;
+        //        case AppSettingsLoadState.CorruptedFile: content = "Файл настроек повреждён, загружены дефолтные"; break;
 
-                case AppSettingsLoadState.AccessDenied: content = "Файл настроек недоступен, загруженые дефолтные"; break;
+        //        case AppSettingsLoadState.AccessDenied: content = "Файл настроек недоступен, загружены дефолтные"; break;
 
-                case AppSettingsLoadState.Failed: throw new Exception();
-            }
+        //        case AppSettingsLoadState.Failed: throw new Exception(); 
+        //    }
 
-            ContentDialog contentDialog = new ContentDialog()
-            {
-                Content = content,
-                DefaultButton = ContentDialogButton.Close,
-                CloseButtonText = "Ok"
-            };
-            contentDialog.ShowAsync();
-        }
-
-        private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
-        {
-            if (args.InvokedItem is MacroListItemViewModel macroItem)
-            {
-                this.ViewModel.OpenPlayback(macroItem.Macro);
-                return;
-            }
-
-            if (args.InvokedItemContainer is NavigationViewItem navItem)
-            {
-                switch (navItem.Tag?.ToString())
-                {
-                    case "Recording": this.ViewModel.OpenRecording(); break;
-                    case "Help": this.ViewModel.OpenHelp(); break;
-                    case "Settings": this.ViewModel.OpenSettings(); break;
-                }
-            }
-        }
-
-        private void AutoSuggestBox_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            
-        }
+        //    //ContentDialog contentDialog = new ContentDialog()
+        //    //{
+        //    //    Content = content,
+        //    //    DefaultButton = ContentDialogButton.Close,
+        //    //    CloseButtonText = "Ok"
+        //    //};
+        //    //contentDialog.ShowAsync();
+        //}
 
 
         private void OnClosed(object? sender, EventArgs e)

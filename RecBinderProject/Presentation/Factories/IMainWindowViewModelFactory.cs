@@ -1,5 +1,4 @@
-﻿using RecBinderProject.Domain;
-using RecBinderProject.Presentation.ViewModels.AppSettings;
+﻿using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 
 
@@ -7,9 +6,12 @@ namespace RecBinderProject.Presentation.Factories
 {
     public interface IMainWindowViewModelFactory
     {
-        public MacroPlaybackViewModel CreatePlayback(Macro macro);
+        public MacroLibraryViewModel CreateLibrary();
+
         public MacroRecordingViewModel CreateRecording();
 
-        public AppSettingsViewModel GetAppSettings();
+        //public AppHelpViewModel CreateHelp();
+
+        public AppSettingsViewModel CreateAppSettings();
     }
 }

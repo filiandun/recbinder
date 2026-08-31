@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 
-using ModernWpf.Controls;
-
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
@@ -57,21 +55,21 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             }
             catch (ArgumentException ae)
             {
-                ContentDialog contentDialog = new ContentDialog()
-                {
-                    Content = ae.Message,
-                    CloseButtonText = "Закрыть",
-                };
-                contentDialog.ShowAsync();
+                //ContentDialog contentDialog = new ContentDialog()
+                //{
+                //    Content = ae.Message,
+                //    CloseButtonText = "Закрыть",
+                //};
+                //contentDialog.ShowAsync();
             }
             catch (Exception ex)
             {
-                ContentDialog contentDialog = new ContentDialog()
-                {
-                    Content = ex.Message,
-                    CloseButtonText = "Закрыть",
-                };
-                contentDialog.ShowAsync();
+                //ContentDialog contentDialog = new ContentDialog()
+                //{
+                //    Content = ex.Message,
+                //    CloseButtonText = "Закрыть",
+                //};
+                //contentDialog.ShowAsync();
             }
         }
 
