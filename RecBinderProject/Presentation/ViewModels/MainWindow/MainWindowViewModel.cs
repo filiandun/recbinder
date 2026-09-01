@@ -2,12 +2,10 @@
 using System.Windows.Input;
 
 using Microsoft.Extensions.Logging;
-
-using RecBinderProject.Infrastructure.GlobalHotkeyService;
-
+using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 using RecBinderProject.Presentation.Commands;
-using RecBinderProject.Presentation.Factories;
 using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 
@@ -19,12 +17,17 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly ILogger<MainWindowViewModel> _logger;
+        private readonly IDialogService _dialogService;
+
+        private readonly MacroLibraryViewModel _macroLibraryViewModel;
+        private readonly MacroRecordingViewModel _macroRecordingViewModel;
+        private readonly AppSettingsViewModel _appSettingsViewModel;
 
         public LocalizationViewModel LocalizationViewModel { get; private set; }
 
-        public IDialogService DialogService { get; private set; }
+        public ICommand OpenSettingsCommand { get; private set; }
+        public ICommand OpenHelpCommand { get; private set; }
 
-        private readonly IMainWindowViewModelFactory _viewModelFactory;
 
         private int _selectedMenuIndex;
         public int SelectedMenuIndex 
@@ -45,12 +48,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             }
         }
 
-        public ICommand OpenSettingsCommand { get; private set; }
-        public ICommand OpenHelpCommand { get; private set; }
-
-
         private object? _currentViewModel;
-
         public object? CurrentViewModel
         {
             get => this._currentViewModel;
@@ -64,21 +62,23 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         }
 
 
-        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IMainWindowViewModelFactory viewModelFactory, LocalizationViewModel LocalizationViewModel, IDialogService dialogService)
+        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, LocalizationViewModel LocalizationViewModel, IDialogService dialogService, MacroLibraryViewModel macroLibraryViewModel, MacroRecordingViewModel macroRecordingViewModel, AppSettingsViewModel appSettingsViewModel)
         {
             this._logger = logger;
-
-            this._viewModelFactory = viewModelFactory;
-
-            this._currentViewModel = this._viewModelFactory.CreateLibrary();
+            this._dialogService = dialogService;
 
             this.LocalizationViewModel = LocalizationViewModel;
 
-            this.DialogService = dialogService;
+            this._macroLibraryViewModel = macroLibraryViewModel;
+            this._macroRecordingViewModel = macroRecordingViewModel;
+            this._appSettingsViewModel = appSettingsViewModel;
 
-            this._selectedMenuIndex = 0;
+
             this.OpenSettingsCommand = new RelayCommand(this.ExecuteOpenSettings);
             this.OpenHelpCommand = new RelayCommand(this.ExecuteOpenHelp);
+
+            this._selectedMenuIndex = 0;
+            this._currentViewModel = macroLibraryViewModel;
         }
 
 
@@ -132,16 +132,14 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         {
             this._logger.LogInformation("Opening library");
 
-            MacroLibraryViewModel libraryViewModel = this._viewModelFactory.CreateLibrary();
-            this.CurrentViewModel = libraryViewModel;
+            this.CurrentViewModel = this._macroLibraryViewModel;
         }
 
         public void ExecuteOpenRecording()
         {
             this._logger.LogInformation("Opening recording");
 
-            MacroRecordingViewModel recordingViewModel = this._viewModelFactory.CreateRecording();
-            this.CurrentViewModel = recordingViewModel;
+            this.CurrentViewModel = this._macroRecordingViewModel;
 
             //recordingViewModel.MacroRecorded += this.OnMacroRecorded;
         }
@@ -159,7 +157,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             this._logger.LogInformation("Opening settings");
 
             this.SelectedMenuIndex = -1;
-            this.CurrentViewModel = this._viewModelFactory.CreateAppSettings();
+            this.CurrentViewModel = this._appSettingsViewModel;
         }
     }
 }

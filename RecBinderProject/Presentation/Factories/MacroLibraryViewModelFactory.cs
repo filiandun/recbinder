@@ -3,11 +3,12 @@
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 
-using RecBinderProject.Infrastructure.LocalizationService;
-
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
+using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
+
+using RecBinderProject.Infrastructure.Services.Localization;
 
 
 namespace RecBinderProject.Presentation.Factories
@@ -31,9 +32,9 @@ namespace RecBinderProject.Presentation.Factories
             MacroPlaybackService macroPlaybackService = new MacroPlaybackService(macroOptions, macro);
 
             MacroMetadataViewerViewModel macroMetadataViewerViewModel = new MacroMetadataViewerViewModel(macro.Metadata);
-            MacroExecutionStatusViewModel macroExecutionStatusViewModel = new MacroExecutionStatusViewModel(macroPlaybackService, this._localizationService, "Play");
-
-            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(macroPlaybackService, this._localizationViewModel, macroMetadataViewerViewModel, macroExecutionStatusViewModel, macroOptions);
+            MacroPlaybackStatusViewModel macroPlaybackStatusViewModel = new MacroPlaybackStatusViewModel(macroPlaybackService, this._localizationService);
+            
+            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(macroPlaybackService, this._localizationViewModel, macroMetadataViewerViewModel, macroPlaybackStatusViewModel, macroOptions);
 
             return macroPlaybackViewModel;
         }

@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json.Serialization;
 
 using RecBinderProject.Domain;
-using RecBinderProject.Infrastructure.AppSettingsService;
+using RecBinderProject.Infrastructure.Services.AppSettings;
 
 
-namespace RecBinderProject.Infrastructure.MacroRepository
+namespace RecBinderProject.Infrastructure.Repositories
 {
     public class MacroRepository : IMacroRepository
     {

@@ -5,6 +5,7 @@ using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
 using RecBinderProject.Presentation.ViewModels.Localization;
+using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroExecution
@@ -21,9 +22,9 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         public MacroRecordingViewModel(
             IMacroRecordingService macroRecordingService,
             LocalizationViewModel localizationViewModel, 
-            MacroMetadataCreatorViewModel macroMetadataCreatorViewModel, 
-            MacroExecutionStatusViewModel macroExecutionStatusViewModel,
-            MacroExecutionOptions macroOptions) : base(macroRecordingService, localizationViewModel, macroExecutionStatusViewModel, macroOptions)
+            MacroMetadataCreatorViewModel macroMetadataCreatorViewModel,
+            MacroRecordingStatusViewModel macroRecordingStatusViewModel,
+            MacroExecutionOptions macroOptions) : base(macroRecordingService, localizationViewModel, macroRecordingStatusViewModel, macroOptions)
         {
             this._macroRecordingService = macroRecordingService;
 

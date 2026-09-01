@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.Globalization;
 
 using RecBinderProject.Resources;
-using RecBinderProject.Infrastructure.AppSettingsService;
+using RecBinderProject.Infrastructure.Services.AppSettings;
 
 
-namespace RecBinderProject.Infrastructure.LocalizationService
+namespace RecBinderProject.Infrastructure.Services.Localization
 {
     public class LocalizationService : ILocalizationService
     {

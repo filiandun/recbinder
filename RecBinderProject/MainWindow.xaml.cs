@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-using RecBinderProject.Infrastructure.AppSettingsService;
-using RecBinderProject.Infrastructure.GlobalHotkeyService;
+using RecBinderProject.Infrastructure.Services.AppSettings;
+using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 
 using RecBinderProject.Presentation.ViewModels.MainWindow;
 

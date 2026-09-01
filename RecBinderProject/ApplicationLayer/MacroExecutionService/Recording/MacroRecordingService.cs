@@ -2,10 +2,9 @@
 
 using RecBinderProject.Domain;
 
-using RecBinderProject.Infrastructure.MacroRepository;
-
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
+using RecBinderProject.Infrastructure.Repositories;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording

@@ -1,0 +1,20 @@
+﻿
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
+using RecBinderProject.Infrastructure.Services.Localization;
+
+
+namespace RecBinderProject.Presentation.ViewModels.MacroExecution.Status
+{
+    public class MacroPlaybackStatusViewModel : MacroExecutionStatusViewModelBase
+    {
+        protected override string HintLocalizationKey => "Play_ButtonHint";
+        protected override string ProcessingLocalizationKey => "Play_Playing";
+        protected override string PausedLocalizationKey => "Play_Paused";
+        protected override string CompletedLocalizationKey => "Play_Completed";
+        protected override string StoppedLocalizationKey => "Play_Stopped";
+
+        public MacroPlaybackStatusViewModel(IMacroPlaybackService playbackService, ILocalizationService localizationService) : base(playbackService, localizationService)
+        {
+        }
+    }
+}

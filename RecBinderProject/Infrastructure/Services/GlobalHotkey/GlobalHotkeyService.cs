@@ -3,8 +3,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 
-
-namespace RecBinderProject.Infrastructure.GlobalHotkeyService
+namespace RecBinderProject.Infrastructure.Services.GlobalHotkey
 {
     public class GlobalHotkeyService
     {

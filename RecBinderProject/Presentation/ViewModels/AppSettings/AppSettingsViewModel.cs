@@ -2,8 +2,8 @@
 using System.ComponentModel;
 
 using RecBinderProject.Presentation.Commands;
-using RecBinderProject.Infrastructure.AppSettingsService;
 using RecBinderProject.Presentation.ViewModels.Localization;
+using RecBinderProject.Infrastructure.Services.AppSettings;
 
 
 namespace RecBinderProject.Presentation.ViewModels.AppSettings

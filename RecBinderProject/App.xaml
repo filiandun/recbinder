@@ -3,51 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:RecBinderProject">
     
-    
-    <!--StartupUri="MainWindow.xaml"-->
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <!--<Style TargetType="ListBoxItem">
-                --><!-- Убираем дефолтные отступы, чтобы карточка занимала всю ширину --><!--
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="Margin" Value="0, 0, 0, 8"/>
-
-                <Setter Property="Template">
-                    <Setter.Value>
-                        --><!-- Переписываем внутренности ListBoxItem --><!--
-                        <ControlTemplate TargetType="ListBoxItem">
-                            <Border x:Name="CardBorder" 
-                        CornerRadius="6" 
-                        Background="Transparent" 
-                        BorderThickness="1" 
-                        BorderBrush="Transparent">
-
-                                --><!-- Важнейший элемент: сюда прилетит твой DataTemplate --><!--
-                                <ContentPresenter Margin="12, 8" />
-
-                            </Border>
-
-                            --><!-- Триггеры для реакции на мышь и выделение --><!--
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    --><!-- Меняем цвет бордера по имени x:Name="CardBorder" --><!--
-                                    <Setter TargetName="CardBorder" Property="Background" Value="#1AFFFFFF"/>
-                                </Trigger>
-
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="CardBorder" Property="Background" Value="#2AFFFFFF"/>
-                                    <Setter TargetName="CardBorder" Property="BorderBrush" Value="#4AFFFFFF"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>-->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

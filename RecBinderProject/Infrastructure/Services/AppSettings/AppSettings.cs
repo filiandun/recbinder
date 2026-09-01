@@ -1,4 +1,4 @@
-﻿namespace RecBinderProject.Infrastructure.AppSettingsService
+﻿namespace RecBinderProject.Infrastructure.Services.AppSettings
 {
     public class AppSettings
     {

@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 
 
-namespace RecBinderProject.Infrastructure.GlobalHotkeyService
+namespace RecBinderProject.Infrastructure.Services.GlobalHotkey
 {
     public sealed class HotkeyBinding
     {

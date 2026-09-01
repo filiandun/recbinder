@@ -83,4 +83,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\MacroRepository\" />
+  </ItemGroup>
+
 </Project>

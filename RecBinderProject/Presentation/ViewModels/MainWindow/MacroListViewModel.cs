@@ -5,9 +5,8 @@ using System.Collections.ObjectModel;
 using RecBinderProject.Domain;
 
 using RecBinderProject.Presentation.Commands;
-
-using RecBinderProject.Infrastructure.MacroRepository;
-using RecBinderProject.Infrastructure.LocalizationService;
+using RecBinderProject.Infrastructure.Services.Localization;
+using RecBinderProject.Infrastructure.Repositories;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MainWindow

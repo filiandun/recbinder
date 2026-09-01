@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 
-namespace RecBinderProject.Infrastructure.AppSettingsService
+namespace RecBinderProject.Infrastructure.Services.AppSettings
 {
     public class GeneralAppSettings : IEquatable<GeneralAppSettings>, ICloneable
     {

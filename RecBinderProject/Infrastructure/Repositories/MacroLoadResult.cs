@@ -1,7 +1,7 @@
 ﻿using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.Infrastructure.MacroRepository
+namespace RecBinderProject.Infrastructure.Repositories
 {
     public class MacroLoadResult
     {

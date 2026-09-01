@@ -1,5 +1,4 @@
-﻿
-namespace RecBinderProject.Infrastructure.LocalizationService
+﻿namespace RecBinderProject.Infrastructure.Services.Localization
 {
     public enum LocalizationScope
     {

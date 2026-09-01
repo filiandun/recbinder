@@ -5,6 +5,7 @@ using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
+using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroExecution
@@ -19,9 +20,9 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         public MacroPlaybackViewModel(
             IMacroPlaybackService macroPlaybackService,
             LocalizationViewModel localizationViewModel, 
-            MacroMetadataViewerViewModel macroMetadataViewerViewModel, 
-            MacroExecutionStatusViewModel macroExecutionStatusViewModel, 
-            MacroExecutionOptions macroOptions) : base(macroPlaybackService, localizationViewModel, macroExecutionStatusViewModel, macroOptions)
+            MacroMetadataViewerViewModel macroMetadataViewerViewModel,
+            MacroPlaybackStatusViewModel macroPlaybackStatusViewModel, 
+            MacroExecutionOptions macroOptions) : base(macroPlaybackService, localizationViewModel, macroPlaybackStatusViewModel, macroOptions)
         {
             this._macroPlaybackService = macroPlaybackService;
 

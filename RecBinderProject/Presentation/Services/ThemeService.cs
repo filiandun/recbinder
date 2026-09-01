@@ -1,6 +1,5 @@
 ﻿using System.Windows;
-
-using RecBinderProject.Infrastructure.AppSettingsService;
+using RecBinderProject.Infrastructure.Services.AppSettings;
 
 
 namespace RecBinderProject.Presentation.Services
