@@ -5,17 +5,18 @@ using System.Collections.ObjectModel;
 using RecBinderProject.Domain;
 
 using RecBinderProject.Presentation.Commands;
-using RecBinderProject.Infrastructure.Services.Localization;
 using RecBinderProject.Infrastructure.Repositories;
+using RecBinderProject.Infrastructure.Services.AppSettings;
 
 
-namespace RecBinderProject.Presentation.ViewModels.MainWindow
+namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
 {
     public class MacroListViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        public event Action<Macro>? SelectedMacroChanged;
+        public event Action<Macro?>? SelectedMacroChanged;
 
+        private readonly IAppSettingsService _appSettingsService;
         private readonly IMacroRepository _macroRepository;
 
 
@@ -34,8 +35,8 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             }
         }
 
-        private MacroListItemViewModel _selectedMacro; // TODO сделать или null допустимым или ещё как-то
-        public MacroListItemViewModel SelectedMacro
+        private MacroListItemViewModel? _selectedMacro;
+        public MacroListItemViewModel? SelectedMacro
         {
             get => this._selectedMacro;
             set
@@ -44,7 +45,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
 
                 this._selectedMacro = value;
 
-                this.SelectedMacroChanged?.Invoke(this._selectedMacro.Macro);
+                this.SelectedMacroChanged?.Invoke(this._selectedMacro?.Macro);
             }
         }
 
@@ -54,16 +55,20 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         public RelayCommand OpenSaveFolderCommand { get; private set; }
 
 
-        public MacroListViewModel(ILocalizationService localizationService, IMacroRepository macroRepository)
+        public MacroListViewModel(IAppSettingsService appSettingsService, IMacroRepository macroRepository)
         {
+            this._appSettingsService = appSettingsService;
             this._macroRepository = macroRepository;
 
             this._macroItems = new ObservableCollection<MacroListItemViewModel>();
 
             this.RefreshMacrosCommand = new RelayCommand(this.RefreshMacros);
             this.OpenSaveFolderCommand = new RelayCommand(this.OpenSaveFolder);
+
+            this._macroRepository.MacroSaved += OnMacroSaved;
         }
 
+        private void OnMacroSaved() => this.RefreshMacros();
 
         public void RefreshMacros()
         {
@@ -88,7 +93,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = this._macroRepository.SaveDirectory,
+                FileName = this._appSettingsService.AppSettings.General.SaveDirectory,
                 UseShellExecute = true
             });
         }

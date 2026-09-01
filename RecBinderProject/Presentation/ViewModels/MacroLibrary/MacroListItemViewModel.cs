@@ -1,7 +1,7 @@
 ﻿using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.Presentation.ViewModels.MainWindow
+namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
 {
     public class MacroListItemViewModel
     {

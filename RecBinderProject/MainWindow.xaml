@@ -9,10 +9,11 @@
         xmlns:views="clr-namespace:RecBinderProject.Presentation.Views"
         xmlns:appvm="clr-namespace:RecBinderProject.Presentation.ViewModels.AppSettings"
         xmlns:exevm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroExecution"
+        xmlns:libvm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroLibrary"
        
-        xmlns:viewmodels="clr-namespace:RecBinderProject.Presentation.ViewModels.MainWindow" 
+        xmlns:mainwm="clr-namespace:RecBinderProject.Presentation.ViewModels.MainWindow" 
         
-        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
+        d:DataContext="{d:DesignInstance Type=mainwm:MainWindowViewModel}"
         
         mc:Ignorable="d"
         Title="RecBinder" Height="600" Width="1200" WindowStartupLocation="CenterScreen">
@@ -22,7 +23,7 @@
             <views:MacroRecordingView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type exevm:MacroLibraryViewModel}">
+        <DataTemplate DataType="{x:Type libvm:MacroLibraryViewModel}">
             <views:MacroLibraryView />
         </DataTemplate>
 
@@ -30,7 +31,7 @@
             <views:AppSettingsView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewmodels:MacroListItemViewModel}">
+        <DataTemplate DataType="{x:Type libvm:MacroListItemViewModel}">
             <views:MacroListItemControl />
         </DataTemplate>
     </Window.Resources>

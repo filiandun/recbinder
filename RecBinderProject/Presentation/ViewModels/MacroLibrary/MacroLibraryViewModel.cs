@@ -4,10 +4,10 @@ using RecBinderProject.Domain;
 
 using RecBinderProject.Presentation.Factories;
 using RecBinderProject.Presentation.ViewModels.Localization;
-using RecBinderProject.Presentation.ViewModels.MainWindow;
+using RecBinderProject.Presentation.ViewModels.MacroExecution;
 
 
-namespace RecBinderProject.Presentation.ViewModels.MacroExecution
+namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
 {
     public class MacroLibraryViewModel : INotifyPropertyChanged
     {
@@ -47,9 +47,16 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         }
 
 
-        private void OnMacroSelected(Macro macro)
+        private void OnMacroSelected(Macro? macro)
         {
-            this.MacroPlaybackViewModel = this._viewModelFactory.CreatePlayback(macro);
+            if (macro is not null)
+            {
+                this.MacroPlaybackViewModel = this._viewModelFactory.CreatePlayback(macro);
+            }
+            else
+            {
+                this.MacroPlaybackViewModel = null;
+            }
         }
     }
 }

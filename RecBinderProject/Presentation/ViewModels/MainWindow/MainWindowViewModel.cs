@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
-
 using Microsoft.Extensions.Logging;
+
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
+
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Services;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
+using RecBinderProject.Presentation.ViewModels.MacroLibrary;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MainWindow
@@ -120,13 +122,6 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             }
         }
 
-        //private void OnMacroRecorded()
-        //{
-        //    this._logger.LogDebug("On macro recorded");
-
-        //    //this.MacroListViewModel.RefreshMacros();
-        //}
-
 
         public void ExecuteOpenLibrary()
         {
@@ -140,8 +135,6 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             this._logger.LogInformation("Opening recording");
 
             this.CurrentViewModel = this._macroRecordingViewModel;
-
-            //recordingViewModel.MacroRecorded += this.OnMacroRecorded;
         }
 
         public void ExecuteOpenHelp()
