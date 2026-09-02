@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"   
       xmlns:local="clr-namespace:RecBinderProject.Presentation.Views"  
              
-      xmlns:vm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroExecution" 
+      xmlns:vm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroLibrary" 
       d:DataContext="{d:DesignInstance Type=vm:MacroLibraryViewModel}"
       
       mc:Ignorable="d"   
@@ -28,7 +28,28 @@
         <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding LocalizationViewModel.MacroExecution[Play_FirstLabel]}" Margin="10, 20" Style="{DynamicResource TitleTextBlockStyle}"/>
         
         <!-- MACROS LIST -->
-        <ListView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding MacroListViewModel.MacroItems}" SelectedItem="{Binding MacroListViewModel.SelectedMacro}" Margin="5" Padding="5" SelectionMode="Single" HorizontalContentAlignment="Stretch" Background="Transparent"/>
+        <Grid Margin="5" Grid.Column="0" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="10, 5">
+                <Grid.ColumnDefinitions>
+                    <!--<ColumnDefinition Width="*"/>-->
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- TODO в дальнешем просится поиск очень -->
+                <!--<TextBox Grid.Column="0" Text="Search" Margin="0, 0, 10, 0" IsEnabled="False"/>-->
+                
+                <Button Grid.Column="0" Command="{Binding MacroListViewModel.OpenSaveFolderCommand}" Content="&#xE8DA;" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+                <Button Grid.Column="1" Command="{Binding MacroListViewModel.RefreshMacrosCommand}" Content="&#xE72C;" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+            </Grid>
+            
+            <ListView Grid.Row="1" ItemsSource="{Binding MacroListViewModel.MacroItems}" SelectedItem="{Binding MacroListViewModel.SelectedMacro}" Padding="5" SelectionMode="Single" HorizontalContentAlignment="Stretch" Background="Transparent"/>
+        </Grid>
 
         <!-- INSPECTOR BAR -->
         <ScrollViewer Grid.Column="1" Grid.Row="1" Margin="5" Padding="5" VerticalScrollBarVisibility="Auto">
