@@ -6,6 +6,8 @@ using Gma.System.MouseKeyHook;
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
@@ -16,17 +18,17 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private readonly Stopwatch _stopwatch;
 
         private readonly Macro _macro;
-        private readonly MacroExecutionOptions _recordOptions;
+        private readonly MacroRecordingOptions _options;
 
 
-        public MacroEventRecorder(Macro recordingInput, MacroExecutionOptions recordOptions)
+        public MacroEventRecorder(Macro macro, MacroRecordingOptions options)
         {
             this._globalHook = null;
 
             this._stopwatch = new Stopwatch();
 
-            this._macro = recordingInput;
-            this._recordOptions = recordOptions;
+            this._macro = macro;
+            this._options = options;
         }
 
 
@@ -58,35 +60,35 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             this._globalHook = Hook.GlobalEvents();
 
-            this._globalHook.KeyDown += GlobalHookKeyDown;
-            this._globalHook.KeyUp += GlobalHookKeyUp;
+            this._globalHook.KeyDown += this.GlobalHookKeyDown;
+            this._globalHook.KeyUp += this.GlobalHookKeyUp;
 
-            this._globalHook.MouseDown += GlobalHookMouseDown;
-            this._globalHook.MouseUp += GlobalHookMouseUp;
+            this._globalHook.MouseDown += this.GlobalHookMouseDown;
+            this._globalHook.MouseUp += this.GlobalHookMouseUp;
 
-            this._globalHook.MouseMoveExt += GlobalHookMouseMoveExt;
-            this._globalHook.MouseWheelExt += GlobalHook_MouseWheelExt;
+            this._globalHook.MouseMoveExt += this.GlobalHookMouseMoveExt;
+            this._globalHook.MouseWheelExt += this.GlobalHook_MouseWheelExt;
         }
 
         public void Unsubscribe()
         {
             if (this._globalHook != null)
             {
-                this._globalHook.KeyDown -= GlobalHookKeyDown;
-                this._globalHook.KeyUp -= GlobalHookKeyUp;
+                this._globalHook.KeyDown -= this.GlobalHookKeyDown;
+                this._globalHook.KeyUp -= this.GlobalHookKeyUp;
 
-                this._globalHook.MouseDown -= GlobalHookMouseDown;
-                this._globalHook.MouseUp -= GlobalHookMouseUp;
+                this._globalHook.MouseDown -= this.GlobalHookMouseDown;
+                this._globalHook.MouseUp -= this.GlobalHookMouseUp;
 
-                this._globalHook.MouseMoveExt -= GlobalHookMouseMoveExt;
-                this._globalHook.MouseWheelExt -= GlobalHook_MouseWheelExt;
+                this._globalHook.MouseMoveExt -= this.GlobalHookMouseMoveExt;
+                this._globalHook.MouseWheelExt -= this.GlobalHook_MouseWheelExt;
             }
         }
 
 
-        private void GlobalHookKeyUp(object? sender, KeyEventArgs e) // TODO переименовать KeyboardPressEnabled, так как сейчас они логически бредовые получаются (посмотри на if внимательно, если не понял)
+        private void GlobalHookKeyUp(object? sender, KeyEventArgs e)
         {
-            if (!this._recordOptions.KeyboardPressIgnored)
+            if (!this._options.KeyboardPressIgnored)
             {
                 this._macro.AddEvent(MacroEvent.From(new KeyboardPressEvent((int)e.KeyCode, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
             }
@@ -94,7 +96,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void GlobalHookKeyDown(object? sender, KeyEventArgs e)
         {
-            if (!this._recordOptions.KeyboardPressIgnored)
+            if (!this._options.KeyboardPressIgnored)
             {
                 this._macro.AddEvent(MacroEvent.From(new KeyboardPressEvent((int)e.KeyCode, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
             }
@@ -103,7 +105,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void GlobalHookMouseDown(object? sender, MouseEventArgs e)
         {
-            if (!this._recordOptions.MousePressIgnored)
+            if (!this._options.MousePressIgnored)
             {
                 this._macro.AddEvent(MacroEvent.From(new MousePressEvent(e.Button, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
             }
@@ -111,7 +113,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void GlobalHookMouseUp(object? sender, MouseEventArgs e)
         {
-            if (!this._recordOptions.MousePressIgnored)
+            if (!this._options.MousePressIgnored)
             {
                 this._macro.AddEvent(MacroEvent.From(new MousePressEvent(e.Button, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
             }
@@ -120,7 +122,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void GlobalHookMouseMoveExt(object? sender, MouseEventExtArgs e)
         {
-            if (!this._recordOptions.MouseMoveIgnored)
+            if (!this._options.MouseMoveIgnored)
             {
                 this._macro.AddEvent(MacroEvent.From(new MouseMoveEvent(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds)));
             }
@@ -128,7 +130,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void GlobalHook_MouseWheelExt(object? sender, MouseEventExtArgs e)
         {
-            if (!this._recordOptions.MouseWheelIgnored)
+            if (!this._options.MouseWheelIgnored)
             {
                 this._macro.AddEvent(MacroEvent.From(new MouseWheelEvent(e.Delta / 120, (int)this._stopwatch.ElapsedMilliseconds)));
             }

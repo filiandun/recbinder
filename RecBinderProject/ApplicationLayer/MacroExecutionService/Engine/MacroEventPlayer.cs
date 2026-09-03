@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
@@ -16,19 +18,19 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private readonly Stopwatch _stopwatch;
 
         private readonly Macro _macro;
-        private readonly MacroExecutionOptions _macroOptions;
+        private readonly MacroPlaybackOptions _options;
 
         private volatile bool _isPaused;
 
 
-        public MacroEventPlayer(Macro recordingInput, MacroExecutionOptions recordOptions)
+        public MacroEventPlayer(Macro macro, MacroPlaybackOptions options)
         {
             this._inputSimulator = new InputSimulator();
 
             this._stopwatch = new Stopwatch();
 
-            this._macro = recordingInput;
-            this._macroOptions = recordOptions;
+            this._macro = macro;
+            this._options = options;
 
             this._isPaused = false;
         }
@@ -113,7 +115,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void PlayKeyboardPress(KeyboardPressEvent keyboardPressInput)
         {
-            if (!this._macroOptions.KeyboardPressIgnored)
+            if (!this._options.KeyboardPressIgnored)
             {
                 if (keyboardPressInput.KeyState == KeyState.Down)
                 {
@@ -128,7 +130,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void PlayMousePress(MousePressEvent mousePressInput)
         {
-            if (!this._macroOptions.MousePressIgnored)
+            if (!this._options.MousePressIgnored)
             {
                 if (mousePressInput.KeyState == KeyState.Down)
                 {
@@ -157,13 +159,13 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void PlayMouseMove(MouseMoveEvent mouseMoveInput, Point cursorPosition)
         {
-            if (!this._macroOptions.MouseMoveIgnored)
+            if (!this._options.MouseMoveIgnored)
             {
                 MacroEvent firstMoveEvent = this._macro.Events.OfType<MacroEvent>().FirstOrDefault(ie => ie.MouseMove is not null);
                 Point firstPosition = new Point((int)firstMoveEvent.MouseMove.Value.X, (int)firstMoveEvent.MouseMove.Value.Y);
 
-                int targetX = this._macroOptions.RelativeMouseMovementEnabled ? cursorPosition.X + ((int)mouseMoveInput.X - firstPosition.X) : (int)mouseMoveInput.X;
-                int targetY = this._macroOptions.RelativeMouseMovementEnabled ? cursorPosition.Y + ((int)mouseMoveInput.Y - firstPosition.Y) : (int)mouseMoveInput.Y;
+                int targetX = this._options.RelativeMouseMovementEnabled ? cursorPosition.X + ((int)mouseMoveInput.X - firstPosition.X) : (int)mouseMoveInput.X;
+                int targetY = this._options.RelativeMouseMovementEnabled ? cursorPosition.Y + ((int)mouseMoveInput.Y - firstPosition.Y) : (int)mouseMoveInput.Y;
 
                 int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width; // TODO подтягивать разрешение монитора надо из настроек
                 int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
@@ -174,7 +176,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void PlayMouseWheel(MouseWheelEvent mouseWheelInput)
         {
-            if (!this._macroOptions.MouseWheelIgnored)
+            if (!this._options.MouseWheelIgnored)
             {
                 this._inputSimulator.Mouse.VerticalScroll(mouseWheelInput.Delta);
             }

@@ -77,22 +77,22 @@
                 <!-- METADATA -->
                 <StackPanel Grid.Row="1" Margin="0, 0, 0, 10">
                     <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroNameLabel]}" Margin="0, 0, 0, 5" Style="{StaticResource CaptionTextBlockStyle}"/>
-                    <TextBox Text="{Binding MacroPlaybackViewModel.MacroMetadataViewerViewModel.MacroName}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    <TextBox Text="{Binding MacroPlaybackViewModel.MetadataViewerViewModel.MacroName}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </StackPanel>
 
                 <DockPanel Grid.Row="2" Margin="0, 0, 0, 20">
                     <TextBlock DockPanel.Dock="Top" Text="{Binding LocalizationViewModel.MacroExecution[MacroDescriptionLabel]}" Margin="0, 0, 0, 5" Style="{StaticResource CaptionTextBlockStyle}"/>
-                    <TextBox Text="{Binding MacroPlaybackViewModel.MacroMetadataViewerViewModel.MacroDescription}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextWrapping="Wrap" />
+                    <TextBox Text="{Binding MacroPlaybackViewModel.MetadataViewerViewModel.MacroDescription}" IsEnabled="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextWrapping="Wrap" />
                 </DockPanel>
 
                 <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0, 0, 0, 10">
                     <TextBlock Text="&#xE916;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding MacroPlaybackViewModel.MacroMetadataViewerViewModel.MacroDuration}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding MacroPlaybackViewModel.MetadataViewerViewModel.MacroDuration}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0, 0, 0, 20">
                     <TextBlock Text="&#xEE93;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding MacroPlaybackViewModel.MacroMetadataViewerViewModel.MacroCreationDateTime}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding MacroPlaybackViewModel.MetadataViewerViewModel.MacroCreationDateTime}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- OPTIONS -->
@@ -100,11 +100,11 @@
                     <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroOptionsLabel]}" Margin="0, 0, 0, 5" Style="{StaticResource CaptionTextBlockStyle}"/>
 
                     <UniformGrid VerticalAlignment="Bottom" Columns="1">
-                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12"/>
-                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12"/>
-                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
-                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
-                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.MacroOptions.RelativeMouseMovementEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[RelativeMouseMovementEnabledButton]}" FontSize="12"/>
+                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12"/>
+                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12"/>
+                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
+                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
+                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.RelativeMouseMovementEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[RelativeMouseMovementEnabledButton]}" FontSize="12"/>
                     </UniformGrid>
                 </StackPanel>
             </Grid>
@@ -129,11 +129,11 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ProgressBar Grid.Column="0" Value="{Binding MacroPlaybackViewModel.MacroExecutionStatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding MacroPlaybackViewModel.MacroExecutionStatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <ProgressBar Grid.Column="0" Value="{Binding MacroPlaybackViewModel.StatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding MacroPlaybackViewModel.StatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             <Button Grid.Column="0" Command="{Binding MacroPlaybackViewModel.StartCommand}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE768;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
-                    <TextBlock Text="{Binding MacroPlaybackViewModel.MacroExecutionStatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding MacroPlaybackViewModel.StatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 

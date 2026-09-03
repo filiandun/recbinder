@@ -1,8 +1,9 @@
 ﻿using RecBinderProject.Domain;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
+using RecBinderProject.Presentation.ViewModels.MacroOptions;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
@@ -18,23 +19,28 @@ namespace RecBinderProject.Presentation.Factories
         private readonly ILocalizationService _localizationService;
         private readonly LocalizationViewModel _localizationViewModel;
 
+        private readonly MacroPlaybackOptions _playbackOptions;
+        private readonly MacroPlaybackOptionsViewModel _playbackOptionsViewModel;
 
-        public MacroLibraryViewModelFactory(ILocalizationService localizationService, LocalizationViewModel localizationViewModel)
+
+        public MacroLibraryViewModelFactory(ILocalizationService localizationService, LocalizationViewModel localizationViewModel, MacroPlaybackOptions playbackOptions, MacroPlaybackOptionsViewModel playbackOptionsViewModel)
         {
             this._localizationService = localizationService;
             this._localizationViewModel = localizationViewModel;
+
+            this._playbackOptions = playbackOptions;
+            this._playbackOptionsViewModel = playbackOptionsViewModel;
         }
 
 
         public MacroPlaybackViewModel CreatePlayback(Macro macro)
         {
-            MacroExecutionOptions macroOptions = new MacroExecutionOptions();
-            MacroPlaybackService macroPlaybackService = new MacroPlaybackService(macroOptions, macro);
+            MacroPlaybackService macroPlaybackService = new MacroPlaybackService(this._playbackOptions, macro);
 
             MacroMetadataViewerViewModel macroMetadataViewerViewModel = new MacroMetadataViewerViewModel(macro.Metadata);
             MacroPlaybackStatusViewModel macroPlaybackStatusViewModel = new MacroPlaybackStatusViewModel(macroPlaybackService, this._localizationService);
             
-            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(macroPlaybackService, this._localizationViewModel, macroMetadataViewerViewModel, macroPlaybackStatusViewModel, macroOptions);
+            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(macroPlaybackService, this._localizationViewModel, macroPlaybackStatusViewModel, macroMetadataViewerViewModel, this._playbackOptionsViewModel);
 
             return macroPlaybackViewModel;
         }

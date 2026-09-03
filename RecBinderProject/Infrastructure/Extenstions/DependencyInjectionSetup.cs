@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
 
 using RecBinderProject.Infrastructure.Repositories;
@@ -15,6 +15,7 @@ using RecBinderProject.Presentation.ViewModels.MainWindow;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.MacroLibrary;
 using RecBinderProject.Presentation.ViewModels.Localization;
+using RecBinderProject.Presentation.ViewModels.MacroOptions;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
@@ -39,16 +40,21 @@ namespace RecBinderProject.Infrastructure.Extenstions
             services.AddSingleton<GlobalHotkeyService>();
 
             // Macro Recording
-            services.AddSingleton<MacroExecutionOptions>();
+            services.AddSingleton<MacroRecordingOptions>();
+            services.AddSingleton<MacroRecordingOptionsViewModel>();
+
             services.AddSingleton<IMacroRecordingService, MacroRecordingService>();
             services.AddSingleton<MacroRecordingStatusViewModel>();
             services.AddSingleton<MacroMetadataCreatorViewModel>();
             services.AddSingleton<MacroRecordingViewModel>();
 
             // Macro Library
+            services.AddSingleton<MacroPlaybackOptions>();
+            services.AddSingleton<MacroPlaybackOptionsViewModel>();
+
             services.AddSingleton<MacroListViewModel>();
-            services.AddSingleton<MacroLibraryViewModel>();
             services.AddSingleton<IMacroLibraryViewModelFactory, MacroLibraryViewModelFactory>();
+            services.AddSingleton<MacroLibraryViewModel>();
 
             // App Settings  
             services.AddSingleton<GeneralAppSettingsSectionViewModel>();

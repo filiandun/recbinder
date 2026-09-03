@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+
 using RecBinderProject.Domain;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
@@ -19,12 +21,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         public override TimeSpan ElapsedTime => this._player.GetElapsedTime();
 
 
-        public MacroPlaybackService(MacroExecutionOptions macroOptions, Macro macro)
+        public MacroPlaybackService(MacroPlaybackOptions options, Macro macro)
         {
             this._cancellationTokenSource = new CancellationTokenSource();
 
             this._macro = macro;
-            this._player = new MacroEventPlayer(this._macro, macroOptions);
+            this._player = new MacroEventPlayer(this._macro, options);
 
             this.State = MacroExecutionState.Completed;
         }

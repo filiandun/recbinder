@@ -40,12 +40,12 @@
                 <!-- METADATA -->
                 <StackPanel Grid.Row="0" Margin="0, 0, 0, 10">
                     <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroNameLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Style="{StaticResource CaptionTextBlockStyle}"/>
-                    <TextBox x:Name="TextBox" Text="{Binding MacroMetadataCreatorViewModel.MacroName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextWrapping="Wrap"/>
+                    <TextBox x:Name="TextBox" Text="{Binding MetadataCreatorViewModel.MacroName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent, RelativeSource={RelativeSource Self}}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextWrapping="Wrap"/>
                 </StackPanel>
 
                 <DockPanel Grid.Row="1" Margin="0, 0, 0, 10">
                     <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroDescriptionLabel]}" Margin="0, 0, 0, 5" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Style="{StaticResource CaptionTextBlockStyle}"/>
-                    <TextBox Text="{Binding MacroMetadataCreatorViewModel.MacroDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    <TextBox Text="{Binding MetadataCreatorViewModel.MacroDescription, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </DockPanel>
 
                 <Grid Grid.Row="2" Margin="0, 0, 0, 10">
@@ -57,16 +57,16 @@
 
                     <TextBlock Grid.Row="0" Text="{Binding LocalizationViewModel.MacroExecution[MacroDurationLabel]}" Margin="0, 0, 0, 5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Style="{StaticResource CaptionTextBlockStyle}"/>
 
-                    <CheckBox Grid.Row="1" IsChecked="{Binding MacroMetadataCreatorViewModel.MacroDurationLimitEnabled}" Content="Включить ограничение длительности"/>
+                    <CheckBox Grid.Row="1" IsChecked="{Binding MetadataCreatorViewModel.MacroDurationLimitEnabled}" Content="Включить ограничение длительности"/>
 
-                    <Grid Grid.Row="2" IsEnabled="{Binding MacroMetadataCreatorViewModel.MacroDurationLimitEnabled}">
+                    <Grid Grid.Row="2" IsEnabled="{Binding MetadataCreatorViewModel.MacroDurationLimitEnabled}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="100px"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox Grid.Column="0" Text="{Binding MacroMetadataCreatorViewModel.MacroDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Top"/>
-                        <ComboBox Grid.Column="1" SelectedIndex="{Binding MacroMetadataCreatorViewModel.MacroDurationUnitIndex}" Margin="10, 0, 0, 0" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <TextBox Grid.Column="0" Text="{Binding MetadataCreatorViewModel.MacroDurationValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Top"/>
+                        <ComboBox Grid.Column="1" SelectedIndex="{Binding MetadataCreatorViewModel.MacroDurationUnitIndex}" Margin="10, 0, 0, 0" IsEnabled="{Binding CanEditMetadata}" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                             <ComboBoxItem Content="мс"/>
                             <ComboBoxItem Content="сек"/>
                             <ComboBoxItem Content="мин"/>
@@ -87,10 +87,10 @@
                 <TextBlock Text="{Binding LocalizationViewModel.MacroExecution[MacroOptionsLabel]}" Margin="0, 0, 0, 5" Style="{StaticResource CaptionTextBlockStyle}"/>
 
                 <UniformGrid VerticalAlignment="Bottom" Columns="1">
-                    <CheckBox IsChecked="{Binding MacroOptions.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
-                    <CheckBox IsChecked="{Binding MacroOptions.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding OptionsViewModel.KeyboardPressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[KeyboardPressIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding OptionsViewModel.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding OptionsViewModel.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding OptionsViewModel.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
                 </UniformGrid>
             </StackPanel>
         </ScrollViewer>
@@ -103,11 +103,11 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ProgressBar Grid.Column="0" Value="{Binding MacroExecutionStatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding MacroExecutionStatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <ProgressBar Grid.Column="0" Value="{Binding StatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding StatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             <Button Grid.Column="0" Command="{Binding StartCommand}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE768;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
-                    <TextBlock Text="{Binding MacroExecutionStatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 

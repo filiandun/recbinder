@@ -18,9 +18,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         protected readonly IMacroExecutionInfo _service;
 
         public LocalizationViewModel LocalizationViewModel { get; init; }
-        public MacroExecutionStatusViewModelBase MacroExecutionStatusViewModel { get; init; }
-
-        public MacroExecutionOptions MacroOptions { get; init; }
+        public MacroExecutionStatusViewModelBase StatusViewModel { get; init; }
 
         public ICommand StartCommand { get; private set; }
         public ICommand PauseCommand { get; private set; }
@@ -33,14 +31,12 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         public bool CanEditMetadata => this._service.State != MacroExecutionState.Playing;
 
 
-        public MacroExecutionViewModelBase(IMacroExecutionInfo service, LocalizationViewModel localizationViewModel, MacroExecutionStatusViewModelBase macroExecutionStatusViewModel, MacroExecutionOptions macroOptions)
+        public MacroExecutionViewModelBase(IMacroExecutionInfo service, LocalizationViewModel localizationViewModel, MacroExecutionStatusViewModelBase statusViewModel)
         {
             this._service = service;
 
             this.LocalizationViewModel = localizationViewModel;
-            this.MacroExecutionStatusViewModel = macroExecutionStatusViewModel;
-
-            this.MacroOptions = macroOptions;
+            this.StatusViewModel = statusViewModel;
 
             this.StartCommand = new RelayCommand(this.OnStartCommand, () => this.CanStart);
             this.PauseCommand = new RelayCommand(this.OnPauseCommand, () => this.CanPause);
@@ -58,6 +54,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CanEditMetadata)));
         }
+
 
         protected abstract void OnStartCommand();
         protected abstract void OnResumeCommand();

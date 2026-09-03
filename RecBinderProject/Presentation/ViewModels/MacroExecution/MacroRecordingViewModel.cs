@@ -4,6 +4,7 @@ using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
 
 using RecBinderProject.Presentation.ViewModels.Localization;
+using RecBinderProject.Presentation.ViewModels.MacroOptions;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 
@@ -12,21 +13,23 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 {
     public class MacroRecordingViewModel : MacroExecutionViewModelBase
     {
-        private readonly IMacroRecordingService _macroRecordingService;
+        private readonly IMacroRecordingService _recordingService;
 
-        public MacroMetadataCreatorViewModel MacroMetadataCreatorViewModel { get; init; }
+        public MacroMetadataCreatorViewModel MetadataCreatorViewModel { get; private set; }
+        public MacroRecordingOptionsViewModel OptionsViewModel { get; private set; }
 
 
         public MacroRecordingViewModel(
-            IMacroRecordingService macroRecordingService,
+            IMacroRecordingService recordingService,
             LocalizationViewModel localizationViewModel, 
-            MacroMetadataCreatorViewModel macroMetadataCreatorViewModel,
-            MacroRecordingStatusViewModel macroRecordingStatusViewModel,
-            MacroExecutionOptions macroOptions) : base(macroRecordingService, localizationViewModel, macroRecordingStatusViewModel, macroOptions)
+            MacroRecordingStatusViewModel statusViewModel,
+            MacroMetadataCreatorViewModel metadataCreatorViewModel,
+            MacroRecordingOptionsViewModel optionsViewModel) : base(recordingService, localizationViewModel, statusViewModel)
         {
-            this._macroRecordingService = macroRecordingService;
+            this._recordingService = recordingService;
 
-            this.MacroMetadataCreatorViewModel = macroMetadataCreatorViewModel;
+            this.MetadataCreatorViewModel = metadataCreatorViewModel;
+            this.OptionsViewModel = optionsViewModel;
         }
 
 
@@ -34,15 +37,15 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         {
             //try
             //{
-            if (this._macroRecordingService.State == MacroExecutionState.Paused) // TODO это не зона ответсвтвенности VM, она не должна проверять, она должна тупо вызывать метод
+            if (this._recordingService.State == MacroExecutionState.Paused) // TODO это не зона ответсвтвенности VM, она не должна проверять, она должна тупо вызывать метод
             {
-                this._macroRecordingService.Resume();
+                this._recordingService.Resume();
             }
             else
             {
-                this.MacroMetadataCreatorViewModel.ApplyChanges(); // TODO сделать адекватнее как-нибудь
+                this.MetadataCreatorViewModel.ApplyChanges(); // TODO сделать адекватнее как-нибудь
 
-                this._macroRecordingService.Start(this.MacroMetadataCreatorViewModel.MacroMetadataModel);
+                this._recordingService.Start(this.MetadataCreatorViewModel.MacroMetadataModel);
             }
             //}
             //catch (ArgumentException ae)
@@ -72,12 +75,12 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
         protected override void OnPauseCommand()
         {
-            this._macroRecordingService.Pause();
+            this._recordingService.Pause();
         }
 
         protected override void OnStopCommand()
         {
-            this._macroRecordingService.Stop();
+            this._recordingService.Stop();
         }
     }
 }
