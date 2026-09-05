@@ -4,8 +4,9 @@ using RecBinderProject.Domain;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
-using RecBinderProject.Infrastructure.Repositories;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+
+using RecBinderProject.Infrastructure.Repositories;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
@@ -50,7 +51,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
                 this._recorder.Start();
 
-                this.SetState(MacroExecutionState.Playing);
+                this.State = MacroExecutionState.Playing;
 
                 _ = WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
             }
@@ -61,7 +62,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             if (this.CanPause())
             {
                 this._recorder!.Pause();
-                this.SetState(MacroExecutionState.Paused);
+
+                this.State = MacroExecutionState.Paused;
             }
         }
 
@@ -70,7 +72,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             if (this.CanResume())
             {
                 this._recorder!.Resume();
-                this.SetState(MacroExecutionState.Playing);
+
+                this.State = MacroExecutionState.Playing;
             }
         }
 
@@ -83,7 +86,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
                 this.SaveMacro();
 
-                this.SetState(MacroExecutionState.Stopped);
+                this.State = MacroExecutionState.Stopped;
             }
         }
 
@@ -99,7 +102,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
                 this.SaveMacro();
 
-                this.SetState(MacroExecutionState.Completed);
+                this.State = MacroExecutionState.Completed;
             }
             catch (OperationCanceledException)
             {

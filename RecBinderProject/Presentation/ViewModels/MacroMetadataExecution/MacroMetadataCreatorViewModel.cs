@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System.Drawing;
+using System.Collections;
+using System.Windows.Forms;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -24,21 +26,14 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
 
         private readonly MacroMetadata _macroMetadataModel;
 
-        private string _macroName;
-        private string _macroDescription;
-
-        private TimeSpan _macroDuration;
-        private bool _macroDurationLimitEnabled;
-        private int _macroDurationUnitIndex; // TODO создать enum, чтобы магические числа не использовать
-
-        private DateTime _macroCreationDateTime;
-
         public MacroMetadata MacroMetadataModel => this._macroMetadataModel;    // TODO думаю, что лучше убрать свойство и сделать возврат модели только в ApplyChanges
                                                                                 // хотя, может и не надо, данные некорректные всё равно в ней не будут
                                                                                 // они могут только отличаться от тех, что последние пользователь ввёл
 
         public bool HasErrors => this._errors.Count > 0;
 
+
+        private string _macroName;
         public string MacroName
         {
             get => this._macroName;
@@ -49,12 +44,14 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             }
         }
 
+        private string _macroDescription;
         public string MacroDescription
         {
             get => this._macroDescription;
             set => this.Set(ref this._macroDescription, value);
         }
 
+        private bool _macroDurationLimitEnabled;
         public bool MacroDurationLimitEnabled 
         {
             get => this._macroDurationLimitEnabled;
@@ -67,6 +64,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             }
         }
 
+        private TimeSpan _macroDuration;
         public int MacroDurationValue
         {
             get
@@ -99,11 +97,14 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             }
         }
 
+        private int _macroDurationUnitIndex; // TODO создать enum, чтобы магические числа не использовать
         public int MacroDurationUnitIndex
         {
             get => this._macroDurationUnitIndex;
             set => this.Set(ref this._macroDurationUnitIndex, value);
         }
+
+        private DateTime _macroCreationDateTime; // TODO само поле может и не нужно (тут просто вопрос, что считать временем создания - начало записи или уже конец)
 
 
         public MacroMetadataCreatorViewModel()
@@ -119,7 +120,13 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
 
             this._macroCreationDateTime = DateTime.Now;
 
-            this._macroMetadataModel = new MacroMetadata(this._macroName, this._macroDescription, TimeSpan.MaxValue, DateTime.Now);
+            Point startPos = Cursor.Position;
+            Screen activeScreen = Screen.FromPoint(startPos);
+
+            int resolutionWidth = activeScreen.Bounds.Width;
+            int resolutionHeight = activeScreen.Bounds.Height;
+
+            this._macroMetadataModel = new MacroMetadata(this._macroName, this._macroDescription, TimeSpan.MaxValue, DateTime.Now, resolutionWidth, resolutionHeight);
         }
 
 
@@ -142,7 +149,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             }
             else
             {
-                this.AddError(nameof(this.MacroName), "Имя некорректно");
+                this.AddError(nameof(this.MacroName), "Macro name is incorrect"); // TODO localization service
             }
         }
 

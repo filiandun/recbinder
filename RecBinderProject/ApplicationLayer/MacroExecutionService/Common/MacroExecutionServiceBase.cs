@@ -20,7 +20,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Common
         protected bool CanResume() => this.State == MacroExecutionState.Paused;
         protected bool CanStop() => this.State == MacroExecutionState.Playing || this.State == MacroExecutionState.Paused;
 
-        protected void SetState(MacroExecutionState newState)
+        private void SetState(MacroExecutionState newState)
         {
             if (this._state != newState)
             {

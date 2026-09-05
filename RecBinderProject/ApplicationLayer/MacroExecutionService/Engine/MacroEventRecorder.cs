@@ -1,12 +1,10 @@
-﻿using System.Diagnostics;
-using System.Windows.Forms;
-
-using Gma.System.MouseKeyHook;
-
+﻿using Gma.System.MouseKeyHook;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
-
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+using RecBinderProject.Domain.MacroEvents.Enums;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
@@ -90,7 +88,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.KeyboardPressIgnored)
             {
-                this._macro.AddEvent(MacroEvent.From(new KeyboardPressEvent((int)e.KeyCode, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(MacroEvent.FromKeyboardPress((int)e.KeyCode, MacroKeyState.Up, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
 
@@ -98,7 +96,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.KeyboardPressIgnored)
             {
-                this._macro.AddEvent(MacroEvent.From(new KeyboardPressEvent((int)e.KeyCode, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(MacroEvent.FromKeyboardPress((int)e.KeyCode, MacroKeyState.Down, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
 
@@ -107,7 +105,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MousePressIgnored)
             {
-                this._macro.AddEvent(MacroEvent.From(new MousePressEvent(e.Button, KeyState.Down, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(MacroEvent.FromMousePress(e.Button, MacroKeyState.Down, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
 
@@ -115,7 +113,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MousePressIgnored)
             {
-                this._macro.AddEvent(MacroEvent.From(new MousePressEvent(e.Button, KeyState.Up, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(MacroEvent.FromMousePress(e.Button, MacroKeyState.Up, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
 
@@ -124,7 +122,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MouseMoveIgnored)
             {
-                this._macro.AddEvent(MacroEvent.From(new MouseMoveEvent(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(MacroEvent.FromMouseMove(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
 
@@ -132,7 +130,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MouseWheelIgnored)
             {
-                this._macro.AddEvent(MacroEvent.From(new MouseWheelEvent(e.Delta / 120, (int)this._stopwatch.ElapsedMilliseconds)));
+                this._macro.AddEvent(MacroEvent.FromMouseWheel(e.Delta / 120, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
     }

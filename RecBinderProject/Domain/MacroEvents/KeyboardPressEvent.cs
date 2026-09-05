@@ -1,16 +1,17 @@
-﻿namespace RecBinderProject.Domain.MacroEvents
+﻿using RecBinderProject.Domain.MacroEvents.Enums;
+
+
+namespace RecBinderProject.Domain.MacroEvents
 {
     public struct KeyboardPressEvent
     {
         public int KeyCode { get; set; }
-        public KeyState KeyState { get; set; }
-        public int TimeOffset { get; set; }
+        public MacroKeyState KeyState { get; set; }
 
-        public KeyboardPressEvent(int keyCode, KeyState keyState, int timeOffset)
+        public KeyboardPressEvent(int keyCode, MacroKeyState keyState)
         {
             this.KeyCode = keyCode;
             this.KeyState = keyState;
-            this.TimeOffset = timeOffset;
         }
     }
 }

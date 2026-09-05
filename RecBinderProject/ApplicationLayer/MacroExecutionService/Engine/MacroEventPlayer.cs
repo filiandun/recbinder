@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
+using RecBinderProject.Domain.MacroEvents.Enums;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
@@ -38,26 +39,36 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
 
-        // TODO баг небольшой, что если запись длится условно 5 секунд, а последнее событие было на 3-ей секунде,
-        // то тогда воспроизведение остановится на 3-ей секунде (следовательно таймер тоже, поэтому на странице будет "00:00:03:00 / 00:00:05:00 - Воспроизведение завершено")
+
         public async Task Start(CancellationToken cancellationToken)
         {
             this._stopwatch.Restart();
 
             Point startCursorPosition = Cursor.Position;
 
-            foreach (MacroEvent inputEvent in this._macro.Events)
+            MacroEvent firstMoveEvent = this._macro.Events.OfType<MacroEvent>().FirstOrDefault(me => me.Kind == MacroEventKind.MouseMove);  // TODO сделать адекватнее, может null допустимым, так как событий мыши может и не быть
+            Point firstCursorPosition = new Point((int)firstMoveEvent.MouseMove.X, (int)firstMoveEvent.MouseMove.Y);
+
+            try
             {
-                await this.PlayDelay(inputEvent.TimeOffset, cancellationToken);
+                foreach (MacroEvent macroEvent in this._macro.Events)
+                {
+                    await this.PlayDelay(macroEvent.TimeOffset, cancellationToken);
 
-                cancellationToken.ThrowIfCancellationRequested();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                await this.WaitIfPausedTask(cancellationToken);
+                    await this.WaitIfPausedTask(cancellationToken);
 
-                this.PlayEvent(inputEvent, startCursorPosition);
+                    this.PlayEvent(macroEvent, firstCursorPosition, startCursorPosition);
+                }
+
+                // if (!this._options.TrimEnd)
+                await this.PlayDelay((int)this._macro.Metadata.Duration.TotalMilliseconds, cancellationToken);
             }
-
-            this._stopwatch.Stop();
+            finally
+            {
+                this.Stop();
+            }
         }
 
         public void Resume()
@@ -72,7 +83,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             this._stopwatch.Stop();
         }
 
-        public void Stop()
+        private void Stop()
         {
             this._isPaused = false;
             this._stopwatch.Stop();
@@ -87,54 +98,64 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void PlayEvent(MacroEvent inputEvent, Point cursorPosition)
+        private void PlayEvent(MacroEvent macroEvent, Point firstCursorPosition, Point startCursorPosition)
         {
-            switch (inputEvent.Kind) // TODO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
+            switch (macroEvent.Kind) // TODO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
             {
-                case InputEventKind.KeyboardPress: this.PlayKeyboardPress((KeyboardPressEvent)inputEvent.KeyboardPress); break;
-                case InputEventKind.MousePress: this.PlayMousePress((MousePressEvent)inputEvent.MousePress); break;
-                case InputEventKind.MouseMove: this.PlayMouseMove((MouseMoveEvent)inputEvent.MouseMove, cursorPosition); break;
-                case InputEventKind.MouseWheel: this.PlayMouseWheel((MouseWheelEvent)inputEvent.MouseWheel); break;
+                case MacroEventKind.KeyboardPress: this.PlayKeyboardPress(macroEvent.KeyboardPress); break;
+                case MacroEventKind.MousePress: this.PlayMousePress(macroEvent.MousePress); break;
+                case MacroEventKind.MouseMove: this.PlayMouseMove(macroEvent.MouseMove, firstCursorPosition, startCursorPosition); break;
+                case MacroEventKind.MouseWheel: this.PlayMouseWheel(macroEvent.MouseWheel); break;
 
-                default: throw new ArgumentOutOfRangeException(inputEvent.Kind.GetType().Name, inputEvent.Kind, "error, unknown type input event");
+                default: throw new ArgumentOutOfRangeException(macroEvent.Kind.GetType().Name, macroEvent.Kind, "error, unknown type macro event");
             }
         }
 
-        private async Task PlayDelay(double timeOffset, CancellationToken cancellationToken) // TODO попытаться оптимизировать, так как очень важная функция при воспроизведении
+        private async Task PlayDelay(int timeOffset, CancellationToken cancellationToken)
         {
-            long targetTime = (long)timeOffset;
-
-            while (this._stopwatch.ElapsedMilliseconds < targetTime)
+            while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 await this.WaitIfPausedTask(cancellationToken);
-                await Task.Delay(1, cancellationToken);
+
+                long remainingTime = timeOffset - this._stopwatch.ElapsedMilliseconds;
+
+                if (remainingTime <= 0) break;
+
+                if (remainingTime > 15)
+                {
+                    await Task.Delay(1, cancellationToken);
+                }
+                else
+                {
+                    Thread.Yield();
+                }
             }
         }
 
-        private void PlayKeyboardPress(KeyboardPressEvent keyboardPressInput)
+        private void PlayKeyboardPress(KeyboardPressEvent keyboardPressEvent)
         {
             if (!this._options.KeyboardPressIgnored)
             {
-                if (keyboardPressInput.KeyState == KeyState.Down)
+                if (keyboardPressEvent.KeyState == MacroKeyState.Down)
                 {
-                    this._inputSimulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)keyboardPressInput.KeyCode);
+                    this._inputSimulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)keyboardPressEvent.KeyCode);
                 }
-                else if (keyboardPressInput.KeyState == KeyState.Up)
+                else if (keyboardPressEvent.KeyState == MacroKeyState.Up)
                 {
-                    this._inputSimulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)keyboardPressInput.KeyCode);
+                    this._inputSimulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)keyboardPressEvent.KeyCode);
                 }
             }
         }
 
-        private void PlayMousePress(MousePressEvent mousePressInput)
+        private void PlayMousePress(MousePressEvent mousePressEvent)
         {
             if (!this._options.MousePressIgnored)
             {
-                if (mousePressInput.KeyState == KeyState.Down)
+                if (mousePressEvent.KeyState == MacroKeyState.Down)
                 {
-                    switch (mousePressInput.MouseButton)
+                    switch (mousePressEvent.MouseButton)
                     {
                         case MouseButtons.Left: this._inputSimulator.Mouse.LeftButtonDown(); break;
                         case MouseButtons.Right: this._inputSimulator.Mouse.RightButtonDown(); break;
@@ -143,9 +164,9 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
                         case MouseButtons.XButton2: this._inputSimulator.Mouse.XButtonDown(2); break;
                     }
                 }
-                else if (mousePressInput.KeyState == KeyState.Up)
+                else if (mousePressEvent.KeyState == MacroKeyState.Up)
                 {
-                    switch (mousePressInput.MouseButton)
+                    switch (mousePressEvent.MouseButton)
                     {
                         case MouseButtons.Left: this._inputSimulator.Mouse.LeftButtonUp(); break;
                         case MouseButtons.Right: this._inputSimulator.Mouse.RightButtonUp(); break;
@@ -157,18 +178,15 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void PlayMouseMove(MouseMoveEvent mouseMoveInput, Point cursorPosition)
+        private void PlayMouseMove(MouseMoveEvent mouseMoveEvent, Point firstCursorPosition, Point startCursorPosition)
         {
             if (!this._options.MouseMoveIgnored)
             {
-                MacroEvent firstMoveEvent = this._macro.Events.OfType<MacroEvent>().FirstOrDefault(ie => ie.MouseMove is not null);
-                Point firstPosition = new Point((int)firstMoveEvent.MouseMove.Value.X, (int)firstMoveEvent.MouseMove.Value.Y);
+                int targetX = this._options.RelativeMouseMovementEnabled ? startCursorPosition.X + ((int)mouseMoveEvent.X - firstCursorPosition.X) : (int)mouseMoveEvent.X;
+                int targetY = this._options.RelativeMouseMovementEnabled ? startCursorPosition.Y + ((int)mouseMoveEvent.Y - firstCursorPosition.Y) : (int)mouseMoveEvent.Y;
 
-                int targetX = this._options.RelativeMouseMovementEnabled ? cursorPosition.X + ((int)mouseMoveInput.X - firstPosition.X) : (int)mouseMoveInput.X;
-                int targetY = this._options.RelativeMouseMovementEnabled ? cursorPosition.Y + ((int)mouseMoveInput.Y - firstPosition.Y) : (int)mouseMoveInput.Y;
-
-                int scaledX = targetX * 65535 / Screen.PrimaryScreen.Bounds.Width; // TODO подтягивать разрешение монитора надо из настроек
-                int scaledY = targetY * 65535 / Screen.PrimaryScreen.Bounds.Height;
+                int scaledX = (int)(long)targetX * 65535 / this._macro.Metadata.ResolutionWidth;
+                int scaledY = (int)(long)targetY * 65535 / this._macro.Metadata.ResolutionHeight;
 
                 this._inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
             }

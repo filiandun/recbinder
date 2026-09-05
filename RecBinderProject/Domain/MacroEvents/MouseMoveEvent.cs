@@ -4,13 +4,11 @@
     {
         public double X { get; set; }
         public double Y { get; set; }
-        public int TimeOffset { get; set; }
 
-        public MouseMoveEvent(double X, double Y, int timeOffset)
+        public MouseMoveEvent(double X, double Y)
         {
             this.X = X;
             this.Y = Y;
-            this.TimeOffset = timeOffset;
         }
     }
 }

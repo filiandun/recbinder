@@ -9,7 +9,6 @@ using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
 {
-    // TODO после ручной остановки запись больше нормально не воспроизводится
     public class MacroPlaybackService : MacroExecutionServiceBase, IMacroPlaybackService
     {
         private CancellationTokenSource _cancellationTokenSource;
@@ -36,25 +35,26 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         {
             if (this.CanStart())
             {
-                this.SetState(MacroExecutionState.Playing);
+                this.State = MacroExecutionState.Playing;
 
                 try
                 {
+                    this._cancellationTokenSource.Dispose();
                     this._cancellationTokenSource = new CancellationTokenSource();
-                    //await _player.Start(this._cancellationTokenSource.Token);
+
                     await Task.Run(() => this._player.Start(this._cancellationTokenSource.Token));
 
-                    this.SetState(MacroExecutionState.Completed);
+                    this.State = MacroExecutionState.Completed;
                 }
                 catch (OperationCanceledException)
                 {
                     Debug.WriteLine("Воспроизведение было остановлено (cancellationTokenSource.Cancel())"); // DEBUG
-                    this.SetState(MacroExecutionState.Stopped);
+                    this.State = MacroExecutionState.Stopped;
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex); // DEBUG
-                    this.SetState(MacroExecutionState.Stopped);
+                    this.State = MacroExecutionState.Stopped;
                 }
             }
         }
@@ -64,7 +64,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
             if (this.CanPause())
             {
                 this._player.Pause();
-                this.SetState(MacroExecutionState.Paused);
+
+                this.State = MacroExecutionState.Paused;
             }
         }
 
@@ -73,7 +74,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
             if (this.CanResume())
             {
                 this._player.Resume();
-                this.SetState(MacroExecutionState.Playing);
+
+                this.State = MacroExecutionState.Playing;
             }
         }
 
@@ -82,9 +84,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
             if (this.CanStop())
             {
                 this._cancellationTokenSource.Cancel();
-                this._player.Stop();
 
-                this.SetState(MacroExecutionState.Stopped);
+                this.State = MacroExecutionState.Stopped;
             }
         }
     }

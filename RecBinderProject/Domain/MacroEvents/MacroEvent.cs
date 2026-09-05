@@ -1,32 +1,65 @@
-﻿namespace RecBinderProject.Domain.MacroEvents
+﻿using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
+
+using RecBinderProject.Domain.MacroEvents.Enums;
+
+using RecBinderProject.Infrastructure.Serialization;
+
+
+namespace RecBinderProject.Domain.MacroEvents
 {
-    public enum KeyState
-    {
-        Up,
-        Down
-    }
 
-    public enum InputEventKind
-    {
-        KeyboardPress,
-        MousePress,
-        MouseMove,
-        MouseWheel
-    }
-
+    [JsonConverter(typeof(MacroEventJsonConverter))]
+    [StructLayout(LayoutKind.Explicit)]
     public struct MacroEvent
     {
-        public InputEventKind Kind { get; set; }
-        public int TimeOffset { get; set; }
+        [FieldOffset(0)]
+        public MacroEventKind Kind;
 
-        public KeyboardPressEvent? KeyboardPress { get; set; }
-        public MousePressEvent? MousePress { get; set; }
-        public MouseMoveEvent? MouseMove { get; set; }
-        public MouseWheelEvent? MouseWheel { get; set; }
+        [FieldOffset(4)]
+        public int TimeOffset;
 
-        public static MacroEvent From(KeyboardPressEvent input) => new MacroEvent { Kind = InputEventKind.KeyboardPress, TimeOffset = input.TimeOffset, KeyboardPress = input };
-        public static MacroEvent From(MousePressEvent input) => new MacroEvent { Kind = InputEventKind.MousePress, TimeOffset = input.TimeOffset, MousePress = input };
-        public static MacroEvent From(MouseMoveEvent input) => new MacroEvent { Kind = InputEventKind.MouseMove, TimeOffset = input.TimeOffset, MouseMove = input };
-        public static MacroEvent From(MouseWheelEvent input) => new MacroEvent { Kind = InputEventKind.MouseWheel, TimeOffset = input.TimeOffset, MouseWheel = input };
+
+        [FieldOffset(8)]
+        private KeyboardPressEvent _keyboardPress;
+        public KeyboardPressEvent KeyboardPress
+        {
+            get => this.Kind == MacroEventKind.KeyboardPress ? this._keyboardPress : throw new InvalidOperationException($"Cannot access {nameof(this.KeyboardPress)} on event of type {this.Kind}");
+            private set => this._keyboardPress = value;
+        }
+
+
+        [FieldOffset(8)]
+        private MousePressEvent _mousePress;
+        public MousePressEvent MousePress
+        {
+            get => this.Kind == MacroEventKind.MousePress ? this._mousePress : throw new InvalidOperationException($"Cannot access {nameof(this.MousePress)} on event of type {this.Kind}");
+            private set => this._mousePress = value;
+        }
+
+
+        [FieldOffset(8)]
+        private MouseMoveEvent _mouseMove;
+        public MouseMoveEvent MouseMove
+        {
+            get => this.Kind == MacroEventKind.MouseMove ? this._mouseMove : throw new InvalidOperationException($"Cannot access {nameof(this.MouseMove)} on event of type {this.Kind}");
+            private set => this._mouseMove = value;
+        }
+
+
+        [FieldOffset(8)]
+        private MouseWheelEvent _mouseWheel;
+        public MouseWheelEvent MouseWheel 
+        {
+            get => this.Kind == MacroEventKind.MouseWheel ? this._mouseWheel : throw new InvalidOperationException($"Cannot access {nameof(this.MouseWheel)} on event of type {this.Kind}");
+            private set => this._mouseWheel = value;
+        }
+
+
+        public static MacroEvent FromKeyboardPress(int keyCode, MacroKeyState keyState, int timeOffset) => new MacroEvent { Kind = MacroEventKind.KeyboardPress, TimeOffset = timeOffset, KeyboardPress = new KeyboardPressEvent(keyCode, keyState) };
+        public static MacroEvent FromMousePress(MouseButtons mouseButton, MacroKeyState keyState, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MousePress, TimeOffset = timeOffset, MousePress = new MousePressEvent(mouseButton, keyState) };
+        public static MacroEvent FromMouseMove(double x, double y, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MouseMove, TimeOffset = timeOffset, MouseMove = new MouseMoveEvent(x, y) };
+        public static MacroEvent FromMouseWheel(int delta, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MouseWheel, TimeOffset = timeOffset, MouseWheel = new MouseWheelEvent(delta) };
     }
 }
