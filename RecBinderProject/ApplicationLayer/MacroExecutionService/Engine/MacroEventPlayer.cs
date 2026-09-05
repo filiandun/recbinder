@@ -1,5 +1,4 @@
-﻿using WindowsInput;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -14,7 +13,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
     public class MacroEventPlayer
     {
-        private readonly InputSimulator _inputSimulator;
+        private readonly SafeInputSimulator _inputSimulator;
 
         private readonly Stopwatch _stopwatch;
 
@@ -26,7 +25,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         public MacroEventPlayer(Macro macro, MacroPlaybackOptions options)
         {
-            this._inputSimulator = new InputSimulator();
+            this._inputSimulator = new SafeInputSimulator();
 
             this._stopwatch = new Stopwatch();
 
@@ -42,6 +41,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         public async Task Start(CancellationToken cancellationToken)
         {
+            if (this.HasUnsupportedEvents()) throw new NotSupportedException("Macro has a unsupported events");
+
             this._stopwatch.Restart();
 
             Point startCursorPosition = Cursor.Position;
@@ -68,6 +69,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             finally
             {
                 this.Stop();
+                this._inputSimulator.ReleaseAll();
             }
         }
 
@@ -100,14 +102,14 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void PlayEvent(MacroEvent macroEvent, Point firstCursorPosition, Point startCursorPosition)
         {
-            switch (macroEvent.Kind) // TODO проверку на null и исключени ниже, для inputEvent.MouseMove и других event
+            switch (macroEvent.Kind)
             {
                 case MacroEventKind.KeyboardPress: this.PlayKeyboardPress(macroEvent.KeyboardPress); break;
                 case MacroEventKind.MousePress: this.PlayMousePress(macroEvent.MousePress); break;
                 case MacroEventKind.MouseMove: this.PlayMouseMove(macroEvent.MouseMove, firstCursorPosition, startCursorPosition); break;
                 case MacroEventKind.MouseWheel: this.PlayMouseWheel(macroEvent.MouseWheel); break;
 
-                default: throw new ArgumentOutOfRangeException(macroEvent.Kind.GetType().Name, macroEvent.Kind, "error, unknown type macro event");
+                default: throw new ArgumentOutOfRangeException(nameof(macroEvent.Kind), macroEvent.Kind, "Unknown macro event kind");
             }
         }
 
@@ -138,13 +140,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.KeyboardPressIgnored)
             {
-                if (keyboardPressEvent.KeyState == MacroKeyState.Down)
+                switch (keyboardPressEvent.KeyState)
                 {
-                    this._inputSimulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)keyboardPressEvent.KeyCode);
-                }
-                else if (keyboardPressEvent.KeyState == MacroKeyState.Up)
-                {
-                    this._inputSimulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)keyboardPressEvent.KeyCode);
+                    case MacroKeyState.Down: this._inputSimulator.KeyboardDown(keyboardPressEvent.KeyCode); break;
+                    case MacroKeyState.Up: this._inputSimulator.KeyboardUp(keyboardPressEvent.KeyCode); break;
+
+                    default: throw new ArgumentOutOfRangeException(nameof(keyboardPressEvent.KeyState), keyboardPressEvent.KeyState, "Unknown keyboard key state");
                 }
             }
         }
@@ -153,27 +154,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MousePressIgnored)
             {
-                if (mousePressEvent.KeyState == MacroKeyState.Down)
+                switch (mousePressEvent.KeyState)
                 {
-                    switch (mousePressEvent.MouseButton)
-                    {
-                        case MouseButtons.Left: this._inputSimulator.Mouse.LeftButtonDown(); break;
-                        case MouseButtons.Right: this._inputSimulator.Mouse.RightButtonDown(); break;
+                    case MacroKeyState.Down: this._inputSimulator.MouseDown(mousePressEvent.MouseButton); break;
+                    case MacroKeyState.Up: this._inputSimulator.MouseUp(mousePressEvent.MouseButton); break;
 
-                        case MouseButtons.XButton1: this._inputSimulator.Mouse.XButtonDown(1); break;
-                        case MouseButtons.XButton2: this._inputSimulator.Mouse.XButtonDown(2); break;
-                    }
-                }
-                else if (mousePressEvent.KeyState == MacroKeyState.Up)
-                {
-                    switch (mousePressEvent.MouseButton)
-                    {
-                        case MouseButtons.Left: this._inputSimulator.Mouse.LeftButtonUp(); break;
-                        case MouseButtons.Right: this._inputSimulator.Mouse.RightButtonUp(); break;
-
-                        case MouseButtons.XButton1: this._inputSimulator.Mouse.XButtonUp(1); break;
-                        case MouseButtons.XButton2: this._inputSimulator.Mouse.XButtonUp(2); break;
-                    }
+                    default: throw new ArgumentOutOfRangeException(nameof(mousePressEvent.KeyState), mousePressEvent.KeyState, "Unknown mouse button state");
                 }
             }
         }
@@ -188,7 +174,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
                 int scaledX = (int)(long)targetX * 65535 / this._macro.Metadata.ResolutionWidth;
                 int scaledY = (int)(long)targetY * 65535 / this._macro.Metadata.ResolutionHeight;
 
-                this._inputSimulator.Mouse.MoveMouseTo(scaledX, scaledY);
+                this._inputSimulator.MouseMoveTo(scaledX, scaledY);
             }
         }
 
@@ -196,8 +182,14 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MouseWheelIgnored)
             {
-                this._inputSimulator.Mouse.VerticalScroll(mouseWheelInput.Delta);
+                this._inputSimulator.MouseVerticalScroll(mouseWheelInput.Delta);
             }
+        }
+
+
+        private bool HasUnsupportedEvents()
+        {
+            return this._macro.Events.Any(e => e.Kind is not (MacroEventKind.KeyboardPress or MacroEventKind.MousePress or MacroEventKind.MouseMove or MacroEventKind.MouseWheel));
         }
     }
 }

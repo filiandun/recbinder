@@ -1,10 +1,13 @@
-﻿using Gma.System.MouseKeyHook;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+﻿using System.Diagnostics;
+using System.Windows.Forms;
+
+using Gma.System.MouseKeyHook;
+
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
-using System.Diagnostics;
-using System.Windows.Forms;
+
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
@@ -105,7 +108,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MousePressIgnored)
             {
-                this._macro.AddEvent(MacroEvent.FromMousePress(e.Button, MacroKeyState.Down, (int)this._stopwatch.ElapsedMilliseconds));
+                this._macro.AddEvent(MacroEvent.FromMousePress((int)e.Button, MacroKeyState.Down, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
 
@@ -113,7 +116,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MousePressIgnored)
             {
-                this._macro.AddEvent(MacroEvent.FromMousePress(e.Button, MacroKeyState.Up, (int)this._stopwatch.ElapsedMilliseconds));
+                this._macro.AddEvent(MacroEvent.FromMousePress((int)e.Button, MacroKeyState.Up, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
 

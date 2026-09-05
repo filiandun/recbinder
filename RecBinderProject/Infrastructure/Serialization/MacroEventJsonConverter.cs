@@ -27,7 +27,7 @@ namespace RecBinderProject.Infrastructure.Serialization
 
                 MacroEventKind.MouseMove => MacroEvent.FromMouseMove(root.GetProperty("X").GetDouble(), root.GetProperty("Y").GetDouble(), timeOffset),
 
-                MacroEventKind.MousePress => MacroEvent.FromMousePress((MouseButtons)root.GetProperty("MouseButton").GetInt32(), (MacroKeyState)root.GetProperty("KeyState").GetByte(), timeOffset),
+                MacroEventKind.MousePress => MacroEvent.FromMousePress(root.GetProperty("MouseButton").GetInt32(), (MacroKeyState)root.GetProperty("KeyState").GetByte(), timeOffset),
 
                 MacroEventKind.MouseWheel => MacroEvent.FromMouseWheel(root.GetProperty("Delta").GetInt32(), timeOffset),
 
@@ -51,7 +51,7 @@ namespace RecBinderProject.Infrastructure.Serialization
                     break;
 
                 case MacroEventKind.MousePress:
-                    writer.WriteNumber("MouseButton", (int)value.MousePress.MouseButton);
+                    writer.WriteNumber("MouseButton", value.MousePress.MouseButton);
                     writer.WriteNumber("KeyState", (byte)value.MousePress.KeyState);
 
                     break;

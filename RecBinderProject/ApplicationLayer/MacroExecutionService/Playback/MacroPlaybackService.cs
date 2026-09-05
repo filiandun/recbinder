@@ -13,7 +13,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
     {
         private CancellationTokenSource _cancellationTokenSource;
 
-        private readonly Macro _macro; // TODO имеет смысл хранить не саму запись, а только события из неё (так как метаданные тут не используются)
+        private readonly Macro _macro;
         private readonly MacroEventPlayer _player;
 
         public override TimeSpan TotalTime => this._macro.Metadata.Duration;
