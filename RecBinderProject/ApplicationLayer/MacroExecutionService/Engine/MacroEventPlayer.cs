@@ -1,20 +1,22 @@
 ﻿using System.Drawing;
 using System.Diagnostics;
 using System.Windows.Forms;
+using Microsoft.Extensions.Logging;
+
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
-
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
     public class MacroEventPlayer
     {
-        private readonly SafeInputSimulator _inputSimulator;
+        private readonly ILogger<MacroEventPlayer> _logger;
 
+        private readonly SafeInputSimulator _inputSimulator;
         private readonly Stopwatch _stopwatch;
 
         private readonly Macro _macro;
@@ -23,8 +25,9 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private volatile bool _isPaused;
 
 
-        public MacroEventPlayer(Macro macro, MacroPlaybackOptions options)
+        public MacroEventPlayer(ILogger<MacroEventPlayer> logger, Macro macro, MacroPlaybackOptions options)
         {
+            this._logger = logger;
             this._inputSimulator = new SafeInputSimulator();
 
             this._stopwatch = new Stopwatch();
@@ -41,7 +44,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         public async Task Start(CancellationToken cancellationToken)
         {
-            if (this.HasUnsupportedEvents()) throw new NotSupportedException("Macro has a unsupported events");
+            if (this.HasUnsupportedEvents()) throw new NotSupportedException("Macro contains a unsupported events");
 
             this._stopwatch.Restart();
 
@@ -49,6 +52,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
             MacroEvent firstMoveEvent = this._macro.Events.OfType<MacroEvent>().FirstOrDefault(me => me.Kind == MacroEventKind.MouseMove);  // TODO сделать адекватнее, может null допустимым, так как событий мыши может и не быть
             Point firstCursorPosition = new Point((int)firstMoveEvent.MouseMove.X, (int)firstMoveEvent.MouseMove.Y);
+
+            this._logger.LogDebug("Event loop started. Total duration: {Duration}, Total events: {Count}, Initial cursor: {Position}", this._macro.Metadata.Duration, this._macro.Events.Count, startCursorPosition);
 
             try
             {
@@ -68,6 +73,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
             finally
             {
+                this._logger.LogDebug("Event loop finally. Elapsed time: {Elapsed} ms", this._stopwatch.ElapsedMilliseconds);
+
                 this.Stop();
                 this._inputSimulator.ReleaseAll();
             }
@@ -75,18 +82,24 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         public void Resume()
         {
+            this._logger.LogDebug("Stopwatch was resumed at {Elapsed} ms", this._stopwatch.ElapsedMilliseconds);
+
             this._isPaused = false;
             this._stopwatch.Start();
         }
 
         public void Pause()
         {
+            this._logger.LogDebug("Stopwatch was paused at {Elapsed} ms", this._stopwatch.ElapsedMilliseconds);
+
             this._isPaused = true;
             this._stopwatch.Stop();
         }
 
         private void Stop()
         {
+            this._logger.LogDebug("Stopwatch was stopped at {Elapsed} ms", this._stopwatch.ElapsedMilliseconds);
+
             this._isPaused = false;
             this._stopwatch.Stop();
         }
@@ -100,16 +113,16 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void PlayEvent(MacroEvent macroEvent, Point firstCursorPosition, Point startCursorPosition)
+        private void PlayEvent(MacroEvent e, Point firstCursorPosition, Point startCursorPosition)
         {
-            switch (macroEvent.Kind)
+            switch (e.Kind)
             {
-                case MacroEventKind.KeyboardPress: this.PlayKeyboardPress(macroEvent.KeyboardPress); break;
-                case MacroEventKind.MousePress: this.PlayMousePress(macroEvent.MousePress); break;
-                case MacroEventKind.MouseMove: this.PlayMouseMove(macroEvent.MouseMove, firstCursorPosition, startCursorPosition); break;
-                case MacroEventKind.MouseWheel: this.PlayMouseWheel(macroEvent.MouseWheel); break;
+                case MacroEventKind.KeyboardPress: this.PlayKeyboardPress(e.KeyboardPress); break;
+                case MacroEventKind.MousePress: this.PlayMousePress(e.MousePress); break;
+                case MacroEventKind.MouseMove: this.PlayMouseMove(e.MouseMove, firstCursorPosition, startCursorPosition); break;
+                case MacroEventKind.MouseWheel: this.PlayMouseWheel(e.MouseWheel); break;
 
-                default: throw new ArgumentOutOfRangeException(nameof(macroEvent.Kind), macroEvent.Kind, "Unknown macro event kind");
+                default: throw new ArgumentOutOfRangeException(nameof(e.Kind), e.Kind, "Unknown macro event kind");
             }
         }
 
@@ -136,40 +149,44 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void PlayKeyboardPress(KeyboardPressEvent keyboardPressEvent)
+        private void PlayKeyboardPress(KeyboardPressEvent e)
         {
             if (!this._options.KeyboardPressIgnored)
             {
-                switch (keyboardPressEvent.KeyState)
-                {
-                    case MacroKeyState.Down: this._inputSimulator.KeyboardDown(keyboardPressEvent.KeyCode); break;
-                    case MacroKeyState.Up: this._inputSimulator.KeyboardUp(keyboardPressEvent.KeyCode); break;
+                this._logger.LogDebug("Key {State}: {KeyCode}", e.KeyState, e.KeyCode);
 
-                    default: throw new ArgumentOutOfRangeException(nameof(keyboardPressEvent.KeyState), keyboardPressEvent.KeyState, "Unknown keyboard key state");
+                switch (e.KeyState)
+                {
+                    case MacroKeyState.Down: this._inputSimulator.KeyboardDown(e.KeyCode); break;
+                    case MacroKeyState.Up: this._inputSimulator.KeyboardUp(e.KeyCode); break;
+
+                    default: throw new ArgumentOutOfRangeException(nameof(e.KeyState), e.KeyState, "Unknown keyboard key state");
                 }
             }
         }
 
-        private void PlayMousePress(MousePressEvent mousePressEvent)
+        private void PlayMousePress(MousePressEvent e)
         {
             if (!this._options.MousePressIgnored)
             {
-                switch (mousePressEvent.KeyState)
-                {
-                    case MacroKeyState.Down: this._inputSimulator.MouseDown(mousePressEvent.MouseButton); break;
-                    case MacroKeyState.Up: this._inputSimulator.MouseUp(mousePressEvent.MouseButton); break;
+                this._logger.LogDebug("Mouse {State}: Button {Button}", e.KeyState, e.MouseButton);
 
-                    default: throw new ArgumentOutOfRangeException(nameof(mousePressEvent.KeyState), mousePressEvent.KeyState, "Unknown mouse button state");
+                switch (e.KeyState)
+                {
+                    case MacroKeyState.Down: this._inputSimulator.MouseDown(e.MouseButton); break;
+                    case MacroKeyState.Up: this._inputSimulator.MouseUp(e.MouseButton); break;
+
+                    default: throw new ArgumentOutOfRangeException(nameof(e.KeyState), e.KeyState, "Unknown mouse button state");
                 }
             }
         }
 
-        private void PlayMouseMove(MouseMoveEvent mouseMoveEvent, Point firstCursorPosition, Point startCursorPosition)
+        private void PlayMouseMove(MouseMoveEvent e, Point firstCursorPosition, Point startCursorPosition)
         {
             if (!this._options.MouseMoveIgnored)
             {
-                int targetX = this._options.RelativeMouseMovementEnabled ? startCursorPosition.X + ((int)mouseMoveEvent.X - firstCursorPosition.X) : (int)mouseMoveEvent.X;
-                int targetY = this._options.RelativeMouseMovementEnabled ? startCursorPosition.Y + ((int)mouseMoveEvent.Y - firstCursorPosition.Y) : (int)mouseMoveEvent.Y;
+                int targetX = this._options.RelativeMouseMovementEnabled ? startCursorPosition.X + ((int)e.X - firstCursorPosition.X) : (int)e.X;
+                int targetY = this._options.RelativeMouseMovementEnabled ? startCursorPosition.Y + ((int)e.Y - firstCursorPosition.Y) : (int)e.Y;
 
                 int scaledX = (int)(long)targetX * 65535 / this._macro.Metadata.ResolutionWidth;
                 int scaledY = (int)(long)targetY * 65535 / this._macro.Metadata.ResolutionHeight;
@@ -178,11 +195,13 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void PlayMouseWheel(MouseWheelEvent mouseWheelInput)
+        private void PlayMouseWheel(MouseWheelEvent e)
         {
             if (!this._options.MouseWheelIgnored)
             {
-                this._inputSimulator.MouseVerticalScroll(mouseWheelInput.Delta);
+                this._logger.LogDebug("Mouse wheel: WheelClicks {WheelClicks}", e.WheelClicks);
+
+                this._inputSimulator.MouseVerticalScroll(e.WheelClicks);
             }
         }
 

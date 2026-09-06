@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
+using Microsoft.Extensions.Logging;
 
 using Gma.System.MouseKeyHook;
 
@@ -14,6 +15,10 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
     public class MacroEventRecorder
     {
+        private const int WHEEL_DELTA = 120;
+
+        private readonly ILogger<MacroEventRecorder> _logger;
+
         private IKeyboardMouseEvents? _globalHook;
 
         private readonly Stopwatch _stopwatch;
@@ -22,8 +27,10 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private readonly MacroRecordingOptions _options;
 
 
-        public MacroEventRecorder(Macro macro, MacroRecordingOptions options)
+        public MacroEventRecorder(ILogger<MacroEventRecorder> logger, Macro macro, MacroRecordingOptions options)
         {
+            this._logger = logger;
+
             this._globalHook = null;
 
             this._stopwatch = new Stopwatch();
@@ -38,20 +45,32 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         public void Start()
         {
+            this._logger.LogDebug("Events hooking started. Duration: {Duration}", this._macro.Metadata.Duration);
+
             this.Subscribe();
             this._stopwatch.Start();
         }
-        public void Resume() => this.Start();
+        public void Resume()
+        {
+            this._logger.LogDebug("Hooking was resumed at {Elapsed} ms. Events count: {Events}", this._stopwatch.ElapsedMilliseconds, this._macro.Events.Count);
+
+            this.Start();
+        }
 
         public void Pause()
         {
+            this._logger.LogDebug("Hooking was paused at {Elapsed} ms. Events count: {Events}", this._stopwatch.ElapsedMilliseconds, this._macro.Events.Count);
+
             this.Unsubscribe();
             this._stopwatch.Stop();
         }
 
         public void Stop()
         {
-            this.Pause();
+            this._logger.LogDebug("Hooking was stopped at {Elapsed} ms. Events count: {Events}", this._stopwatch.ElapsedMilliseconds, this._macro.Events.Count);
+
+            this.Unsubscribe();
+            this._stopwatch.Stop();
 
             this._globalHook?.Dispose();
         }
@@ -91,6 +110,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.KeyboardPressIgnored)
             {
+                this._logger.LogDebug("Key {State}: {KeyCode}", MacroKeyState.Up, e.KeyCode);
+
                 this._macro.AddEvent(MacroEvent.FromKeyboardPress((int)e.KeyCode, MacroKeyState.Up, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
@@ -99,6 +120,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.KeyboardPressIgnored)
             {
+                this._logger.LogDebug("Key {State}: {KeyCode}", MacroKeyState.Down, e.KeyCode);
+
                 this._macro.AddEvent(MacroEvent.FromKeyboardPress((int)e.KeyCode, MacroKeyState.Down, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
@@ -108,6 +131,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MousePressIgnored)
             {
+                this._logger.LogDebug("Mouse {State}: Button {Button}", MacroKeyState.Down, e.Button);
+
                 this._macro.AddEvent(MacroEvent.FromMousePress((int)e.Button, MacroKeyState.Down, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
@@ -116,6 +141,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MousePressIgnored)
             {
+                this._logger.LogDebug("Mouse {State}: Button {Button}", MacroKeyState.Up, e.Button);
+
                 this._macro.AddEvent(MacroEvent.FromMousePress((int)e.Button, MacroKeyState.Up, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
@@ -133,7 +160,10 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             if (!this._options.MouseWheelIgnored)
             {
-                this._macro.AddEvent(MacroEvent.FromMouseWheel(e.Delta / 120, (int)this._stopwatch.ElapsedMilliseconds));
+                int wheelClicks = (int)Math.Round((double)e.Delta / WHEEL_DELTA);
+                this._logger.LogDebug("Mouse wheel: WheelClicks {WheelClicks}", wheelClicks);
+
+                this._macro.AddEvent(MacroEvent.FromMouseWheel(wheelClicks, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
     }

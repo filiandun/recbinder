@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using RecBinderProject.Domain.MacroEvents;
@@ -18,18 +16,18 @@ namespace RecBinderProject.Infrastructure.Serialization
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             JsonElement root = document.RootElement;
 
-            MacroEventKind kind = (MacroEventKind)root.GetProperty("Kind").GetByte();
-            int timeOffset = root.GetProperty("TimeOffset").GetInt32();
+            MacroEventKind kind = (MacroEventKind)root.GetRequired("Kind").GetByte();
+            int timeOffset = root.GetRequired("TimeOffset").GetInt32();
 
             return kind switch
             {
-                MacroEventKind.KeyboardPress => MacroEvent.FromKeyboardPress(root.GetProperty("KeyCode").GetInt32(), (MacroKeyState)root.GetProperty("KeyState").GetByte(), timeOffset),
+                MacroEventKind.KeyboardPress => MacroEvent.FromKeyboardPress(root.GetRequired("KeyCode").GetInt32(), (MacroKeyState)root.GetRequired("KeyState").GetByte(), timeOffset),
 
-                MacroEventKind.MouseMove => MacroEvent.FromMouseMove(root.GetProperty("X").GetDouble(), root.GetProperty("Y").GetDouble(), timeOffset),
+                MacroEventKind.MouseMove => MacroEvent.FromMouseMove(root.GetRequired("X").GetDouble(), root.GetRequired("Y").GetDouble(), timeOffset),
 
-                MacroEventKind.MousePress => MacroEvent.FromMousePress(root.GetProperty("MouseButton").GetInt32(), (MacroKeyState)root.GetProperty("KeyState").GetByte(), timeOffset),
+                MacroEventKind.MousePress => MacroEvent.FromMousePress(root.GetRequired("MouseButton").GetInt32(), (MacroKeyState)root.GetRequired("KeyState").GetByte(), timeOffset),
 
-                MacroEventKind.MouseWheel => MacroEvent.FromMouseWheel(root.GetProperty("Delta").GetInt32(), timeOffset),
+                MacroEventKind.MouseWheel => MacroEvent.FromMouseWheel(root.GetRequired("WheelClicks").GetInt32(), timeOffset),
 
                 _ => throw new JsonException($"Unknown event kind: {kind}")
             };
@@ -63,7 +61,7 @@ namespace RecBinderProject.Infrastructure.Serialization
                     break;
 
                 case MacroEventKind.MouseWheel:
-                    writer.WriteNumber("Delta", value.MouseWheel.Delta);
+                    writer.WriteNumber("WheelClicks", value.MouseWheel.WheelClicks);
 
                     break;
 

@@ -59,6 +59,6 @@ namespace RecBinderProject.Domain.MacroEvents
         public static MacroEvent FromKeyboardPress(int keyCode, MacroKeyState keyState, int timeOffset) => new MacroEvent { Kind = MacroEventKind.KeyboardPress, TimeOffset = timeOffset, KeyboardPress = new KeyboardPressEvent(keyCode, keyState) };
         public static MacroEvent FromMousePress(int mouseButton, MacroKeyState keyState, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MousePress, TimeOffset = timeOffset, MousePress = new MousePressEvent(mouseButton, keyState) };
         public static MacroEvent FromMouseMove(double x, double y, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MouseMove, TimeOffset = timeOffset, MouseMove = new MouseMoveEvent(x, y) };
-        public static MacroEvent FromMouseWheel(int delta, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MouseWheel, TimeOffset = timeOffset, MouseWheel = new MouseWheelEvent(delta) };
+        public static MacroEvent FromMouseWheel(int wheelClicks, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MouseWheel, TimeOffset = timeOffset, MouseWheel = new MouseWheelEvent(wheelClicks) };
     }
 }

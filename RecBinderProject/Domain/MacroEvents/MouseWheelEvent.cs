@@ -3,11 +3,11 @@ namespace RecBinderProject.Domain.MacroEvents
 {
     public struct MouseWheelEvent
     {
-        public int Delta { get; set; }
+        public int WheelClicks { get; set; }
 
-        public MouseWheelEvent(int delta)
+        public MouseWheelEvent(int wheelClicks)
         {
-            this.Delta = delta;
+            this.WheelClicks = wheelClicks;
         }
     }
 }

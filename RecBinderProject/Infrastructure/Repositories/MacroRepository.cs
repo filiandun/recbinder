@@ -53,7 +53,7 @@ namespace RecBinderProject.Infrastructure.Repositories
                 catch (Exception ex)
                 {
                     macroLoadResult.FailedFiles.Add(filePath);
-                    this._logger.LogError(ex, "file cannot be loaded: {0}", filePath);
+                    this._logger.LogError(ex, "file cannot be loaded: {FilePath}", filePath);
                 }
             }
 

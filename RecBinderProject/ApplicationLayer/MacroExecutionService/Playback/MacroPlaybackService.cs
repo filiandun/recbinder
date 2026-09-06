@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Domain;
 
@@ -11,6 +11,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
 {
     public class MacroPlaybackService : MacroExecutionServiceBase, IMacroPlaybackService
     {
+        private readonly ILogger<MacroPlaybackService> _logger;
+
         private CancellationTokenSource _cancellationTokenSource;
 
         private readonly Macro _macro;
@@ -20,12 +22,16 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         public override TimeSpan ElapsedTime => this._player.GetElapsedTime();
 
 
-        public MacroPlaybackService(MacroPlaybackOptions options, Macro macro)
+        public MacroPlaybackService(ILoggerFactory loggerFactory, Macro macro, MacroPlaybackOptions options)
         {
+            this._logger = loggerFactory.CreateLogger<MacroPlaybackService>();
+
             this._cancellationTokenSource = new CancellationTokenSource();
 
             this._macro = macro;
-            this._player = new MacroEventPlayer(this._macro, options);
+
+            var playerLogger = loggerFactory.CreateLogger<MacroEventPlayer>();
+            this._player = new MacroEventPlayer(playerLogger, this._macro, options);
 
             this.State = MacroExecutionState.Completed;
         }
@@ -35,6 +41,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         {
             if (this.CanStart())
             {
+                this._logger.LogInformation("Starting macro playback, {name}", this._macro.Metadata.Name);
+
                 this.State = MacroExecutionState.Playing;
 
                 try
@@ -44,16 +52,20 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
 
                     await Task.Run(() => this._player.Start(this._cancellationTokenSource.Token));
 
+                    this._logger.LogInformation("Macro playback completed successfully.");
+
                     this.State = MacroExecutionState.Completed;
                 }
                 catch (OperationCanceledException)
                 {
-                    Debug.WriteLine("Воспроизведение было остановлено (cancellationTokenSource.Cancel())"); // DEBUG
+                    this._logger.LogInformation("Macro playback was stopped by user.");
+
                     this.State = MacroExecutionState.Stopped;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex); // DEBUG
+                    this._logger.LogError(ex, "Macro playback terminated with an unexpected error.");
+
                     this.State = MacroExecutionState.Stopped;
                 }
             }
@@ -63,6 +75,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         {
             if (this.CanPause())
             {
+                this._logger.LogInformation("Macro playback paused.");
+
                 this._player.Pause();
 
                 this.State = MacroExecutionState.Paused;
@@ -73,6 +87,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         {
             if (this.CanResume())
             {
+                this._logger.LogInformation("Macro playback resumed.");
+
                 this._player.Resume();
 
                 this.State = MacroExecutionState.Playing;
@@ -83,9 +99,9 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         {
             if (this.CanStop())
             {
-                this._cancellationTokenSource.Cancel();
+                this._logger.LogInformation("Macro playback stopping..");
 
-                this.State = MacroExecutionState.Stopped;
+                this._cancellationTokenSource.Cancel();
             }
         }
     }
