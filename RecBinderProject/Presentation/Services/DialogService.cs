@@ -10,22 +10,36 @@ namespace RecBinderProject.Presentation.Services
     {
         public void Show(string title, string message)
         {
-            Window mainWindow = Application.Current.MainWindow;
-
-            DialogWindow dialogWindow = new()
+            if (!Application.Current.Dispatcher.CheckAccess())
             {
-                Owner = mainWindow,
+                Application.Current.Dispatcher.Invoke(() => this.Show(title, message));
+                return;
+            }
 
-                Width = mainWindow.ActualWidth,
-                Height = mainWindow.ActualHeight,
+            Window? mainWindow = Application.Current.MainWindow;
 
-                Top = mainWindow.Top,
-                Left = mainWindow.Left
-            };
+            if (mainWindow != null && mainWindow.IsLoaded && mainWindow.IsVisible)
+            {
+                DialogWindow dialogWindow = new()
+                {
+                    Owner = mainWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
 
-            dialogWindow.DataContext = new DialogWindowViewModel(title, message, () => dialogWindow.DialogResult = true);
+                    Top = mainWindow!.Top,
+                    Left = mainWindow.Left,
 
-            dialogWindow.ShowDialog();
+                    Width = mainWindow.ActualWidth,
+                    Height = mainWindow.ActualHeight
+                };
+
+                dialogWindow.DataContext = new DialogWindowViewModel(title, message, () => dialogWindow.DialogResult = true);
+
+                dialogWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show(message, title);
+            }
         }
     }
 }
