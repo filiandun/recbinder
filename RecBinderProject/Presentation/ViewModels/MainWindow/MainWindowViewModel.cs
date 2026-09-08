@@ -84,6 +84,14 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
         }
 
 
+        public async Task InitializeAsync()
+        {
+            this._appSettingsViewModel.Initialize();
+
+            await this._macroLibraryViewModel.InitializeAsync();
+        }
+
+
         public void OnHotkeyPressed(HotkeyAction action)
         {
             this._logger.LogDebug("Hotkey action: {HotkeyAction}", action.ToString());

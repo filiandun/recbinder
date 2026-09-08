@@ -5,7 +5,7 @@ namespace RecBinderProject.Infrastructure.Repositories
 {
     public interface IMacroRepository
     {
-        public event Action? MacroSaved;
+        public event Action<Macro>? MacroSaved;
 
         public MacroLoadResult LoadAll();
 

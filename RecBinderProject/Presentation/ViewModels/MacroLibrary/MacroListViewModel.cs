@@ -1,12 +1,16 @@
 ﻿using System.Diagnostics;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Domain;
 
-using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Infrastructure.Repositories;
 using RecBinderProject.Infrastructure.Services.AppSettings;
+using RecBinderProject.Infrastructure.Services.Localization;
+
+using RecBinderProject.Presentation.Commands;
+using RecBinderProject.Presentation.Services;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
@@ -16,7 +20,12 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
         public event PropertyChangedEventHandler? PropertyChanged;
         public event Action<Macro?>? SelectedMacroChanged;
 
+        private readonly ILogger<MacroListViewModel> _logger;
+
+        private readonly ILocalizationService _localizationService;
         private readonly IAppSettingsService _appSettingsService;
+        private readonly IDialogService _dialogService;
+
         private readonly IMacroRepository _macroRepository;
 
 
@@ -55,62 +64,73 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
         public RelayCommand OpenSaveFolderCommand { get; private set; }
 
 
-        public MacroListViewModel(IAppSettingsService appSettingsService, IMacroRepository macroRepository)
+        public MacroListViewModel(ILogger<MacroListViewModel> logger, ILocalizationService localizationService, IAppSettingsService appSettingsService, IDialogService dialogService, IMacroRepository macroRepository)
         {
+            this._logger = logger;
+
+            this._localizationService = localizationService;
+
             this._appSettingsService = appSettingsService;
+            this._dialogService = dialogService;
+
             this._macroRepository = macroRepository;
 
             this._macroItems = new ObservableCollection<MacroListItemViewModel>();
 
-            this.RefreshMacrosCommand = new RelayCommand(this.RefreshMacros);
-            this.OpenSaveFolderCommand = new RelayCommand(this.OpenSaveFolder);
+            this.RefreshMacrosCommand = new RelayCommand(async () => await this.LoadMacrosAsync());
+            this.OpenSaveFolderCommand = new RelayCommand(this.OnOpenSaveFolderCommand);
 
-            this._macroRepository.MacroSaved += OnMacroSaved;
+            this._macroRepository.MacroSaved += this.OnMacroSaved;
         }
 
-        private void OnMacroSaved() => this.RefreshMacros();
 
-        public void RefreshMacros()
+        private void OnMacroSaved(Macro newMacro)
         {
-            MacroLoadResult macroLoadResult = this._macroRepository.LoadAll();
+            this._logger.LogDebug("Created new macro. Name: {MacroName}", newMacro.Metadata.Name);
 
-            Debug.WriteLine($"NEW MACROS: {macroLoadResult.Macros.Count}");
+            MacroListItemViewModel newMacroListItemViewModel = new MacroListItemViewModel(newMacro);
 
-            if (macroLoadResult.FailedFiles.Count > 0)
-            {
-                //ContentDialog contentDialog = new ContentDialog()
-                //{
-                //    Content = $"Некоторые из записей не были загружены ({macroLoadResult.FailedFiles.Count})",
-                //    CloseButtonText = "Закрыть",
-                //};
-                //contentDialog.ShowAsync();
-            }
-
-            this.UpdateMacrosControls(macroLoadResult.Macros);
+            this.MacroItems.Add(newMacroListItemViewModel);
+            this.SelectedMacro = newMacroListItemViewModel;
         }
 
-        public void OpenSaveFolder()
+        public async Task LoadMacrosAsync()
+        {
+            try
+            {
+                MacroLoadResult loadResult = await Task.Run(() => this._macroRepository.LoadAll());
+
+                this._logger.LogDebug("Loaded macros. Total macros: {Macros}, Failed files: {FailedMacros}.", loadResult.Macros.Count, loadResult.FailedFiles.Count);
+
+                if (loadResult.FailedFiles.Count > 0)
+                {
+                    string title = this._localizationService.GetString(LocalizationScope.Common, "Dialog_Label_Attention");
+                    string message = $"{this._localizationService.GetString(LocalizationScope.MacroList, "Load_Message_FailedFiles")} ({loadResult.FailedFiles.Count}):\n{string.Join("\n", loadResult.FailedFiles)}";
+
+                    this._dialogService.Show(title, message);
+                }
+
+                this.MacroItems = new ObservableCollection<MacroListItemViewModel>(loadResult.Macros.Select(m => new MacroListItemViewModel(m)));
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, "Failed to load macros due to an unexpected error.");
+
+                string title = this._localizationService.GetString(LocalizationScope.Common, "Dialog_Label_Attention");
+                string message = $"{this._localizationService.GetString(LocalizationScope.MacroList, "Load_Message_UnexpectedError")}";
+
+                this._dialogService.Show(title, message);
+            }
+        }
+
+
+        public void OnOpenSaveFolderCommand()
         {
             Process.Start(new ProcessStartInfo
             {
                 FileName = this._appSettingsService.AppSettings.General.SaveDirectory,
                 UseShellExecute = true
             });
-        }
-
-
-        private void UpdateMacrosControls(List<Macro> macros)
-        {
-            ObservableCollection<MacroListItemViewModel> macroItems = new();
-
-            foreach (Macro macro in macros)
-            {
-                macroItems.Add(new MacroListItemViewModel(macro));
-            }
-
-            this.MacroItems = macroItems;
-
-            Debug.WriteLine($"update macros controls {macros.Count}");
         }
     }
 }
