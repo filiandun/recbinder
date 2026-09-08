@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-using RecBinderProject.Infrastructure.Services.AppSettings;
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 
 using RecBinderProject.Presentation.ViewModels.MainWindow;
@@ -13,12 +12,10 @@ namespace RecBinderProject
     {
         private readonly GlobalHotkeyService _globalHotkeyService;
 
-        private readonly IAppSettingsService _appSettingsService;
-
         public MainWindowViewModel ViewModel { get; private set; }
 
 
-        public MainWindow(MainWindowViewModel viewModel, GlobalHotkeyService globalHotkeyService, IAppSettingsService appSettingsService)
+        public MainWindow(MainWindowViewModel viewModel, GlobalHotkeyService globalHotkeyService)
         {
             InitializeComponent();
 
@@ -26,10 +23,9 @@ namespace RecBinderProject
             this.DataContext = viewModel;
 
             this._globalHotkeyService = globalHotkeyService;
-            this._appSettingsService = appSettingsService;
 
             this.SourceInitialized += this.OnSourceInitialized;
-            //this.ContentRendered += this.OnContentRendered;
+            this.ContentRendered += this.OnContentRendered;
 
             this.Closed += this.OnClosed;
         }
@@ -52,31 +48,10 @@ namespace RecBinderProject
         }
 
 
-        //private void OnContentRendered(object? sender, EventArgs e) // TODO просится в MainWindowViewModel
-        //{
-        //    string content = "";
-
-        //    switch (this._appSettingsService.LoadState)
-        //    {
-        //        case AppSettingsLoadState.LoadedFromFile: content = "Настройки были загружены из файла"; break;
-
-        //        case AppSettingsLoadState.MissingFile: content = "Файл настроек не найден, загружены дефолтные"; break;
-
-        //        case AppSettingsLoadState.CorruptedFile: content = "Файл настроек повреждён, загружены дефолтные"; break;
-
-        //        case AppSettingsLoadState.AccessDenied: content = "Файл настроек недоступен, загружены дефолтные"; break;
-
-        //        case AppSettingsLoadState.Failed: throw new Exception(); 
-        //    }
-
-        //    //ContentDialog contentDialog = new ContentDialog()
-        //    //{
-        //    //    Content = content,
-        //    //    DefaultButton = ContentDialogButton.Close,
-        //    //    CloseButtonText = "Ok"
-        //    //};
-        //    //contentDialog.ShowAsync();
-        //}
+        private async void OnContentRendered(object? sender, EventArgs e)
+        {
+            await this.ViewModel.InitializeAsync();
+        }
 
 
         private void OnClosed(object? sender, EventArgs e)
