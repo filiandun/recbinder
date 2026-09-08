@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json.Serialization;
 
 using RecBinderProject.Domain;
+
 using RecBinderProject.Infrastructure.Services.AppSettings;
 
 
@@ -11,7 +12,7 @@ namespace RecBinderProject.Infrastructure.Repositories
 {
     public class MacroRepository : IMacroRepository
     {
-        public event Action? MacroSaved;
+        public event Action<Macro>? MacroSaved;
 
         private readonly ILogger<MacroRepository> _logger;
 
@@ -94,7 +95,7 @@ namespace RecBinderProject.Infrastructure.Repositories
 
             File.WriteAllText(filePath, json);
 
-            this.MacroSaved?.Invoke();
+            this.MacroSaved?.Invoke(macro);
         }
        
         public void Delete(Macro macro)

@@ -117,28 +117,70 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FirstLabel" xml:space="preserve">
-    <value>Settings</value>
+  <data name="Play_Playing" xml:space="preserve">
+    <value>Запись воспроизводится</value>
   </data>
-  <data name="LanguageLabel" xml:space="preserve">
-    <value>Language</value>
+  <data name="Play_Paused" xml:space="preserve">
+    <value>Воспроизведение приостановлено</value>
   </data>
-  <data name="ScreenResolutionLabel" xml:space="preserve">
-    <value>Screen resolution</value>
+  <data name="Play_Completed" xml:space="preserve">
+    <value>Воспроизведение завершилось</value>
   </data>
-  <data name="ResetToDefaultButton" xml:space="preserve">
-    <value>Reset to default</value>
+  <data name="Play_Stopped" xml:space="preserve">
+    <value>Воспроизведение было остановлено</value>
   </data>
-  <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="Play_ButtonHint" xml:space="preserve">
+    <value>Нажмите для воспроизведения</value>
   </data>
-  <data name="SaveButton" xml:space="preserve">
-    <value>Save</value>
+  <data name="Create_Playing" xml:space="preserve">
+    <value>Идёт запись</value>
   </data>
-  <data name="SaveDirectoryLabel" xml:space="preserve">
-    <value>Macro save directory</value>
+  <data name="Create_Paused" xml:space="preserve">
+    <value>Запись приостановлена</value>
   </data>
-  <data name="ThemeLabel" xml:space="preserve">
-    <value>Theme</value>
+  <data name="Create_Completed" xml:space="preserve">
+    <value>Запись завершена</value>
+  </data>
+  <data name="Create_Stopped" xml:space="preserve">
+    <value>Запись была остановлена</value>
+  </data>
+  <data name="Create_ButtonHint" xml:space="preserve">
+    <value>Нажмите для начала записи</value>
+  </data>
+  <data name="Play_FirstLabel" xml:space="preserve">
+    <value>Воспроизведение макроса</value>
+  </data>
+  <data name="MacroNameLabel" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="MacroDescriptionLabel" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="MacroDurationLabel" xml:space="preserve">
+    <value>Длительность</value>
+  </data>
+  <data name="MacroCreationDateTimeLabel" xml:space="preserve">
+    <value>Дата и время создания</value>
+  </data>
+  <data name="KeyboardPressIgnoredButton" xml:space="preserve">
+    <value>Игнорировать нажатия клавиш клавиатуры</value>
+  </data>
+  <data name="MouseMoveIgnoredButton" xml:space="preserve">
+    <value>Игнорировать движения мыши</value>
+  </data>
+  <data name="MousePressIgnoredButton" xml:space="preserve">
+    <value>Игнорировать нажатия клавиш мыши</value>
+  </data>
+  <data name="MouseWheelIgnoredButton" xml:space="preserve">
+    <value>Игнорировать прокручивание колесика мыши</value>
+  </data>
+  <data name="RelativeMouseMovementEnabledButton" xml:space="preserve">
+    <value>Воспроизвести относительного текущего положения курсора мыши</value>
+  </data>
+  <data name="MacroOptionsLabel" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="Recording_FirstLabel" xml:space="preserve">
+    <value>Создание макроса</value>
   </data>
 </root>

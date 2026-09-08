@@ -117,22 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FinderField" xml:space="preserve">
-    <value>Поиск..</value>
+  <data name="Dialog_Button_Close" xml:space="preserve">
+    <value>Закрыть</value>
   </data>
-  <data name="FirstLabel" xml:space="preserve">
-    <value>Список макросов</value>
-  </data>
-  <data name="HelpButton" xml:space="preserve">
-    <value>Помощь</value>
-  </data>
-  <data name="MacroCountLabel" xml:space="preserve">
-    <value>Макросов</value>
-  </data>
-  <data name="RecordingButton" xml:space="preserve">
-    <value>Записать макрос</value>
-  </data>
-  <data name="SettingsButton" xml:space="preserve">
-    <value>Настройки</value>
+  <data name="Dialog_Label_Attention" xml:space="preserve">
+    <value>Предупреждение</value>
   </data>
 </root>

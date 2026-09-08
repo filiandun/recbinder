@@ -28,62 +28,75 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\AppSettings.en.Designer.cs">
-      <DependentUpon>AppSettings.en.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="Resources\AppSettings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
       <DependentUpon>AppSettings.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\MacroExecution.en.Designer.cs">
-      <DependentUpon>MacroExecution.en.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Resources\MacrosList.en.Designer.cs">
-      <DependentUpon>MacrosList.en.resx</DependentUpon>
+    <Compile Update="Resources\AppSettings.ru.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DependentUpon>AppSettings.ru.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\MacrosList.Designer.cs">
+    <Compile Update="Resources\Common.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>MacrosList.resx</DependentUpon>
+      <DependentUpon>Common.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\MacroExecution.Designer.cs">
+      <DependentUpon>MacroExecution.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>MacroExecution.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\MacroList.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MacroList.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\MainWindow.ru.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MainWindow.ru.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\MacroExecution.ru.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MacroExecution.ru.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\AppSettings.en.resx">
-      <LastGenOutput>AppSettings.en.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Resources\AppSettings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AppSettings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MacroExecution.en.resx">
-      <LastGenOutput>MacroExecution.en.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MacrosList.en.resx">
-      <LastGenOutput>MacrosList.en.Designer.cs</LastGenOutput>
+    <EmbeddedResource Update="Resources\AppSettings.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppSettings.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MacrosList.resx">
+    <EmbeddedResource Update="Resources\Common.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MacrosList.Designer.cs</LastGenOutput>
+      <LastGenOutput>Common.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\MacroExecution.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MacroExecution.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MacroList.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MacroList.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MainWindow.resx">
+      <LastGenOutput>MainWindow.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MainWindow.ru.resx">
+      <Generator></Generator>
     </EmbeddedResource>
   </ItemGroup>
 

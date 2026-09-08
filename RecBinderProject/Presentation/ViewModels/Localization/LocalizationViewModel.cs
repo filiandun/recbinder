@@ -17,7 +17,7 @@ namespace RecBinderProject.Presentation.ViewModels.Localization
         {
             Common = new LocalizationScopeViewModel(LocalizationScope.Common, localizationService);
             AppSettings = new LocalizationScopeViewModel(LocalizationScope.AppSettings, localizationService);
-            MacroList = new LocalizationScopeViewModel(LocalizationScope.MacroList, localizationService);
+            MacroList = new LocalizationScopeViewModel(LocalizationScope.MainWindow, localizationService);
             MacroExecution = new LocalizationScopeViewModel(LocalizationScope.MacroExecution, localizationService);
 
             localizationService.LanguageChanged += this.OnLanguageChanged;

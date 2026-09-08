@@ -22,14 +22,14 @@ namespace RecBinderProject.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MacrosList {
+    internal class Common {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MacrosList() {
+        internal Common() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace RecBinderProject.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecBinderProject.Resources.MacrosList", typeof(MacrosList).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecBinderProject.Resources.Common", typeof(Common).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,56 +61,20 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Поиск...
+        ///   Looks up a localized string similar to Close.
         /// </summary>
-        internal static string FinderField {
+        internal static string Dialog_Button_Close {
             get {
-                return ResourceManager.GetString("FinderField", resourceCulture);
+                return ResourceManager.GetString("Dialog_Button_Close", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Список макросов.
+        ///   Looks up a localized string similar to Attention.
         /// </summary>
-        internal static string FirstLabel {
+        internal static string Dialog_Label_Attention {
             get {
-                return ResourceManager.GetString("FirstLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Помощь.
-        /// </summary>
-        internal static string HelpButton {
-            get {
-                return ResourceManager.GetString("HelpButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Макросов.
-        /// </summary>
-        internal static string MacroCountLabel {
-            get {
-                return ResourceManager.GetString("MacroCountLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Записать макрос.
-        /// </summary>
-        internal static string RecordingButton {
-            get {
-                return ResourceManager.GetString("RecordingButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Настройки.
-        /// </summary>
-        internal static string SettingsButton {
-            get {
-                return ResourceManager.GetString("SettingsButton", resourceCulture);
+                return ResourceManager.GetString("Dialog_Label_Attention", resourceCulture);
             }
         }
     }

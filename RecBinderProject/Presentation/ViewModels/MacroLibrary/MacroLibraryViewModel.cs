@@ -42,8 +42,13 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
             this.MacroListViewModel = macroListViewModel;
             this.MacroPlaybackViewModel = macroPlaybackViewModel;
 
-            this.MacroListViewModel.SelectedMacroChanged += OnMacroSelected;
-            this.MacroListViewModel.RefreshMacros();
+            this.MacroListViewModel.SelectedMacroChanged += this.OnMacroSelected;
+        }
+
+
+        public async Task InitializeAsync()
+        {
+            await this.MacroListViewModel.LoadMacrosAsync();
         }
 
 
