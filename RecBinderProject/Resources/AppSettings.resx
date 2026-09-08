@@ -118,27 +118,42 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FirstLabel" xml:space="preserve">
-    <value>Настройки</value>
+    <value>Settings</value>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
-    <value>Язык</value>
+    <value>Language</value>
   </data>
   <data name="ScreenResolutionLabel" xml:space="preserve">
-    <value>Разрешение экрана</value>
+    <value>Screen resolution</value>
   </data>
   <data name="ResetToDefaultButton" xml:space="preserve">
-    <value>Сбросить по умолчанию</value>
+    <value>Reset to default</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
-    <value>Отменить</value>
+    <value>Cancel</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
-    <value>Сохранить</value>
+    <value>Save</value>
   </data>
   <data name="SaveDirectoryLabel" xml:space="preserve">
-    <value>Путь к папке с сохранёнными записями</value>
+    <value>Macro save directory</value>
   </data>
   <data name="ThemeLabel" xml:space="preserve">
-    <value>Тема</value>
+    <value>Theme</value>
+  </data>
+  <data name="Dialog_Load_TitleAttention" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="Dialog_Load_UnknownError" xml:space="preserve">
+    <value>Failed to load settings due to an unexpected error. Default settings have been loaded.</value>
+  </data>
+  <data name="Dialog_Load_MissingFile" xml:space="preserve">
+    <value>The settings file was not found. Default settings have been loaded.</value>
+  </data>
+  <data name="Dialog_Load_CorruptedFile" xml:space="preserve">
+    <value>The settings file is corrupted. Default settings have been restored.</value>
+  </data>
+  <data name="Dialog_Load_AccessDenied" xml:space="preserve">
+    <value>Access to the settings file was denied. Default settings have been loaded.</value>
   </data>
 </root>

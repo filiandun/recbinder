@@ -61,7 +61,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Нажмите для начала записи.
+        ///   Looks up a localized string similar to Click to start recording.
         /// </summary>
         internal static string Create_ButtonHint {
             get {
@@ -70,7 +70,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Запись завершена.
+        ///   Looks up a localized string similar to Recording completed.
         /// </summary>
         internal static string Create_Completed {
             get {
@@ -79,7 +79,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Запись приостановлена.
+        ///   Looks up a localized string similar to Recording paused.
         /// </summary>
         internal static string Create_Paused {
             get {
@@ -88,7 +88,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Идёт запись.
+        ///   Looks up a localized string similar to Recording in progress.
         /// </summary>
         internal static string Create_Playing {
             get {
@@ -97,7 +97,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Запись была остановлена.
+        ///   Looks up a localized string similar to Recording stopped.
         /// </summary>
         internal static string Create_Stopped {
             get {
@@ -106,7 +106,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Игнорировать нажатия клавиш клавиатуры.
+        ///   Looks up a localized string similar to Ignoring keyboard buttons.
         /// </summary>
         internal static string KeyboardPressIgnoredButton {
             get {
@@ -115,7 +115,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Дата и время создания.
+        ///   Looks up a localized string similar to Creation date time.
         /// </summary>
         internal static string MacroCreationDateTimeLabel {
             get {
@@ -124,7 +124,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Описание.
+        ///   Looks up a localized string similar to Description.
         /// </summary>
         internal static string MacroDescriptionLabel {
             get {
@@ -133,7 +133,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Длительность.
+        ///   Looks up a localized string similar to Duration.
         /// </summary>
         internal static string MacroDurationLabel {
             get {
@@ -142,7 +142,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Название.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
         internal static string MacroNameLabel {
             get {
@@ -151,7 +151,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Настройки.
+        ///   Looks up a localized string similar to Options.
         /// </summary>
         internal static string MacroOptionsLabel {
             get {
@@ -160,7 +160,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Игнорировать движения мыши.
+        ///   Looks up a localized string similar to Ignoring mouse move.
         /// </summary>
         internal static string MouseMoveIgnoredButton {
             get {
@@ -169,7 +169,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Игнорировать нажатия клавиш мыши.
+        ///   Looks up a localized string similar to Ignoring mouse buttons.
         /// </summary>
         internal static string MousePressIgnoredButton {
             get {
@@ -178,7 +178,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Игнорировать прокручивание колесика мыши.
+        ///   Looks up a localized string similar to Ignoring mouse wheel.
         /// </summary>
         internal static string MouseWheelIgnoredButton {
             get {
@@ -187,7 +187,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Нажмите для воспроизведения.
+        ///   Looks up a localized string similar to Click to start playback.
         /// </summary>
         internal static string Play_ButtonHint {
             get {
@@ -196,7 +196,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Воспроизведение завершилось.
+        ///   Looks up a localized string similar to Playback completed.
         /// </summary>
         internal static string Play_Completed {
             get {
@@ -205,7 +205,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Воспроизведение макроса.
+        ///   Looks up a localized string similar to Playback macro.
         /// </summary>
         internal static string Play_FirstLabel {
             get {
@@ -214,7 +214,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Воспроизведение приостановлено.
+        ///   Looks up a localized string similar to Playback paused.
         /// </summary>
         internal static string Play_Paused {
             get {
@@ -223,7 +223,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Запись воспроизводится.
+        ///   Looks up a localized string similar to Playing the recording.
         /// </summary>
         internal static string Play_Playing {
             get {
@@ -232,7 +232,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Воспроизведение было остановлено.
+        ///   Looks up a localized string similar to Playback stopped.
         /// </summary>
         internal static string Play_Stopped {
             get {
@@ -241,7 +241,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Создание макроса.
+        ///   Looks up a localized string similar to Recording macro.
         /// </summary>
         internal static string Recording_FirstLabel {
             get {
@@ -250,7 +250,7 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Воспроизвести относительного текущего положения курсора мыши.
+        ///   Looks up a localized string similar to Play relative to current mouse cursor.
         /// </summary>
         internal static string RelativeMouseMovementEnabledButton {
             get {

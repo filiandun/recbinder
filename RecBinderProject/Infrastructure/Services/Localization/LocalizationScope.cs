@@ -4,9 +4,11 @@
     {
         Common,
 
+        MainWindow,
         MacroList,
 
         MacroExecution,
+
         AppHelp,
         AppSettings,
     }

@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 
-using RecBinderProject.Resources;
 using RecBinderProject.Infrastructure.Services.AppSettings;
 
 
@@ -21,9 +20,13 @@ namespace RecBinderProject.Infrastructure.Services.Localization
         {
             this._resourceManagers = new Dictionary<LocalizationScope, ResourceManager>()
             {
-                { LocalizationScope.MacroList, MacrosList.ResourceManager },
+                { LocalizationScope.Common, Resources.Common.ResourceManager },
 
-                { LocalizationScope.MacroExecution, MacroExecution.ResourceManager },
+                { LocalizationScope.MainWindow, Resources.MainWindow.ResourceManager },
+
+                { LocalizationScope.MacroList, Resources.MacroList.ResourceManager },
+                { LocalizationScope.MacroExecution, Resources.MacroExecution.ResourceManager },
+
                 { LocalizationScope.AppSettings, Resources.AppSettings.ResourceManager },
             };
 
@@ -50,7 +53,7 @@ namespace RecBinderProject.Infrastructure.Services.Localization
 
         public string GetString(LocalizationScope scope, string key)
         {
-            ResourceManager resourceManager = this._resourceManagers.GetValueOrDefault(scope) ?? throw new ArgumentOutOfRangeException($"ResourseManager not found for localization scope {scope}");
+            ResourceManager resourceManager = this._resourceManagers.GetValueOrDefault(scope) ?? throw new ArgumentOutOfRangeException($"ResourceManager not found for localization scope {scope}");
 
             return resourceManager.GetString(key, this._currentCulture) ?? key;
         }
