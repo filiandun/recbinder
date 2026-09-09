@@ -1,5 +1,6 @@
 ﻿using RecBinderProject.Infrastructure.Services.AppSettings;
 
+
 namespace RecBinderProject.Infrastructure.Services.Localization
 {
     public interface ILocalizationService

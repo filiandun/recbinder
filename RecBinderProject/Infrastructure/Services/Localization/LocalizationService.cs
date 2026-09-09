@@ -1,6 +1,6 @@
 ﻿using System.Resources;
-using System.Diagnostics;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Infrastructure.Services.AppSettings;
 
@@ -11,13 +11,16 @@ namespace RecBinderProject.Infrastructure.Services.Localization
     {
         public event Action? LanguageChanged;
 
-        private Dictionary<LocalizationScope, ResourceManager> _resourceManagers;
+        private readonly ILogger<LocalizationService> _logger;
 
+        private Dictionary<LocalizationScope, ResourceManager> _resourceManagers;
         private CultureInfo _currentCulture;
 
 
-        public LocalizationService()
+        public LocalizationService(ILogger<LocalizationService> logger)
         {
+            this._logger = logger;
+
             this._resourceManagers = new Dictionary<LocalizationScope, ResourceManager>()
             {
                 { LocalizationScope.Common, Resources.Common.ResourceManager },
@@ -30,33 +33,55 @@ namespace RecBinderProject.Infrastructure.Services.Localization
                 { LocalizationScope.AppSettings, Resources.AppSettings.ResourceManager },
             };
 
-            this._currentCulture = CultureInfo.InvariantCulture; // TODO связать с настройками (брать оттуда)
+            this._currentCulture = this.GetCultureInfo(AppLanguage.English);
         }
 
 
         public void ApplyLanguage(AppLanguage language) 
         {
-            string cultureCode = language switch
-            {
-                AppLanguage.English => "en-US",
-                AppLanguage.Russian => "ru-RU",
+            this._currentCulture = this.GetCultureInfo(language);
 
-                _ => CultureInfo.CurrentUICulture.Name // TODO тут бы сообщать пользователю, что фигня какая-то
-            };
+            this._logger.LogInformation("Application language switched to {Language} ({Culture})", language, this._currentCulture.Name);
 
-            Debug.WriteLine($"APPLY LANGUAGE {cultureCode}");
-
-            this._currentCulture = new CultureInfo(cultureCode);
             this.LanguageChanged?.Invoke();
         }
 
 
         public string GetString(LocalizationScope scope, string key)
         {
-            ResourceManager resourceManager = this._resourceManagers.GetValueOrDefault(scope) ?? throw new ArgumentOutOfRangeException($"ResourceManager not found for localization scope {scope}");
+            if (!this._resourceManagers.TryGetValue(scope, out ResourceManager? resourceManager))
+            {
+                this._logger.LogError("ResourceManager not found for localization scope '{Scope}'.", scope);
 
-            return resourceManager.GetString(key, this._currentCulture) ?? key;
+                throw new ArgumentOutOfRangeException($"ResourceManager not found for localization scope {scope}");
+            }
+
+            string? value = resourceManager.GetString(key, this._currentCulture);
+
+            if (value is null)
+            {
+                this._logger.LogWarning("Localization key '{Key}' not found in scope '{Scope}' for culture '{Culture}'. Falling back to key name.", key, scope, this._currentCulture.Name);
+
+                return key;
+            }
+
+            return value;
         }
+
         public string GetString(LocalizationScope scope, string key, params object[] args) => string.Format(this.GetString(scope, key), args);
+
+
+        private CultureInfo GetCultureInfo(AppLanguage language)
+        {
+            string cultureCode = language switch
+            {
+                AppLanguage.English => "en-US",
+                AppLanguage.Russian => "ru-RU",
+
+                _ => "en-US"
+            };
+
+            return CultureInfo.GetCultureInfo(cultureCode);
+        }
     }
 }
