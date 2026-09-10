@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RecBinderProject.Resources {
+namespace RecBinderProject.Resources.Localization {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace RecBinderProject.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MacroList {
+    internal class MainWindow {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MacroList() {
+        internal MainWindow() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace RecBinderProject.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecBinderProject.Resources.MacroList", typeof(MacroList).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecBinderProject.Resources.Localization.MainWindow", typeof(MainWindow).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,38 @@ namespace RecBinderProject.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some macros failed to load .
+        ///   Looks up a localized string similar to Macros list.
         /// </summary>
-        internal static string Load_Message_FailedFiles {
+        internal static string FirstLabel {
             get {
-                return ResourceManager.GetString("Load_Message_FailedFiles", resourceCulture);
+                return ResourceManager.GetString("FirstLabel", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load macros due to an unexpected error.
+        ///   Looks up a localized string similar to Help.
         /// </summary>
-        internal static string Load_Message_UnexpectedError {
+        internal static string HelpButton {
             get {
-                return ResourceManager.GetString("Load_Message_UnexpectedError", resourceCulture);
+                return ResourceManager.GetString("HelpButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recording.
+        /// </summary>
+        internal static string RecordingButton {
+            get {
+                return ResourceManager.GetString("RecordingButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        internal static string SettingsButton {
+            get {
+                return ResourceManager.GetString("SettingsButton", resourceCulture);
             }
         }
     }
