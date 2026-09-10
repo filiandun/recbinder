@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\AppSettings.Designer.cs">
+    <Compile Update="Resources\Localization\AppSettings.Designer.cs">
       <DependentUpon>AppSettings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -39,22 +39,22 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AppSettings.ru.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\Common.Designer.cs">
+    <Compile Update="Resources\Localization\Common.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Common.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\MacroExecution.Designer.cs">
+    <Compile Update="Resources\Localization\MacroExecution.Designer.cs">
       <DependentUpon>MacroExecution.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Resources\MacroList.Designer.cs">
+    <Compile Update="Resources\Localization\MacroList.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>MacroList.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\MainWindow.Designer.cs">
+    <Compile Update="Resources\Localization\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -72,31 +72,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\AppSettings.resx">
+    <EmbeddedResource Update="Resources\Localization\AppSettings.resx">
       <LastGenOutput>AppSettings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\AppSettings.ru.resx">
+    <EmbeddedResource Update="Resources\Localization\AppSettings.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AppSettings.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Common.resx">
+    <EmbeddedResource Update="Resources\Localization\Common.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Common.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MacroExecution.resx">
+    <EmbeddedResource Update="Resources\Localization\MacroExecution.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MacroExecution.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MacroList.resx">
+    <EmbeddedResource Update="Resources\Localization\MacroList.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MacroList.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MainWindow.resx">
+    <EmbeddedResource Update="Resources\Localization\MainWindow.resx">
       <LastGenOutput>MainWindow.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MainWindow.ru.resx">
+    <EmbeddedResource Update="Resources\Localization\MainWindow.ru.resx">
       <Generator></Generator>
     </EmbeddedResource>
   </ItemGroup>

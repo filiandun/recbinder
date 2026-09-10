@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RecBinderProject.Resources {
+namespace RecBinderProject.Resources.Localization {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace RecBinderProject.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecBinderProject.Resources.AppSettings", typeof(AppSettings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecBinderProject.Resources.Localization.AppSettings", typeof(AppSettings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

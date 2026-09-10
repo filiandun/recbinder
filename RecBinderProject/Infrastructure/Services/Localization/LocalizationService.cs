@@ -23,14 +23,14 @@ namespace RecBinderProject.Infrastructure.Services.Localization
 
             this._resourceManagers = new Dictionary<LocalizationScope, ResourceManager>()
             {
-                { LocalizationScope.Common, Resources.Common.ResourceManager },
+                { LocalizationScope.Common, Resources.Localization.Common.ResourceManager },
 
-                { LocalizationScope.MainWindow, Resources.MainWindow.ResourceManager },
+                { LocalizationScope.MainWindow, Resources.Localization.MainWindow.ResourceManager },
 
-                { LocalizationScope.MacroList, Resources.MacroList.ResourceManager },
-                { LocalizationScope.MacroExecution, Resources.MacroExecution.ResourceManager },
+                { LocalizationScope.MacroList, Resources.Localization.MacroList.ResourceManager },
+                { LocalizationScope.MacroExecution, Resources.Localization.MacroExecution.ResourceManager },
 
-                { LocalizationScope.AppSettings, Resources.AppSettings.ResourceManager },
+                { LocalizationScope.AppSettings, Resources.Localization.AppSettings.ResourceManager },
             };
 
             this._currentCulture = this.GetCultureInfo(AppLanguage.English);
