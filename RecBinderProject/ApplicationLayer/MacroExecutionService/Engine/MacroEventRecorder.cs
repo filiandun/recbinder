@@ -10,6 +10,8 @@ using RecBinderProject.Domain.MacroEvents.Enums;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
+using RecBinderProject.Infrastructure.Services.Input;
+
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
@@ -19,6 +21,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private readonly ILogger<MacroEventRecorder> _logger;
 
+        private readonly IInputListener _inputListener;
+
         private IKeyboardMouseEvents? _globalHook;
 
         private readonly Stopwatch _stopwatch;
@@ -27,9 +31,11 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private readonly MacroRecordingOptions _options;
 
 
-        public MacroEventRecorder(ILogger<MacroEventRecorder> logger, Macro macro, MacroRecordingOptions options)
+        public MacroEventRecorder(ILogger<MacroEventRecorder> logger, IInputListener inputListener, Macro macro, MacroRecordingOptions options)
         {
             this._logger = logger;
+
+            this._inputListener = inputListener;
 
             this._globalHook = null;
 
@@ -80,33 +86,39 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         {
             this._globalHook = Hook.GlobalEvents();
 
-            this._globalHook.KeyDown += this.GlobalHookKeyDown;
-            this._globalHook.KeyUp += this.GlobalHookKeyUp;
+            this._globalHook.KeyDown += this.OnKeyDown;
+            this._globalHook.KeyUp += this.OnHookKeyUp;
 
-            this._globalHook.MouseDown += this.GlobalHookMouseDown;
-            this._globalHook.MouseUp += this.GlobalHookMouseUp;
+            this._globalHook.MouseDown += this.OnMouseDown;
+            this._globalHook.MouseUp += this.OnMouseUp;
 
-            this._globalHook.MouseMoveExt += this.GlobalHookMouseMoveExt;
-            this._globalHook.MouseWheelExt += this.GlobalHook_MouseWheelExt;
+            this._globalHook.MouseMoveExt += this.OnMouseMoveExt;
+            this._globalHook.MouseWheelExt += this.OnMouseWheelExt;
+
+            this._inputListener.Register();
+            this._inputListener.MouseDeltaReceived += OnMouseDeltaReceived;
         }
+
 
         public void Unsubscribe()
         {
             if (this._globalHook != null)
             {
-                this._globalHook.KeyDown -= this.GlobalHookKeyDown;
-                this._globalHook.KeyUp -= this.GlobalHookKeyUp;
+                this._globalHook.KeyDown -= this.OnKeyDown;
+                this._globalHook.KeyUp -= this.OnHookKeyUp;
 
-                this._globalHook.MouseDown -= this.GlobalHookMouseDown;
-                this._globalHook.MouseUp -= this.GlobalHookMouseUp;
+                this._globalHook.MouseDown -= this.OnMouseDown;
+                this._globalHook.MouseUp -= this.OnMouseUp;
 
-                this._globalHook.MouseMoveExt -= this.GlobalHookMouseMoveExt;
-                this._globalHook.MouseWheelExt -= this.GlobalHook_MouseWheelExt;
+                this._globalHook.MouseMoveExt -= this.OnMouseMoveExt;
+                this._globalHook.MouseWheelExt -= this.OnMouseWheelExt;
             }
+
+            this._inputListener.Unregister();
         }
 
 
-        private void GlobalHookKeyUp(object? sender, KeyEventArgs e)
+        private void OnHookKeyUp(object? sender, KeyEventArgs e)
         {
             if (!this._options.KeyboardPressIgnored)
             {
@@ -116,7 +128,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void GlobalHookKeyDown(object? sender, KeyEventArgs e)
+        private void OnKeyDown(object? sender, KeyEventArgs e)
         {
             if (!this._options.KeyboardPressIgnored)
             {
@@ -127,7 +139,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         }
 
 
-        private void GlobalHookMouseDown(object? sender, MouseEventArgs e)
+        private void OnMouseDown(object? sender, MouseEventArgs e)
         {
             if (!this._options.MousePressIgnored)
             {
@@ -137,7 +149,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void GlobalHookMouseUp(object? sender, MouseEventArgs e)
+        private void OnMouseUp(object? sender, MouseEventArgs e)
         {
             if (!this._options.MousePressIgnored)
             {
@@ -148,15 +160,24 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         }
 
 
-        private void GlobalHookMouseMoveExt(object? sender, MouseEventExtArgs e)
+        private void OnMouseMoveExt(object? sender, MouseEventExtArgs e)
         {
-            if (!this._options.MouseMoveIgnored)
+            if (!this._options.MouseMoveIgnored && !this._options.TreeDimensionalMouseMovementEnabled)
             {
                 this._macro.AddEvent(MacroEvent.FromMouseMove(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds));
             }
         }
 
-        private void GlobalHook_MouseWheelExt(object? sender, MouseEventExtArgs e)
+        private void OnMouseDeltaReceived(MouseDeltaEvent e)
+        {
+            if (!this._options.MouseMoveIgnored && this._options.TreeDimensionalMouseMovementEnabled)
+            {
+                this._macro.AddEvent(MacroEvent.FromMouseDelta(e.DeltaX, e.DeltaY, (int)this._stopwatch.ElapsedMilliseconds));
+            }
+        }
+
+
+        private void OnMouseWheelExt(object? sender, MouseEventExtArgs e)
         {
             if (!this._options.MouseWheelIgnored)
             {

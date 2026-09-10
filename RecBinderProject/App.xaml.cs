@@ -23,6 +23,7 @@ namespace RecBinderProject
             services.AddLogging(builder =>
             {
                 builder.SetMinimumLevel(LogLevel.Debug);
+                builder.AddDebug();
             });
 
             services.AddApplicationComponents(); // add components

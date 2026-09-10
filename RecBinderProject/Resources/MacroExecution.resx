@@ -183,4 +183,7 @@
   <data name="Recording_FirstLabel" xml:space="preserve">
     <value>Recording macro</value>
   </data>
+  <data name="TreeDimensionalMouseMovementEnabled" xml:space="preserve">
+    <value>Enable 3D-mode (for 3D games)</value>
+  </data>
 </root>

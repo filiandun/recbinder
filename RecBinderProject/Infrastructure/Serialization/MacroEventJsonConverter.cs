@@ -23,9 +23,10 @@ namespace RecBinderProject.Infrastructure.Serialization
             {
                 MacroEventKind.KeyboardPress => MacroEvent.FromKeyboardPress(root.GetRequired("KeyCode").GetInt32(), (MacroKeyState)root.GetRequired("KeyState").GetByte(), timeOffset),
 
-                MacroEventKind.MouseMove => MacroEvent.FromMouseMove(root.GetRequired("X").GetDouble(), root.GetRequired("Y").GetDouble(), timeOffset),
-
                 MacroEventKind.MousePress => MacroEvent.FromMousePress(root.GetRequired("MouseButton").GetInt32(), (MacroKeyState)root.GetRequired("KeyState").GetByte(), timeOffset),
+
+                MacroEventKind.MouseMove => MacroEvent.FromMouseMove(root.GetRequired("X").GetDouble(), root.GetRequired("Y").GetDouble(), timeOffset),
+                MacroEventKind.MouseDelta => MacroEvent.FromMouseDelta(root.GetRequired("DeltaX").GetInt32(), root.GetRequired("DeltaY").GetInt32(), timeOffset),
 
                 MacroEventKind.MouseWheel => MacroEvent.FromMouseWheel(root.GetRequired("WheelClicks").GetInt32(), timeOffset),
 
@@ -57,6 +58,12 @@ namespace RecBinderProject.Infrastructure.Serialization
                 case MacroEventKind.MouseMove:
                     writer.WriteNumber("X", value.MouseMove.X);
                     writer.WriteNumber("Y", value.MouseMove.Y);
+
+                    break;
+
+                case MacroEventKind.MouseDelta:
+                    writer.WriteNumber("DeltaX", value.MouseDelta.DeltaX);
+                    writer.WriteNumber("DeltaY", value.MouseDelta.DeltaY);
 
                     break;
 
