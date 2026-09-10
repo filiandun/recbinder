@@ -1,7 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
+using RecBinderProject.Infrastructure.Services.Input;
 
 using RecBinderProject.Presentation.ViewModels.MainWindow;
 
@@ -12,10 +14,12 @@ namespace RecBinderProject
     {
         private readonly GlobalHotkeyService _globalHotkeyService;
 
+        private readonly IInputListener _inputListener;
+
         public MainWindowViewModel ViewModel { get; private set; }
 
 
-        public MainWindow(MainWindowViewModel viewModel, GlobalHotkeyService globalHotkeyService)
+        public MainWindow(MainWindowViewModel viewModel, GlobalHotkeyService globalHotkeyService, IInputListener inputListener)
         {
             InitializeComponent();
 
@@ -24,6 +28,8 @@ namespace RecBinderProject
 
             this._globalHotkeyService = globalHotkeyService;
 
+            this._inputListener = inputListener;
+
             this.SourceInitialized += this.OnSourceInitialized;
             this.ContentRendered += this.OnContentRendered;
 
@@ -31,7 +37,7 @@ namespace RecBinderProject
         }
 
 
-        private void OnSourceInitialized(object? sender, EventArgs e)
+        private async void OnSourceInitialized(object? sender, EventArgs e)
         {
             this._globalHotkeyService.Initialize(this);
 
@@ -45,6 +51,10 @@ namespace RecBinderProject
             });
 
             this._globalHotkeyService.HotkeyPressed += this.ViewModel.OnHotkeyPressed;
+
+
+            IntPtr hwnd = new WindowInteropHelper(this).Handle;
+            this._inputListener.Initialize(hwnd);
         }
 
 

@@ -61,6 +61,18 @@ namespace RecBinderProject.Presentation.ViewModels.MacroOptions
             }
         }
 
+        public bool TreeDimensionalMouseMovementEnabled
+        {
+            get => this._options.TreeDimensionalMouseMovementEnabled;
+            set
+            {
+                if (this._options.TreeDimensionalMouseMovementEnabled == value) return;
+
+                this._options.TreeDimensionalMouseMovementEnabled = value;
+                this.OnPropertyChanged();
+            }
+        }
+
 
         public MacroRecordingOptionsViewModel(MacroRecordingOptions options)
         {

@@ -91,6 +91,7 @@
                     <CheckBox IsChecked="{Binding OptionsViewModel.MousePressIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MousePressIgnoredButton]}" FontSize="12"/>
                     <CheckBox IsChecked="{Binding OptionsViewModel.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
                     <CheckBox IsChecked="{Binding OptionsViewModel.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
+                    <CheckBox IsChecked="{Binding OptionsViewModel.TreeDimensionalMouseMovementEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[TreeDimensionalMouseMovementEnabled]}" FontSize="12"/>
                 </UniformGrid>
             </StackPanel>
         </ScrollViewer>

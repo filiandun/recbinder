@@ -48,6 +48,15 @@ namespace RecBinderProject.Domain.MacroEvents
 
 
         [FieldOffset(8)]
+        private MouseDeltaEvent _mouseDelta;
+        public MouseDeltaEvent MouseDelta
+        {
+            get => this.Kind == MacroEventKind.MouseDelta ? this._mouseDelta : throw new InvalidOperationException($"Cannot access {nameof(this.MouseDelta)} on event of type {this.Kind}");
+            private set => this._mouseDelta = value;
+        }
+
+
+        [FieldOffset(8)]
         private MouseWheelEvent _mouseWheel;
         public MouseWheelEvent MouseWheel 
         {
@@ -58,7 +67,10 @@ namespace RecBinderProject.Domain.MacroEvents
 
         public static MacroEvent FromKeyboardPress(int keyCode, MacroKeyState keyState, int timeOffset) => new MacroEvent { Kind = MacroEventKind.KeyboardPress, TimeOffset = timeOffset, KeyboardPress = new KeyboardPressEvent(keyCode, keyState) };
         public static MacroEvent FromMousePress(int mouseButton, MacroKeyState keyState, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MousePress, TimeOffset = timeOffset, MousePress = new MousePressEvent(mouseButton, keyState) };
+
         public static MacroEvent FromMouseMove(double x, double y, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MouseMove, TimeOffset = timeOffset, MouseMove = new MouseMoveEvent(x, y) };
+        public static MacroEvent FromMouseDelta(int deltaX, int deltaY, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MouseDelta, TimeOffset = timeOffset, MouseDelta = new MouseDeltaEvent(deltaX, deltaY) };
+
         public static MacroEvent FromMouseWheel(int wheelClicks, int timeOffset) => new MacroEvent { Kind = MacroEventKind.MouseWheel, TimeOffset = timeOffset, MouseWheel = new MouseWheelEvent(wheelClicks) };
     }
 }

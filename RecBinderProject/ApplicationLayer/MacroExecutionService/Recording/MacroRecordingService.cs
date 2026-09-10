@@ -1,13 +1,11 @@
-﻿using System.Diagnostics;
-using Microsoft.Extensions.Logging;
-
-using RecBinderProject.Domain;
-
+﻿using Microsoft.Extensions.Logging;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
-
+using RecBinderProject.Domain;
 using RecBinderProject.Infrastructure.Repositories;
+using RecBinderProject.Infrastructure.Services.Input;
+using System.Diagnostics;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
@@ -23,6 +21,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
         private readonly IMacroRepository _repository;
 
+        private readonly IInputListener _inputListener;
+
         private Macro? _macro;
         private MacroEventRecorder? _recorder;
 
@@ -32,7 +32,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         public override TimeSpan ElapsedTime => this._recorder?.GetElapsedTime() ?? TimeSpan.Zero;
 
 
-        public MacroRecordingService(ILogger<MacroRecordingService> logger, ILogger<MacroEventRecorder> recorderLogger, IMacroRepository repository, MacroRecordingOptions macroOptions)
+        public MacroRecordingService(ILogger<MacroRecordingService> logger, ILogger<MacroEventRecorder> recorderLogger, IMacroRepository repository, IInputListener inputListener, MacroRecordingOptions macroOptions)
         {
             this._logger = logger;
             this._recorderLogger = recorderLogger;
@@ -40,6 +40,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             this._cancellationTokenSource = new CancellationTokenSource();
 
             this._repository = repository;
+
+            this._inputListener = inputListener;
 
             this._macro = null;
             this._recorder = null;
@@ -55,7 +57,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             if (this.CanStart())
             {
                 this._macro = new Macro(macroMetadata);
-                this._recorder = new MacroEventRecorder(this._recorderLogger, this._macro, this._options);
+                this._recorder = new MacroEventRecorder(this._recorderLogger, this._inputListener, this._macro, this._options);
 
                 this._cancellationTokenSource.Dispose();
                 this._cancellationTokenSource = new CancellationTokenSource();

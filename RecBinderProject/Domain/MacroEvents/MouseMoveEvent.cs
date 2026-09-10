@@ -5,10 +5,10 @@
         public double X { get; set; }
         public double Y { get; set; }
 
-        public MouseMoveEvent(double X, double Y)
+        public MouseMoveEvent(double x, double y)
         {
-            this.X = X;
-            this.Y = Y;
+            this.X = x;
+            this.Y = y;
         }
     }
 }

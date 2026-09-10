@@ -7,6 +7,7 @@ namespace RecBinderProject.Domain.MacroEvents.Enums
 
         MousePress,
         MouseMove,
+        MouseDelta,
         MouseWheel
     }
 }

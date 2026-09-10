@@ -4,12 +4,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Options
 {
     public class MacroPlaybackOptions
     {
-        public bool KeyboardPressIgnored { get; set; }
-        public bool MousePressIgnored { get; set; }
-        public bool MouseMoveIgnored { get; set; }
-        public bool MouseWheelIgnored { get; set; }
+        public required bool KeyboardPressIgnored { get; set; }
+        public required bool MousePressIgnored { get; set; }
+        public required bool MouseMoveIgnored { get; set; }
+        public required bool MouseWheelIgnored { get; set; }
 
-        public bool RelativeMouseMovementEnabled { get; set; }
+        public required bool RelativeMouseMovementEnabled { get; set; }
 
 
         public MacroPlaybackOptions()

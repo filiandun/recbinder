@@ -14,6 +14,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
     public class MacroEventPlayer
     {
+        private const int VIRTUAL_SCREEN_MAX = 65535;
+
         private readonly ILogger<MacroEventPlayer> _logger;
 
         private readonly SafeInputSimulator _inputSimulator;
@@ -23,6 +25,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private readonly MacroPlaybackOptions _options;
 
         private volatile bool _isPaused;
+
+        private Point _mouseOffset;
 
 
         public MacroEventPlayer(ILogger<MacroEventPlayer> logger, Macro macro, MacroPlaybackOptions options)
@@ -36,6 +40,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             this._options = options;
 
             this._isPaused = false;
+
+            this._mouseOffset = Point.Empty;
         }
 
 
@@ -44,7 +50,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         public async Task Start(CancellationToken cancellationToken)
         {
-            if (this.HasUnsupportedEvents()) throw new NotSupportedException("Macro contains a unsupported events");
+            if (this.HasUnsupportedEvents()) throw new NotSupportedException("Macro contains a unsupported kind events");
 
             this._stopwatch.Restart();
 
@@ -119,7 +125,10 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             {
                 case MacroEventKind.KeyboardPress: this.PlayKeyboardPress(e.KeyboardPress); break;
                 case MacroEventKind.MousePress: this.PlayMousePress(e.MousePress); break;
-                case MacroEventKind.MouseMove: this.PlayMouseMove(e.MouseMove, firstCursorPosition, startCursorPosition); break;
+
+                case MacroEventKind.MouseMove: this.PlayMouseMove(e.MouseMove); break;
+                case MacroEventKind.MouseDelta: this.PlayMouseDelta(e.MouseDelta); break;
+
                 case MacroEventKind.MouseWheel: this.PlayMouseWheel(e.MouseWheel); break;
 
                 default: throw new ArgumentOutOfRangeException(nameof(e.Kind), e.Kind, "Unknown macro event kind");
@@ -192,6 +201,11 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
                 int scaledY = (int)(long)targetY * 65535 / this._macro.Metadata.ResolutionHeight;
 
                 this._inputSimulator.MouseMoveTo(scaledX, scaledY);
+        private void PlayMouseDelta(MouseDeltaEvent e)
+        {
+            if (!this._options.MouseMoveIgnored)
+            {
+                this._inputSimulator.MouseMoveBy(e.DeltaX, e.DeltaY);
             }
         }
 
@@ -208,7 +222,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private bool HasUnsupportedEvents()
         {
-            return this._macro.Events.Any(e => e.Kind is not (MacroEventKind.KeyboardPress or MacroEventKind.MousePress or MacroEventKind.MouseMove or MacroEventKind.MouseWheel));
+            return this._macro.Events.Any(e => e.Kind is not (MacroEventKind.KeyboardPress or MacroEventKind.MousePress or MacroEventKind.MouseMove or MacroEventKind.MouseDelta or MacroEventKind.MouseWheel));
         }
     }
 }

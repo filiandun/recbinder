@@ -183,4 +183,7 @@
   <data name="Recording_FirstLabel" xml:space="preserve">
     <value>Создание макроса</value>
   </data>
+  <data name="TreeDimensionalMouseMovementEnabled" xml:space="preserve">
+    <value>Включить 3D-режим (для 3D игр)</value>
+  </data>
 </root>

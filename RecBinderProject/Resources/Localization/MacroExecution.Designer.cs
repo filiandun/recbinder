@@ -257,5 +257,14 @@ namespace RecBinderProject.Resources.Localization {
                 return ResourceManager.GetString("RelativeMouseMovementEnabledButton", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable 3D-mode (for 3D games).
+        /// </summary>
+        internal static string TreeDimensionalMouseMovementEnabled {
+            get {
+                return ResourceManager.GetString("TreeDimensionalMouseMovementEnabled", resourceCulture);
+            }
+        }
     }
 }

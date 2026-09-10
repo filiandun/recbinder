@@ -4,6 +4,7 @@ using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
 
 using RecBinderProject.Infrastructure.Repositories;
+using RecBinderProject.Infrastructure.Services.Input;
 using RecBinderProject.Infrastructure.Services.AppSettings;
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 using RecBinderProject.Infrastructure.Services.Localization;
@@ -43,6 +44,7 @@ namespace RecBinderProject.Infrastructure.Extenstions
             services.AddSingleton<MacroRecordingOptions>();
             services.AddSingleton<MacroRecordingOptionsViewModel>();
 
+            services.AddSingleton<IInputListener, RawInputListener>();
             services.AddSingleton<IMacroRecordingService, MacroRecordingService>();
             services.AddSingleton<MacroRecordingStatusViewModel>();
             services.AddSingleton<MacroMetadataCreatorViewModel>();
