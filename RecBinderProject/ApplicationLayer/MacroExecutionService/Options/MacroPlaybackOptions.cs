@@ -9,7 +9,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Options
         public required bool MouseMoveIgnored { get; set; }
         public required bool MouseWheelIgnored { get; set; }
 
-        public required bool RelativeMouseMovementEnabled { get; set; }
+        public required bool RelativeMouseMovementEnabled { get; set; } 
+        public required bool TrimPlaybackEndEnabled { get; set; }
 
 
         public MacroPlaybackOptions()
@@ -20,6 +21,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Options
             this.MouseWheelIgnored = false;
 
             this.RelativeMouseMovementEnabled = false;
+            this.TrimPlaybackEndEnabled = false;
         }
     }
 }

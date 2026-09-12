@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
+
 using RecBinderProject.Infrastructure.Services.Localization;
 
 
@@ -128,13 +129,13 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution.Status
             this.UpdateProgressBar();
         }
 
-        private string GetTimeString() => $"{this._executionInfo.ElapsedTime.ToString(@"hh\:mm\:ss\.ff")} / {this._executionInfo.TotalTime.ToString(@"hh\:mm\:ss\.ff")}";
+        private string GetTimeString() => $"{this._executionInfo.ElapsedTime.ToString(@"hh\:mm\:ss\.ff")} / {this._executionInfo.TotalDuration.ToString(@"hh\:mm\:ss\.ff")}";
         private string GetLocalization(string key) => this._localizationService.GetString(LocalizationScope.MacroExecution, key);
         private string GetLocalizationWithTime(string key) => $"{this.GetLocalization(key)} - {this.GetTimeString()}";
 
         private void UpdateProgressBar()
         {
-            TimeSpan duration = this._executionInfo.TotalTime;
+            TimeSpan duration = this._executionInfo.TotalDuration;
             TimeSpan elapsed = this._executionInfo.ElapsedTime;
 
             this.ProgressBarValue = duration > TimeSpan.Zero ? (elapsed.TotalMilliseconds * 100) / duration.TotalMilliseconds : 0;

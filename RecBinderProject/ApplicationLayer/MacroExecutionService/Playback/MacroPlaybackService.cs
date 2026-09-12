@@ -18,8 +18,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         private readonly Macro _macro;
         private readonly MacroEventPlayer _player;
 
-        public override TimeSpan TotalTime => this._macro.Metadata.Duration;
-        public override TimeSpan ElapsedTime => this._player.GetElapsedTime();
+        public override TimeSpan TotalDuration => this._player.EffectiveDuration;
+        public override TimeSpan ElapsedTime => this._player.ElapsedTime;
 
 
         public MacroPlaybackService(ILoggerFactory loggerFactory, Macro macro, MacroPlaybackOptions options)

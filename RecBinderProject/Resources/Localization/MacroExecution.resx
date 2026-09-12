@@ -186,4 +186,7 @@
   <data name="TreeDimensionalMouseMovementEnabled" xml:space="preserve">
     <value>Enable 3D-mode (for 3D games)</value>
   </data>
+  <data name="TrimPlaybackEndEnabled" xml:space="preserve">
+    <value>Enable end trimming during playback</value>
+  </data>
 </root>

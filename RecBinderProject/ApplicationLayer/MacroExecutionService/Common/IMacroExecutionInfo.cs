@@ -7,7 +7,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Common
 
         public MacroExecutionState State { get; }
 
-        public TimeSpan TotalTime { get; }
+        public TimeSpan TotalDuration { get; }
         public TimeSpan ElapsedTime { get; }
     }
 }

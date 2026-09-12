@@ -26,6 +26,10 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private volatile bool _isPaused;
 
+        private TimeSpan _effectiveDuration;
+        public TimeSpan EffectiveDuration => this._effectiveDuration;
+        public TimeSpan ElapsedTime => this._stopwatch.Elapsed;
+
         private Point _mouseOffset;
 
 
@@ -41,11 +45,10 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
             this._isPaused = false;
 
+            this._effectiveDuration = TimeSpan.Zero;
+
             this._mouseOffset = Point.Empty;
         }
-
-
-        public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
 
 
         public async Task Start(CancellationToken cancellationToken)
@@ -54,12 +57,14 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
             this._stopwatch.Restart();
 
+            this.CalcEffectiveDuration();
             this.CalcMouseOffset();
 
-            this._logger.LogDebug("Event loop started. Total duration: {Duration}, Total events: {Count}, Mouse offset: {MouseOffset}", this._macro.Metadata.Duration, this._macro.Events.Count, this._mouseOffset);
+            this._logger.LogDebug("Event loop started. Total duration: {TotalDuration}, Effective duration {EffectiveDuration}, Total events: {Count}, Mouse offset: {MouseOffset}", this._macro.Metadata.Duration, this._effectiveDuration, this._macro.Events.Count, this._mouseOffset);
 
             try
             {
+                // TODO тут может быть баг, что если событие будет обрабатываться дольше, чем пауза между следующим, то тогда будет задержка
                 foreach (MacroEvent macroEvent in this._macro.Events)
                 {
                     await this.PlayDelay(macroEvent.TimeOffset, cancellationToken);
@@ -70,9 +75,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
                     this.PlayEvent(macroEvent);
                 }
-
-                // if (!this._options.TrimEnd)
-                await this.PlayDelay((int)this._macro.Metadata.Duration.TotalMilliseconds, cancellationToken);
+                
+                await this.PlayDelay((int)this._effectiveDuration.TotalMilliseconds, cancellationToken);
             }
             finally
             {
@@ -221,6 +225,26 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         }
 
 
+        private void CalcEffectiveDuration()
+        {
+            if (this._options.TrimPlaybackEndEnabled)
+            {
+                if (this._macro.Events.Count == 0)
+                {
+                    this._effectiveDuration = TimeSpan.Zero;
+                }
+                else
+                {
+                    MacroEvent lastEvent = this._macro.Events[^1];
+                    this._effectiveDuration = TimeSpan.FromMilliseconds(lastEvent.TimeOffset);
+                }
+            }
+            else
+            {
+                this._effectiveDuration = this._macro.Metadata.Duration;
+            }
+        }
+
         private void CalcMouseOffset()
         {
             if (this._options.RelativeMouseMovementEnabled)
@@ -235,12 +259,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
                     Point firstCursorPosition = new Point((int)firstMove.MouseMove.X, (int)firstMove.MouseMove.Y);
 
                     this._mouseOffset = new Point(startCursorPosition.X - firstCursorPosition.X, startCursorPosition.Y - firstCursorPosition.Y);
+
+                    return;
                 }
             }
-            else
-            {
-                this._mouseOffset = Point.Empty;
-            }
+
+            this._mouseOffset = Point.Empty;
         }
 
         private bool HasUnsupportedEvents()

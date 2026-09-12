@@ -12,7 +12,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Common
             protected set => SetState(value);
         }
 
-        public abstract TimeSpan TotalTime { get; }
+        public abstract TimeSpan TotalDuration { get; }
         public abstract TimeSpan ElapsedTime { get; }
 
         protected bool CanStart() => this.State != MacroExecutionState.Playing;

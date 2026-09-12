@@ -186,4 +186,7 @@
   <data name="TreeDimensionalMouseMovementEnabled" xml:space="preserve">
     <value>Включить 3D-режим (для 3D игр)</value>
   </data>
+  <data name="TrimPlaybackEndEnabled" xml:space="preserve">
+    <value>Включить обрезку конца записи</value>
+  </data>
 </root>

@@ -105,6 +105,7 @@
                         <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.MouseMoveIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseMoveIgnoredButton]}" FontSize="12"/>
                         <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.MouseWheelIgnored, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[MouseWheelIgnoredButton]}" FontSize="12"/>
                         <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.RelativeMouseMovementEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[RelativeMouseMovementEnabledButton]}" FontSize="12"/>
+                        <CheckBox IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.TrimPlaybackEndEnabled, Mode=TwoWay}" Content="{Binding LocalizationViewModel.MacroExecution[TrimPlaybackEndEnabled]}" FontSize="12"/>
                     </UniformGrid>
                 </StackPanel>
             </Grid>

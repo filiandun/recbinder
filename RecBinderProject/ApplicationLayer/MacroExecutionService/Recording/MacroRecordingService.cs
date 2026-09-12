@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Logging;
+
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+
 using RecBinderProject.Domain;
+
 using RecBinderProject.Infrastructure.Repositories;
 using RecBinderProject.Infrastructure.Services.Input;
-using System.Diagnostics;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
@@ -28,7 +31,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
         private readonly MacroRecordingOptions _options;
 
-        public override TimeSpan TotalTime => this._macro?.Metadata.Duration ?? TimeSpan.Zero;
+        public override TimeSpan TotalDuration => this._macro?.Metadata.Duration ?? TimeSpan.Zero;
         public override TimeSpan ElapsedTime => this._recorder?.GetElapsedTime() ?? TimeSpan.Zero;
 
 

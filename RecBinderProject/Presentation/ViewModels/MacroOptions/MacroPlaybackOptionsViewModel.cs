@@ -74,6 +74,19 @@ namespace RecBinderProject.Presentation.ViewModels.MacroOptions
         }
 
 
+        public bool TrimPlaybackEndEnabled
+        {
+            get => this._options.TrimPlaybackEndEnabled;
+            set
+            {
+                if (this._options.TrimPlaybackEndEnabled == value) return;
+
+                this._options.TrimPlaybackEndEnabled = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+
         public MacroPlaybackOptionsViewModel(MacroPlaybackOptions options)
         {
             this._options = options;

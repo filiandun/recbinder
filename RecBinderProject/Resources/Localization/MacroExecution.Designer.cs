@@ -266,5 +266,14 @@ namespace RecBinderProject.Resources.Localization {
                 return ResourceManager.GetString("TreeDimensionalMouseMovementEnabled", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable end trimming during playback.
+        /// </summary>
+        internal static string TrimPlaybackEndEnabled {
+            get {
+                return ResourceManager.GetString("TrimPlaybackEndEnabled", resourceCulture);
+            }
+        }
     }
 }
