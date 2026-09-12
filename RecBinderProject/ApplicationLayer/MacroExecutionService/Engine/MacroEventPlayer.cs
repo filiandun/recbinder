@@ -54,12 +54,9 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
             this._stopwatch.Restart();
 
-            Point startCursorPosition = Cursor.Position;
+            this.CalcMouseOffset();
 
-            MacroEvent firstMoveEvent = this._macro.Events.OfType<MacroEvent>().FirstOrDefault(me => me.Kind == MacroEventKind.MouseMove);  // TODO сделать адекватнее, может null допустимым, так как событий мыши может и не быть
-            Point firstCursorPosition = new Point((int)firstMoveEvent.MouseMove.X, (int)firstMoveEvent.MouseMove.Y);
-
-            this._logger.LogDebug("Event loop started. Total duration: {Duration}, Total events: {Count}, Initial cursor: {Position}", this._macro.Metadata.Duration, this._macro.Events.Count, startCursorPosition);
+            this._logger.LogDebug("Event loop started. Total duration: {Duration}, Total events: {Count}, Mouse offset: {MouseOffset}", this._macro.Metadata.Duration, this._macro.Events.Count, this._mouseOffset);
 
             try
             {
@@ -71,7 +68,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
                     await this.WaitIfPausedTask(cancellationToken);
 
-                    this.PlayEvent(macroEvent, firstCursorPosition, startCursorPosition);
+                    this.PlayEvent(macroEvent);
                 }
 
                 // if (!this._options.TrimEnd)
@@ -119,7 +116,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void PlayEvent(MacroEvent e, Point firstCursorPosition, Point startCursorPosition)
+        private void PlayEvent(MacroEvent e)
         {
             switch (e.Kind)
             {
@@ -190,17 +187,21 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private void PlayMouseMove(MouseMoveEvent e, Point firstCursorPosition, Point startCursorPosition)
+        private void PlayMouseMove(MouseMoveEvent e)
         {
             if (!this._options.MouseMoveIgnored)
             {
-                int targetX = this._options.RelativeMouseMovementEnabled ? startCursorPosition.X + ((int)e.X - firstCursorPosition.X) : (int)e.X;
-                int targetY = this._options.RelativeMouseMovementEnabled ? startCursorPosition.Y + ((int)e.Y - firstCursorPosition.Y) : (int)e.Y;
+                double targetX = e.X + this._mouseOffset.X;
+                double targetY = e.Y + this._mouseOffset.Y;
 
-                int scaledX = (int)(long)targetX * 65535 / this._macro.Metadata.ResolutionWidth;
-                int scaledY = (int)(long)targetY * 65535 / this._macro.Metadata.ResolutionHeight;
+                double virtualX = targetX * VIRTUAL_SCREEN_MAX / (this._macro.Metadata.ResolutionWidth - 1);
+                double virtualY = targetY * VIRTUAL_SCREEN_MAX / (this._macro.Metadata.ResolutionHeight - 1);
 
-                this._inputSimulator.MouseMoveTo(scaledX, scaledY);
+                this._inputSimulator.MouseMoveTo(virtualX, virtualY);
+            }
+        }
+
+
         private void PlayMouseDelta(MouseDeltaEvent e)
         {
             if (!this._options.MouseMoveIgnored)
@@ -219,6 +220,28 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
+
+        private void CalcMouseOffset()
+        {
+            if (this._options.RelativeMouseMovementEnabled)
+            {
+                int moveIndex = this._macro.Events.FindIndex(me => me.Kind == MacroEventKind.MouseMove);
+
+                if (moveIndex != -1)
+                {
+                    Point startCursorPosition = Cursor.Position;
+
+                    MacroEvent firstMove = this._macro.Events[moveIndex];
+                    Point firstCursorPosition = new Point((int)firstMove.MouseMove.X, (int)firstMove.MouseMove.Y);
+
+                    this._mouseOffset = new Point(startCursorPosition.X - firstCursorPosition.X, startCursorPosition.Y - firstCursorPosition.Y);
+                }
+            }
+            else
+            {
+                this._mouseOffset = Point.Empty;
+            }
+        }
 
         private bool HasUnsupportedEvents()
         {
