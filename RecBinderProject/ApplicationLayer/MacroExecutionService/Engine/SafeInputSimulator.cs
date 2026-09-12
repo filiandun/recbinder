@@ -69,9 +69,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         }
 
 
-        public void MouseMoveTo(int x, int y) => this._inputSimulator.Mouse.MoveMouseTo(x, y); // TODO MoveMouseToPositionOnVirtualDesktop - попробовать его,
-                                                                                               // так как сразу на несколько мониторов рассчитан, а также не надо конвертировать от 0 до 65к
-        public void MouseMoveBy(int x, int y) => this._inputSimulator.Mouse.MoveMouseBy(x, y);
+        public void MouseMoveTo(double x, double y) => this._inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop(x, y);
+        public void MouseMoveBy(int deltaX, int deltaY) => this._inputSimulator.Mouse.MoveMouseBy(deltaX, deltaY);
 
         public void MouseVerticalScroll(int delta) => this._inputSimulator.Mouse.VerticalScroll(delta);
 
