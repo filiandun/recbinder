@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 
 
-namespace RecBinderProject.Presentation.Views
+namespace RecBinderProject.Presentation.Views.MacroLibrary
 {
     public partial class MacroLibraryView : UserControl
     {

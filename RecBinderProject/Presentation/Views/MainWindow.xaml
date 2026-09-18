@@ -7,6 +7,8 @@
         xmlns:local="clr-namespace:RecBinderProject"
         
         xmlns:views="clr-namespace:RecBinderProject.Presentation.Views"
+        xmlns:macrolibview="clr-namespace:RecBinderProject.Presentation.Views.MacroLibrary"
+      
         xmlns:appvm="clr-namespace:RecBinderProject.Presentation.ViewModels.AppSettings"
         xmlns:exevm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroExecution"
         xmlns:libvm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroLibrary"
@@ -24,7 +26,7 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type libvm:MacroLibraryViewModel}">
-            <views:MacroLibraryView />
+            <macrolibview:MacroLibraryView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type appvm:AppSettingsViewModel}">
