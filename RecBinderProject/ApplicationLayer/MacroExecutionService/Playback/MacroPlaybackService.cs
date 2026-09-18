@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 
-using RecBinderProject.Domain;
-
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+
+using RecBinderProject.Domain;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
@@ -16,6 +16,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         private CancellationTokenSource _cancellationTokenSource;
 
         private readonly Macro _macro;
+        private readonly MacroPlaybackOptions _options;
+
         private readonly MacroEventPlayer _player;
 
         public override TimeSpan TotalDuration => this._player.EffectiveDuration;
@@ -29,6 +31,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
             this._cancellationTokenSource = new CancellationTokenSource();
 
             this._macro = macro;
+            this._options = options;
 
             var playerLogger = loggerFactory.CreateLogger<MacroEventPlayer>();
             this._player = new MacroEventPlayer(playerLogger, this._macro, options);
@@ -41,7 +44,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         {
             if (this.CanStart())
             {
-                this._logger.LogInformation("Starting macro playback, {name}", this._macro.Metadata.Name);
+                this._logger.LogInformation("Starting macro playback. Name: {Name}, Speed: {Speed}, Loop count: {LoopCount}", this._macro.Metadata.Name, this._options.Speed, this._options.LoopCount);
 
                 this.State = MacroExecutionState.Playing;
 
@@ -50,7 +53,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
                     this._cancellationTokenSource.Dispose();
                     this._cancellationTokenSource = new CancellationTokenSource();
 
-                    await Task.Run(() => this._player.Start(this._cancellationTokenSource.Token));
+                    await Task.Run(async () => await this.PlaybackLoop());
 
                     this._logger.LogInformation("Macro playback completed successfully.");
 
@@ -102,6 +105,30 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
                 this._logger.LogInformation("Macro playback stopping..");
 
                 this._cancellationTokenSource.Cancel();
+            }
+        }
+
+
+        private async Task PlaybackLoop()
+        {
+            int iteration = 0;
+
+            while (!this._cancellationTokenSource.IsCancellationRequested)
+            {
+                this._logger.LogInformation("Continue macro playback. Iteration: {Iteration}/{LoopCount}", iteration, this._options.LoopCount);
+
+                iteration++;
+
+                await this._player.Start(this._cancellationTokenSource.Token);
+
+                if (!this._options.LoopEnabled) break;
+
+                if (this._options.LoopCount > 0 && iteration >= this._options.LoopCount) break;
+
+                if (this._options.LoopDelayMs > 0)
+                {
+                    await Task.Delay(this._options.LoopDelayMs, this._cancellationTokenSource.Token);
+                }
             }
         }
     }

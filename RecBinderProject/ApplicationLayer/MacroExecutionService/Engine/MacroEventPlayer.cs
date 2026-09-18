@@ -67,7 +67,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
                 // TODO тут может быть баг, что если событие будет обрабатываться дольше, чем пауза между следующим, то тогда будет задержка
                 foreach (MacroEvent macroEvent in this._macro.Events)
                 {
-                    await this.PlayDelay(macroEvent.TimeOffset, cancellationToken);
+                    double timeOffset = macroEvent.TimeOffset / this._options.Speed;
+                    await this.PlayDelay(timeOffset, cancellationToken);
 
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -75,8 +76,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
                     this.PlayEvent(macroEvent);
                 }
-                
-                await this.PlayDelay((int)this._effectiveDuration.TotalMilliseconds, cancellationToken);
+
+                await this.PlayDelay(this._effectiveDuration.TotalMilliseconds, cancellationToken);
             }
             finally
             {
@@ -136,7 +137,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             }
         }
 
-        private async Task PlayDelay(int timeOffset, CancellationToken cancellationToken)
+        private async Task PlayDelay(double timeOffset, CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -144,7 +145,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
                 await this.WaitIfPausedTask(cancellationToken);
 
-                long remainingTime = timeOffset - this._stopwatch.ElapsedMilliseconds;
+                long remainingTime = (long)timeOffset - this._stopwatch.ElapsedMilliseconds;
 
                 if (remainingTime <= 0) break;
 
@@ -243,6 +244,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             {
                 this._effectiveDuration = this._macro.Metadata.Duration;
             }
+
+            this._effectiveDuration /= this._options.Speed;
         }
 
         private void CalcMouseOffset()

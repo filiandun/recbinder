@@ -86,6 +86,55 @@ namespace RecBinderProject.Presentation.ViewModels.MacroOptions
             }
         }
 
+        // TODO валидация для полей
+        public double Speed
+        {
+            get => this._options.Speed;
+            set
+            {
+                if (this._options.Speed == value) return;
+
+                this._options.Speed = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public bool LoopEnabled
+        {
+            get => this._options.LoopEnabled;
+            set
+            {
+                if (this._options.LoopEnabled == value) return;
+
+                this._options.LoopEnabled = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public int LoopCount
+        {
+            get => this._options.LoopCount;
+            set
+            {
+                if (this._options.LoopCount == value) return;
+
+                this._options.LoopCount = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public int LoopDelayMs
+        {
+            get => this._options.LoopDelayMs;
+            set
+            {
+                if (this._options.LoopDelayMs == value) return;
+
+                this._options.LoopDelayMs = value;
+                this.OnPropertyChanged();
+            }
+        }
+
 
         public MacroPlaybackOptionsViewModel(MacroPlaybackOptions options)
         {
@@ -95,6 +144,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroOptions
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
+            System.Diagnostics.Debug.WriteLine($"Property '{propertyName}' was changed");
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

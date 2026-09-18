@@ -129,7 +129,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
+            
+            <!-- START BUTTON AND PROGRESS BAR -->
             <ProgressBar Grid.Column="0" Value="{Binding MacroPlaybackViewModel.StatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding MacroPlaybackViewModel.StatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             <Button Grid.Column="0" Command="{Binding MacroPlaybackViewModel.StartCommand}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <StackPanel Orientation="Horizontal">
@@ -137,6 +138,74 @@
                     <TextBlock Text="{Binding MacroPlaybackViewModel.StatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
+            
+            
+            <StackPanel Grid.Column="0" Margin="0, 0, 10, 0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <!-- SPEED CONTROL -->
+                <StackPanel>
+                    <ToggleButton x:Name="SpeedButton" Content="&#xEC48;" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" />
+
+                    <Popup Margin="10" IsOpen="{Binding IsChecked, Mode=OneWay, ElementName=SpeedButton}" PlacementTarget="{Binding ElementName=SpeedButton}" Placement="Top" StaysOpen="False" AllowsTransparency="True">
+                        <Border Width="200" Padding="10" Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+                            <StackPanel>
+                                <TextBlock Text="Speed option" Padding="0, 0, 0, 5" FontSize="12"/>
+                                <Slider Margin="5" Minimum="0.5" Maximum="2" Value="{Binding MacroPlaybackViewModel.OptionsViewModel.Speed, Mode=TwoWay}" IsSnapToTickEnabled="True" Ticks="0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00" TickPlacement="BottomRight"/>
+                                <TextBlock Text="{Binding MacroPlaybackViewModel.OptionsViewModel.Speed}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+
+                <!-- LOOP CONTROL -->
+                <StackPanel>
+                    <ToggleButton x:Name="LoopButton" Content="&#xE8EE;" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}"/>
+
+                    <Popup Margin="10" IsOpen="{Binding IsChecked, ElementName=LoopButton}" PlacementTarget="{Binding ElementName=LoopButton}" Placement="Top" StaysOpen="False" AllowsTransparency="True">
+                        <Border Width="200" Padding="10" Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+
+                            <StackPanel>
+                                <TextBlock Text="Loop option" Padding="0, 0, 0, 5" FontSize="12"/>
+                                
+                                <CheckBox Content="Loop enabled" IsChecked="{Binding MacroPlaybackViewModel.OptionsViewModel.LoopEnabled, Mode=TwoWay}"/>
+
+                                <StackPanel IsEnabled="{Binding MacroPlaybackViewModel.OptionsViewModel.LoopEnabled}">
+                                    <Border Grid.Row="0" Margin="0, 0, 0, 10" Padding="10, 5" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <TextBlock Text="&#xE8ED;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Count" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                                            </StackPanel>
+
+                                            <TextBox Grid.Column="1" Text="{Binding MacroPlaybackViewModel.OptionsViewModel.LoopCount, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border Grid.Row="0" Margin="0, 0, 0, 10" Padding="10, 5" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <TextBlock Text="&#xE823;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Delay (ms)" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+                                            </StackPanel>
+
+                                            <TextBox Grid.Column="1" Text="{Binding MacroPlaybackViewModel.OptionsViewModel.LoopDelayMs, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+            </StackPanel>
 
             <Button Grid.Column="1" Command="{Binding MacroPlaybackViewModel.StopCommand}" Content="&#xE71A;" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCriticalBrush}"/>
             <Button Grid.Column="2" Command="{Binding MacroPlaybackViewModel.PauseCommand}" Content="&#xE769;" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCautionBrush}"/>
