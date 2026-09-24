@@ -30,6 +30,6 @@
 
         <local:MacroLibraryInspectorBarView  Grid.Column="1" Grid.Row="1" Margin="5" Padding="5"/>
 
-        <local:MacroLibraryTransportBarView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10, 5" DataContext="{Binding MacroPlaybackViewModel}"/>
+        <local:MacroLibraryTransportBarView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10, 0, 10, 5" DataContext="{Binding MacroPlaybackViewModel}"/>
     </Grid>
 </UserControl>

@@ -130,7 +130,7 @@
     <value>Playback stopped</value>
   </data>
   <data name="Play_ButtonHint" xml:space="preserve">
-    <value>Click to start playback</value>
+    <value>Ready to start playback</value>
   </data>
   <data name="Create_Playing" xml:space="preserve">
     <value>Recording in progress</value>
@@ -145,7 +145,7 @@
     <value>Recording stopped</value>
   </data>
   <data name="Create_ButtonHint" xml:space="preserve">
-    <value>Click to start recording</value>
+    <value>Ready to start recording</value>
   </data>
   <data name="Play_FirstLabel" xml:space="preserve">
     <value>Playback macro</value>

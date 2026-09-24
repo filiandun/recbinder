@@ -61,7 +61,7 @@ namespace RecBinderProject.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to start recording.
+        ///   Looks up a localized string similar to Ready to start recording.
         /// </summary>
         internal static string Create_ButtonHint {
             get {
@@ -187,7 +187,7 @@ namespace RecBinderProject.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to start playback.
+        ///   Looks up a localized string similar to Ready to start playback.
         /// </summary>
         internal static string Play_ButtonHint {
             get {

@@ -12,22 +12,35 @@
              d:DesignHeight="50" d:DesignWidth="800">
     
     
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Grid Height="60">
+        <Border Padding="10, 5" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <ProgressBar Grid.Column="0" Value="{Binding StatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding StatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        <Button Grid.Column="0" Command="{Binding StartCommand}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="&#xE768;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
-                <TextBlock Text="{Binding StatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
-            </StackPanel>
-        </Button>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="15"/>
+                </Grid.RowDefinitions>
 
-        <Button Grid.Column="1" Command="{Binding StopCommand}" Content="&#xE71A;" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCriticalBrush}"/>
-        <Button Grid.Column="2" Command="{Binding PauseCommand}" Content="&#xE769;" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCautionBrush}"/>
+                <!-- CONTROL BUTTONS -->
+                <UniformGrid Grid.Column="0" Grid.Row="0" Rows="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="1, 0">
+                    <Button Command="{Binding StartCommand}" Content="&#xE768;" Margin="0, 0, 10, 0" Height="25" FontSize="12" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
+                    <Button Command="{Binding StopCommand}" Content="&#xE71A;" Margin="0, 0, 10, 0" Height="25" FontSize="12" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCriticalBrush}"/>
+                    <Button Command="{Binding PauseCommand}" Content="&#xE769;" Margin="0, 0, 0, 0" Height="25" FontSize="12" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCautionBrush}"/>
+                </UniformGrid>
+
+                <!-- STATUS TEXT -->
+                <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding StatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                <!-- PROGRESS BAR -->
+                <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="{StaticResource ControlCornerRadius}">
+                    <ProgressBar Maximum="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="auto" Value="{Binding StatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding StatusViewModel.ProgressBarColor}"/>
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

@@ -130,7 +130,7 @@
     <value>Воспроизведение было остановлено</value>
   </data>
   <data name="Play_ButtonHint" xml:space="preserve">
-    <value>Нажмите для воспроизведения</value>
+    <value>Готово для воспроизведения</value>
   </data>
   <data name="Create_Playing" xml:space="preserve">
     <value>Идёт запись</value>
@@ -145,7 +145,7 @@
     <value>Запись была остановлена</value>
   </data>
   <data name="Create_ButtonHint" xml:space="preserve">
-    <value>Нажмите для начала записи</value>
+    <value>Готово для начала записи</value>
   </data>
   <data name="Play_FirstLabel" xml:space="preserve">
     <value>Воспроизведение макроса</value>
