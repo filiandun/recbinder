@@ -20,19 +20,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <!-- HEADER LABEL -->
         <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding LocalizationViewModel.MacroExecution[Play_FirstLabel]}" Margin="10, 20" Style="{DynamicResource TitleTextBlockStyle}"/>
         
-        <!-- MACROS LIST -->
-        <local:MacroListView Grid.Column="0" Grid.Row="1" Margin="5" DataContext="{Binding MacroListViewModel}"/>
+        <local:MacroLibraryListView Grid.Column="0" Grid.Row="1" Margin="5" DataContext="{Binding MacroListViewModel}"/>
 
-        <!-- INSPECTOR BAR -->
-        <local:MacroInspectorBarView  Grid.Column="1" Grid.Row="1" Margin="5" Padding="5"/>
+        <local:MacroLibraryInspectorBarView  Grid.Column="1" Grid.Row="1" Margin="5" Padding="5"/>
 
-        <!-- TRANSPORT BAR -->
-        <local:MacroTransportBarView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10, 5" DataContext="{Binding MacroPlaybackViewModel}"/>
+        <local:MacroLibraryTransportBarView Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10, 5" DataContext="{Binding MacroPlaybackViewModel}"/>
     </Grid>
 </UserControl>

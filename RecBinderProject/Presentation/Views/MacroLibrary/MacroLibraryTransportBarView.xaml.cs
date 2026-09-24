@@ -4,11 +4,11 @@
 namespace RecBinderProject.Presentation.Views.MacroLibrary
 {
     /// <summary>
-    /// Interaction logic for MacroListView.xaml
+    /// Interaction logic for MacroTransportBarView.xaml
     /// </summary>
-    public partial class MacroListView : UserControl
+    public partial class MacroLibraryTransportBarView : UserControl
     {
-        public MacroListView()
+        public MacroLibraryTransportBarView()
         {
             InitializeComponent();
         }
