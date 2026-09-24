@@ -21,6 +21,7 @@
         mc:Ignorable="d"
         Title="RecBinder" Height="600" Width="1200" WindowStartupLocation="CenterScreen">
 
+    
     <Window.Resources>
         <DataTemplate DataType="{x:Type exevm:MacroRecordingViewModel}">
             <macrorecview:MacroRecordingView />
@@ -32,10 +33,6 @@
 
         <DataTemplate DataType="{x:Type appvm:AppSettingsViewModel}">
             <views:AppSettingsView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type libvm:MacroListItemViewModel}">
-            <views:MacroListItemControl />
         </DataTemplate>
     </Window.Resources>
 

@@ -16,7 +16,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
         private readonly IMacroLibraryViewModelFactory _viewModelFactory;
 
         public LocalizationViewModel LocalizationViewModel { get; private set; }
-        public MacroListViewModel MacroListViewModel { get; private set; }
+        public MacroLibraryListViewModel MacroListViewModel { get; private set; }
 
         private MacroPlaybackViewModel? _macroPlaybackViewModel;
         public MacroPlaybackViewModel? MacroPlaybackViewModel
@@ -33,7 +33,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
         }
 
 
-        public MacroLibraryViewModel(IMacroLibraryViewModelFactory viewModelFactory, LocalizationViewModel localizationViewModel, MacroListViewModel macroListViewModel, MacroPlaybackViewModel? macroPlaybackViewModel = null)
+        public MacroLibraryViewModel(IMacroLibraryViewModelFactory viewModelFactory, LocalizationViewModel localizationViewModel, MacroLibraryListViewModel macroListViewModel, MacroPlaybackViewModel? macroPlaybackViewModel = null)
         {
             this._viewModelFactory = viewModelFactory;
 

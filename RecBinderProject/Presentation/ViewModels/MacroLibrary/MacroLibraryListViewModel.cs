@@ -15,12 +15,12 @@ using RecBinderProject.Presentation.Services;
 
 namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
 {
-    public class MacroListViewModel : INotifyPropertyChanged
+    public class MacroLibraryListViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public event Action<Macro?>? SelectedMacroChanged;
 
-        private readonly ILogger<MacroListViewModel> _logger;
+        private readonly ILogger<MacroLibraryListViewModel> _logger;
 
         private readonly ILocalizationService _localizationService;
         private readonly IAppSettingsService _appSettingsService;
@@ -29,8 +29,8 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
         private readonly IMacroRepository _macroRepository;
 
 
-        private ObservableCollection<MacroListItemViewModel> _macroItems;
-        public ObservableCollection<MacroListItemViewModel> MacroItems
+        private ObservableCollection<MacroLibraryListItemViewModel> _macroItems;
+        public ObservableCollection<MacroLibraryListItemViewModel> MacroItems
         {
             get => this._macroItems;
             set
@@ -44,8 +44,8 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
             }
         }
 
-        private MacroListItemViewModel? _selectedMacro;
-        public MacroListItemViewModel? SelectedMacro
+        private MacroLibraryListItemViewModel? _selectedMacro;
+        public MacroLibraryListItemViewModel? SelectedMacro
         {
             get => this._selectedMacro;
             set
@@ -64,7 +64,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
         public RelayCommand OpenSaveFolderCommand { get; private set; }
 
 
-        public MacroListViewModel(ILogger<MacroListViewModel> logger, ILocalizationService localizationService, IAppSettingsService appSettingsService, IDialogService dialogService, IMacroRepository macroRepository)
+        public MacroLibraryListViewModel(ILogger<MacroLibraryListViewModel> logger, ILocalizationService localizationService, IAppSettingsService appSettingsService, IDialogService dialogService, IMacroRepository macroRepository)
         {
             this._logger = logger;
 
@@ -75,7 +75,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
 
             this._macroRepository = macroRepository;
 
-            this._macroItems = new ObservableCollection<MacroListItemViewModel>();
+            this._macroItems = new ObservableCollection<MacroLibraryListItemViewModel>();
 
             this.RefreshMacrosCommand = new RelayCommand(async () => await this.LoadMacrosAsync());
             this.OpenSaveFolderCommand = new RelayCommand(this.OnOpenSaveFolderCommand);
@@ -88,7 +88,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
         {
             this._logger.LogDebug("Created new macro. Name: {MacroName}", newMacro.Metadata.Name);
 
-            MacroListItemViewModel newMacroListItemViewModel = new MacroListItemViewModel(newMacro);
+            MacroLibraryListItemViewModel newMacroListItemViewModel = new MacroLibraryListItemViewModel(newMacro);
 
             this.MacroItems.Add(newMacroListItemViewModel);
             this.SelectedMacro = newMacroListItemViewModel;
@@ -110,7 +110,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
                     this._dialogService.Show(title, message);
                 }
 
-                this.MacroItems = new ObservableCollection<MacroListItemViewModel>(loadResult.Macros.Select(m => new MacroListItemViewModel(m)));
+                this.MacroItems = new ObservableCollection<MacroLibraryListItemViewModel>(loadResult.Macros.Select(m => new MacroLibraryListItemViewModel(m)));
             }
             catch (Exception ex)
             {

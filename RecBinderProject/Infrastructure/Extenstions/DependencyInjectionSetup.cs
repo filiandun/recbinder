@@ -54,7 +54,7 @@ namespace RecBinderProject.Infrastructure.Extenstions
             services.AddSingleton<MacroPlaybackOptions>();
             services.AddSingleton<MacroPlaybackOptionsViewModel>();
 
-            services.AddSingleton<MacroListViewModel>();
+            services.AddSingleton<MacroLibraryListViewModel>();
             services.AddSingleton<IMacroLibraryViewModelFactory, MacroLibraryViewModelFactory>();
             services.AddSingleton<MacroLibraryViewModel>();
 

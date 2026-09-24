@@ -3,7 +3,7 @@
 
 namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
 {
-    public class MacroListItemViewModel
+    public class MacroLibraryListItemViewModel
     {
         public Macro Macro { get; private set; }
 
@@ -12,7 +12,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
         public string MacroDuration => this.Macro.Metadata.Duration.ToString(@"hh\:mm\:ss\:ff");
         public string MacroCreationDateTime => this.Macro.Metadata.CreationDateTime.ToString("G");
 
-        public MacroListItemViewModel(Macro macro)
+        public MacroLibraryListItemViewModel(Macro macro)
         {
             this.Macro = macro;
         }
