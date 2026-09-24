@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="RecBinderProject.Presentation.Views.MacroRecording.MacroRecordingTransportBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RecBinderProject.Presentation.Views.MacroRecording"
+             
+             xmlns:vm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroExecution" 
+             d:DataContext="{d:DesignInstance Type=vm:MacroRecordingViewModel}"
+             
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="800">
+    
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ProgressBar Grid.Column="0" Value="{Binding StatusViewModel.ProgressBarValue, Mode=OneWay}" Background="Transparent" Foreground="{Binding StatusViewModel.ProgressBarColor}" Height="auto" Maximum="100" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Button Grid.Column="0" Command="{Binding StartCommand}" Margin="0,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&#xE768;" Margin="0, 0, 10, 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
+                <TextBlock Text="{Binding StatusViewModel.StatusText, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
+
+        <Button Grid.Column="1" Command="{Binding StopCommand}" Content="&#xE71A;" Margin="0, 0, 10, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCriticalBrush}"/>
+        <Button Grid.Column="2" Command="{Binding PauseCommand}" Content="&#xE769;" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{StaticResource SymbolThemeFontFamily}" Foreground="{DynamicResource SystemFillColorCautionBrush}"/>
+    </Grid>
+</UserControl>

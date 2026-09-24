@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 
 
-namespace RecBinderProject.Presentation.Views
+namespace RecBinderProject.Presentation.Views.MacroRecording
 {
     public partial class MacroRecordingView : UserControl
     {

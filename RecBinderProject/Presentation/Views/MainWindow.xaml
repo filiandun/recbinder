@@ -8,6 +8,7 @@
         
         xmlns:views="clr-namespace:RecBinderProject.Presentation.Views"
         xmlns:macrolibview="clr-namespace:RecBinderProject.Presentation.Views.MacroLibrary"
+        xmlns:macrorecview="clr-namespace:RecBinderProject.Presentation.Views.MacroRecording"
       
         xmlns:appvm="clr-namespace:RecBinderProject.Presentation.ViewModels.AppSettings"
         xmlns:exevm="clr-namespace:RecBinderProject.Presentation.ViewModels.MacroExecution"
@@ -22,7 +23,7 @@
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type exevm:MacroRecordingViewModel}">
-            <views:MacroRecordingView />
+            <macrorecview:MacroRecordingView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type libvm:MacroLibraryViewModel}">
