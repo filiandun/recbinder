@@ -22,7 +22,6 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private readonly ILogger<MacroEventRecorder> _logger;
 
         private readonly IInputListener _inputListener;
-
         private IKeyboardMouseEvents? _globalHook;
 
         private readonly Stopwatch _stopwatch;
@@ -77,8 +76,6 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
             this.Unsubscribe();
             this._stopwatch.Stop();
-
-            this._globalHook?.Dispose();
         }
 
 
@@ -96,7 +93,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             this._globalHook.MouseWheelExt += this.OnMouseWheelExt;
 
             this._inputListener.Register();
-            this._inputListener.MouseDeltaReceived += OnMouseDeltaReceived;
+            this._inputListener.MouseDeltaReceived += this.OnMouseDeltaReceived;
         }
 
 
@@ -112,9 +109,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
                 this._globalHook.MouseMoveExt -= this.OnMouseMoveExt;
                 this._globalHook.MouseWheelExt -= this.OnMouseWheelExt;
+
+                this._globalHook.Dispose();
             }
 
             this._inputListener.Unregister();
+            this._inputListener.MouseDeltaReceived -= this.OnMouseDeltaReceived;
         }
 
 
@@ -182,6 +182,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             if (!this._options.MouseWheelIgnored)
             {
                 int wheelClicks = (int)Math.Round((double)e.Delta / WHEEL_DELTA);
+
                 this._logger.LogDebug("Mouse wheel: WheelClicks {WheelClicks}", wheelClicks);
 
                 this._macro.AddEvent(MacroEvent.FromMouseWheel(wheelClicks, (int)this._stopwatch.ElapsedMilliseconds));

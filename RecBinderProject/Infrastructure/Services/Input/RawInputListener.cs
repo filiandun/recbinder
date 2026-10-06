@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Interop;
+﻿using System.Windows.Interop;
 using System.Runtime.InteropServices;
 
 using RecBinderProject.Domain.MacroEvents;
@@ -89,11 +88,7 @@ namespace RecBinderProject.Infrastructure.Services.Input
             devices[0].hwndTarget = this._hwnd;
 
             bool success = RegisterRawInputDevices(devices, (uint)devices.Length, (uint)Marshal.SizeOf<RAWINPUTDEVICE>());
-            if (!success)
-            {
-                int errorCode = Marshal.GetLastWin32Error();
-                MessageBox.Show("Error start a Raw Input: " + Marshal.GetLastWin32Error());
-            }
+            if (!success) throw new InvalidOperationException($"RawInputListener error start a Raw Input: {Marshal.GetLastWin32Error()}");
         }
 
         public void Unregister()
@@ -105,12 +100,6 @@ namespace RecBinderProject.Infrastructure.Services.Input
             devices[0].hwndTarget = IntPtr.Zero;
 
             RegisterRawInputDevices(devices, (uint)devices.Length, (uint)Marshal.SizeOf<RAWINPUTDEVICE>());
-
-            if (this._source is not null)
-            {
-                this._source.RemoveHook(this.HwndMessageHook);
-                this._source = null;
-            }
         }
 
         private IntPtr HwndMessageHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -135,7 +124,6 @@ namespace RecBinderProject.Infrastructure.Services.Input
 
                     if (!isAbsolute && (mouse.lLastX != 0 || mouse.lLastY != 0))
                     {
-                        //Debug.WriteLine($"{mouse.lLastX}:{mouse.lLastY}");
                         this.MouseDeltaReceived?.Invoke(new MouseDeltaEvent(mouse.lLastX, mouse.lLastY));
                     }
                 }
@@ -148,7 +136,14 @@ namespace RecBinderProject.Infrastructure.Services.Input
         public void Dispose()
         {
             this.Unregister();
+
             Marshal.FreeHGlobal(this._buffer);
+
+            if (this._source is not null)
+            {
+                this._source.RemoveHook(this.HwndMessageHook);
+                this._source = null;
+            }
         }
     }
 }

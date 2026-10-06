@@ -59,7 +59,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             {
                 this.Set(ref this._macroDurationLimitEnabled, value);
 
-                if (value is false) this.Set(ref this._macroDuration, TimeSpan.MaxValue);
+                if (value is false) this.Set(ref this._macroDuration, TimeSpan.FromHours(2));
                 else this.MacroDurationValue = 5; // TODO костыль (если не задать значение, то иначе на форме при выборе "Включить ограничение длительности", там, стоящая откуда-то 5 - не применится)
             }
         }
@@ -80,7 +80,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
 
             set
             {
-                TimeSpan newMacroDuration = TimeSpan.MaxValue;
+                TimeSpan newMacroDuration = TimeSpan.FromHours(2);
 
                 if (value > 0)
                 {
@@ -89,7 +89,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
                         0 => TimeSpan.FromMilliseconds(value),
                         1 => TimeSpan.FromSeconds(value),
                         2 => TimeSpan.FromMinutes(value),
-                        _ => TimeSpan.MaxValue,
+                        _ => TimeSpan.FromHours(2),
                     };
                 }
 
@@ -115,7 +115,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             this._macroDescription = string.Empty;
 
             this._macroDurationLimitEnabled = false;
-            this._macroDuration = TimeSpan.MaxValue;
+            this._macroDuration = TimeSpan.FromHours(2);
             this._macroDurationUnitIndex = 1;
 
             this._macroCreationDateTime = DateTime.Now;
@@ -126,7 +126,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroMetadataExecution
             int resolutionWidth = activeScreen.Bounds.Width;
             int resolutionHeight = activeScreen.Bounds.Height;
 
-            this._macroMetadataModel = new MacroMetadata(this._macroName, this._macroDescription, TimeSpan.MaxValue, DateTime.Now, resolutionWidth, resolutionHeight);
+            this._macroMetadataModel = new MacroMetadata(this._macroName, this._macroDescription, TimeSpan.FromHours(2), DateTime.Now, resolutionWidth, resolutionHeight);
         }
 
 
