@@ -71,7 +71,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
                 this.State = MacroExecutionState.Playing;
 
-                _ = WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
+                _ = this.WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
             }
         }
 

@@ -10,7 +10,7 @@ namespace RecBinderProject.Infrastructure.Repositories
         public MacroLoadResult LoadAll();
 
         public Macro Read(string recordName);
-        public void Save(Macro recordingInput, bool allowOverwrite = false);
+        public void Save(Macro recordingInput);
         public void Delete(Macro recordingInput);
     }
 }

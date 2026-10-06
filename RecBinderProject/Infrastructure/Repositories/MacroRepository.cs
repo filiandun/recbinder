@@ -18,6 +18,8 @@ namespace RecBinderProject.Infrastructure.Repositories
 
         private readonly IAppSettingsService _settingsService;
 
+        private readonly JsonSerializerOptions _saveJsonSerializerOptions;
+
         private string _saveDirectory => this._settingsService.AppSettings.General.SaveDirectory;
 
 
@@ -26,6 +28,8 @@ namespace RecBinderProject.Infrastructure.Repositories
             this._logger = logger;
 
             this._settingsService = settingsService;
+
+            this._saveJsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
             Directory.CreateDirectory(this._saveDirectory); // TODO тихо падает, если не удаётся создать директорию - непорядок
         }
@@ -54,17 +58,17 @@ namespace RecBinderProject.Infrastructure.Repositories
                 catch (Exception ex)
                 {
                     macroLoadResult.FailedFiles.Add(filePath);
-                    this._logger.LogError(ex, "file cannot be loaded: {FilePath}", filePath);
+                    this._logger.LogError(ex, "File cannot be loaded: {FilePath}", filePath);
                 }
             }
 
             return macroLoadResult;
         }
 
+
         public Macro Read(string macroName)
         {
-            string fileName = $"{MacroRepository.SanitizeFileName(macroName)}.json";
-            string filePath = Path.Combine(this._saveDirectory, fileName);
+            string filePath = this.GetFilePath(macroName);
 
             if (!File.Exists(filePath)) throw new FileNotFoundException($"read: file not found {filePath}");
 
@@ -83,29 +87,55 @@ namespace RecBinderProject.Infrastructure.Repositories
             }
         }
 
-        public void Save(Macro macro, bool allowOverwrite = false)
+        public void Save(Macro macro)
         {
-            string fileName = $"{MacroRepository.SanitizeFileName(macro.Metadata.Name)}.json";
-            string filePath = Path.Combine(this._saveDirectory, fileName);
+            string filePath = this.GetUniqueFilePath(macro);
 
-            // TODO раскомментировать и добавить try-обработку в месте, где вызывается
-            //if (!allowOverwrite && File.Exists(filePath)) throw new InvalidOperationException($"save: file already exist {filePath}");
-
-            string json = JsonSerializer.Serialize(macro, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
-
-            File.WriteAllText(filePath, json);
+            using FileStream createStream = File.Create(filePath);
+            JsonSerializer.Serialize(createStream, macro, this._saveJsonSerializerOptions);
 
             this.MacroSaved?.Invoke(macro);
         }
        
         public void Delete(Macro macro)
         {
-            string fileName = $"{MacroRepository.SanitizeFileName(macro.Metadata.Name)}.json";
-            string filePath = Path.Combine(this._saveDirectory, fileName);
+            string filePath = this.GetFilePath(macro.Metadata.Name);
 
             if (!File.Exists(filePath)) throw new FileNotFoundException($"delete: file not found {filePath}");
 
             File.Delete(filePath);
+        }
+
+
+        private string GetUniqueFilePath(Macro macro)
+        {
+            string filePath = this.GetFilePath(macro.Metadata.Name);
+
+            if (File.Exists(filePath))
+            {
+                int counter = 1;
+                string newMacroName;
+                
+                do
+                {
+                    newMacroName = $"{macro.Metadata.Name} ({counter})";
+                    filePath = this.GetFilePath(newMacroName);
+
+                    counter++;
+                } while (File.Exists(filePath));
+
+                macro.Metadata.Name = newMacroName; // TODO плохо, что тут меняется, это не дело
+            }
+
+            return filePath;
+        }
+
+        private string GetFilePath(string macroName)
+        {
+            string fileName = $"{SanitizeFileName(macroName)}.json";
+            string filePath = Path.Combine(this._saveDirectory, fileName);
+
+            return filePath;
         }
 
         private static string SanitizeFileName(string name) => string.Join("_", name.Split(Path.GetInvalidFileNameChars()));
