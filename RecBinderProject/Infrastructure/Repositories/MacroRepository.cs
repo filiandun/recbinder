@@ -30,14 +30,14 @@ namespace RecBinderProject.Infrastructure.Repositories
             this._settingsService = settingsService;
 
             this._saveJsonSerializerOptions = new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-
-            Directory.CreateDirectory(this._saveDirectory); // TODO тихо падает, если не удаётся создать директорию - непорядок
         }
 
 
         public MacroLoadResult LoadAll()
         {
-            MacroLoadResult macroLoadResult = new();
+            MacroLoadResult macroLoadResult = new MacroLoadResult();
+
+            if (!Directory.Exists(this._saveDirectory)) return macroLoadResult;
 
             foreach (string filePath in Directory.EnumerateFiles(this._saveDirectory, "*.json"))
             {
@@ -89,10 +89,12 @@ namespace RecBinderProject.Infrastructure.Repositories
 
         public void Save(Macro macro)
         {
+            Directory.CreateDirectory(this._saveDirectory);
+
             string filePath = this.GetUniqueFilePath(macro);
 
-            using FileStream createStream = File.Create(filePath);
-            JsonSerializer.Serialize(createStream, macro, this._saveJsonSerializerOptions);
+            using FileStream fileStream = File.Create(filePath);
+            JsonSerializer.Serialize(fileStream, macro, this._saveJsonSerializerOptions);
 
             this.MacroSaved?.Invoke(macro);
         }
