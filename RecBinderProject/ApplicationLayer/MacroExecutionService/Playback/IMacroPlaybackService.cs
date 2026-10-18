@@ -5,7 +5,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
 {
     public interface IMacroPlaybackService : IMacroExecutionInfo
     {
-        public Task Start();
+        public Task StartAsync();
 
         public void Pause();
         public void Resume();

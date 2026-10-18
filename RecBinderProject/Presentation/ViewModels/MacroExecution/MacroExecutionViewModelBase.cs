@@ -1,10 +1,13 @@
-﻿using System.Windows.Input;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Windows.Input;
+
+using Microsoft.Extensions.Logging;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 
 using RecBinderProject.Presentation.Commands;
+using RecBinderProject.Presentation.Services;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 
@@ -15,25 +18,33 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected readonly IMacroExecutionInfo _service;
+        protected readonly ILogger _logger;
 
-        public LocalizationViewModel LocalizationViewModel { get; init; }
-        public MacroExecutionStatusViewModelBase StatusViewModel { get; init; }
+        protected readonly IDialogService _dialogService;
+
+        protected readonly IMacroExecutionInfo _executionService;
+
+        public LocalizationViewModel LocalizationViewModel { get; private set; }
+        public MacroExecutionStatusViewModelBase StatusViewModel { get; private set; }
 
         public ICommand StartCommand { get; private set; }
         public ICommand PauseCommand { get; private set; }
         public ICommand StopCommand { get; private set; }
 
-        public bool CanStart => this._service.State != MacroExecutionState.Playing;
-        public bool CanPause => this._service.State == MacroExecutionState.Playing;
-        public bool CanStop => this._service.State == MacroExecutionState.Playing || this._service.State == MacroExecutionState.Paused;
+        public bool CanStart => this._executionService.State != MacroExecutionState.Playing;
+        public bool CanPause => this._executionService.State == MacroExecutionState.Playing;
+        public bool CanStop => this._executionService.State == MacroExecutionState.Playing || this._executionService.State == MacroExecutionState.Paused;
 
-        public bool CanEditMetadata => this._service.State != MacroExecutionState.Playing;
+        public bool CanEditMetadata => this._executionService.State != MacroExecutionState.Playing;
 
 
-        public MacroExecutionViewModelBase(IMacroExecutionInfo service, LocalizationViewModel localizationViewModel, MacroExecutionStatusViewModelBase statusViewModel)
+        public MacroExecutionViewModelBase(ILogger logger, IDialogService dialogService, IMacroExecutionInfo executionService, LocalizationViewModel localizationViewModel, MacroExecutionStatusViewModelBase statusViewModel)
         {
-            this._service = service;
+            this._logger = logger;
+
+            this._dialogService = dialogService;
+
+            this._executionService = executionService;
 
             this.LocalizationViewModel = localizationViewModel;
             this.StatusViewModel = statusViewModel;
@@ -42,7 +53,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             this.PauseCommand = new RelayCommand(this.OnPauseCommand, () => this.CanPause);
             this.StopCommand = new RelayCommand(this.OnStopCommand, () => this.CanStop);
 
-            this._service.StateChanged += this.OnServiceStateChanged;
+            this._executionService.StateChanged += this.OnServiceStateChanged;
         }
 
 
@@ -57,7 +68,6 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
 
         protected abstract void OnStartCommand();
-        protected abstract void OnResumeCommand();
         protected abstract void OnPauseCommand();
         protected abstract void OnStopCommand();
     }

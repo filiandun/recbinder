@@ -40,7 +40,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         }
 
 
-        public async Task Start()
+        public async Task StartAsync()
         {
             if (this.CanStart())
             {
@@ -70,6 +70,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
                     this._logger.LogError(ex, "Macro playback terminated with an unexpected error.");
 
                     this.State = MacroExecutionState.Stopped;
+
+                    throw;
                 }
             }
         }

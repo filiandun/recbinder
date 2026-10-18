@@ -55,7 +55,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         }
 
 
-        public void Start(MacroMetadata macroMetadata)
+        public async Task Start(MacroMetadata macroMetadata)
         {
             if (this.CanStart())
             {
@@ -71,7 +71,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
                 this.State = MacroExecutionState.Playing;
 
-                _ = this.WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
+                await this.WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
             }
         }
 
@@ -140,7 +140,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             this._macro!.Metadata.Duration = this._recorder!.GetElapsedTime();
             this._macro.Metadata.CreationDateTime = DateTime.Now;
 
-            Debug.WriteLine($"RecordingService: {this._macro.Events.Count}");
+            this._logger.LogInformation("Save macro with '{EventCount}' events.", this._macro.Events.Count);
 
             this._repository.Save(this._macro);
 

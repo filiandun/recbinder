@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Logging;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
+
+using RecBinderProject.Presentation.Services;
 
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroOptions;
@@ -20,11 +22,16 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
 
         public MacroRecordingViewModel(
+            ILogger<MacroRecordingViewModel> logger,
+
+            IDialogService dialogService,
+
             IMacroRecordingService recordingService,
             LocalizationViewModel localizationViewModel, 
+
             MacroRecordingStatusViewModel statusViewModel,
             MacroMetadataCreatorViewModel metadataCreatorViewModel,
-            MacroRecordingOptionsViewModel optionsViewModel) : base(recordingService, localizationViewModel, statusViewModel)
+            MacroRecordingOptionsViewModel optionsViewModel) : base(logger, dialogService, recordingService, localizationViewModel, statusViewModel)
         {
             this._recordingService = recordingService;
 
@@ -33,44 +40,27 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         }
 
 
-        protected override void OnStartCommand()
+        protected override async void OnStartCommand()
         {
-            //try
-            //{
-            if (this._recordingService.State == MacroExecutionState.Paused) // TODO это не зона ответсвтвенности VM, она не должна проверять, она должна тупо вызывать метод
+            try
             {
-                this._recordingService.Resume();
+                if (this._recordingService.State == MacroExecutionState.Paused)
+                {
+                    this._recordingService.Resume();
+                }
+                else
+                {
+                    this.MetadataCreatorViewModel.ApplyChanges(); // TODO сделать адекватнее как-нибудь
+
+                    await this._recordingService.Start(this.MetadataCreatorViewModel.MacroMetadataModel);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                this.MetadataCreatorViewModel.ApplyChanges(); // TODO сделать адекватнее как-нибудь
+                this._logger.LogError(ex.Message, "An error occurred while recording the macro.");
 
-                this._recordingService.Start(this.MetadataCreatorViewModel.MacroMetadataModel);
+                this._dialogService.Show(this.LocalizationViewModel.Common["Dialog_Label_Error"], "An error occurred while recording the macro.");
             }
-            //}
-            //catch (ArgumentException ae)
-            //{
-            //    //ContentDialog contentDialog = new ContentDialog()
-            //    //{
-            //    //    Content = ae.Message,
-            //    //    CloseButtonText = "Закрыть",
-            //    //};
-            //    //contentDialog.ShowAsync();
-            //}
-            //catch (Exception ex)
-            //{
-            //    //ContentDialog contentDialog = new ContentDialog()
-            //    //{
-            //    //    Content = ex.Message,
-            //    //    CloseButtonText = "Закрыть",
-            //    //};
-            //    //contentDialog.ShowAsync();
-            //}
-        }
-
-        protected override void OnResumeCommand() // TODO под вопросом, так как отдельной кнопки продолжить нет (реализуется всё через кнопку start)
-        {
-            Debug.WriteLine("Play resume TODO");
         }
 
         protected override void OnPauseCommand()
@@ -80,7 +70,16 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
         protected override void OnStopCommand()
         {
-            this._recordingService.Stop();
+            try
+            {
+                this._recordingService.Stop();
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex.Message, "An error occurred while saving the macro.");
+
+                this._dialogService.Show(this.LocalizationViewModel.Common["Dialog_Label_Error"], "An error occurred while saving the macro.");
+            }
         }
     }
 }

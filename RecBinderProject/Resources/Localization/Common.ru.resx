@@ -123,4 +123,7 @@
   <data name="Dialog_Label_Attention" xml:space="preserve">
     <value>Предупреждение</value>
   </data>
+  <data name="Dialog_Label_Error" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
 </root>

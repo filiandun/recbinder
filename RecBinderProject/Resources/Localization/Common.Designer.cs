@@ -77,5 +77,14 @@ namespace RecBinderProject.Resources.Localization {
                 return ResourceManager.GetString("Dialog_Label_Attention", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string Dialog_Label_Error {
+            get {
+                return ResourceManager.GetString("Dialog_Label_Error", resourceCulture);
+            }
+        }
     }
 }

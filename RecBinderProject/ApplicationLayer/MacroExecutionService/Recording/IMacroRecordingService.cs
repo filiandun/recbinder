@@ -8,7 +8,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
     {
         public event Action? MacroSaved;
 
-        public void Start(MacroMetadata macroMetadata);
+        public Task Start(MacroMetadata macroMetadata);
         public void Pause();
         public void Resume();
         public void Stop();

@@ -1,12 +1,14 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Logging;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 
+using RecBinderProject.Presentation.Services;
+
 using RecBinderProject.Presentation.ViewModels.Localization;
-using RecBinderProject.Presentation.ViewModels.MacroOptions;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
+using RecBinderProject.Presentation.ViewModels.MacroOptions;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroExecution
@@ -20,11 +22,16 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
 
         public MacroPlaybackViewModel(
+            ILogger<MacroPlaybackViewModel> logger,
+
+            IDialogService dialogService,
+
             IMacroPlaybackService playbackService,
             LocalizationViewModel localizationViewModel, 
+
             MacroPlaybackStatusViewModel statusViewModel, 
             MacroMetadataViewerViewModel metadataViewerViewModel,
-            MacroPlaybackOptionsViewModel optionsViewModel) : base(playbackService, localizationViewModel, statusViewModel)
+            MacroPlaybackOptionsViewModel optionsViewModel) : base(logger, dialogService, playbackService, localizationViewModel, statusViewModel)
         {
             this._playbackService = playbackService;
 
@@ -33,22 +40,25 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         }
 
 
-        protected override void OnStartCommand()
+        protected override async void OnStartCommand()
         {
-            if (this._service.State == MacroExecutionState.Paused) // TODO это не зона ответсвтвенности VM, она не должна проверять, она должна тупо вызывать метод
+            try
             {
-                this._playbackService.Resume();
+                if (this._executionService.State == MacroExecutionState.Paused)
+                {
+                    this._playbackService.Resume();
+                }
+                else
+                {
+                    await this._playbackService.StartAsync();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                this._playbackService.Start();
-            }
-        }
+                this._logger.LogError(ex.Message, "An error occurred while playing the macro.");
 
-        protected override void OnResumeCommand()
-        {
-            //this._recordProcess.Start();
-            Debug.WriteLine("Play resume TODO");
+                this._dialogService.Show(this.LocalizationViewModel.Common["Dialog_Label_Error"], "An error occurred while playing the macro.");
+            }
         }
 
         protected override void OnPauseCommand()

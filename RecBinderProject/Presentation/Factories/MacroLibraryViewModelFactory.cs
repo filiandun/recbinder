@@ -11,6 +11,7 @@ using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 
 using RecBinderProject.Infrastructure.Services.Localization;
+using RecBinderProject.Presentation.Services;
 
 
 namespace RecBinderProject.Presentation.Factories
@@ -19,6 +20,8 @@ namespace RecBinderProject.Presentation.Factories
     {
         private readonly ILoggerFactory _loggerFactory;
 
+        private readonly IDialogService _dialogService;
+
         private readonly ILocalizationService _localizationService;
         private readonly LocalizationViewModel _localizationViewModel;
 
@@ -26,9 +29,20 @@ namespace RecBinderProject.Presentation.Factories
         private readonly MacroPlaybackOptionsViewModel _playbackOptionsViewModel;
 
 
-        public MacroLibraryViewModelFactory(ILoggerFactory loggerFactory, ILocalizationService localizationService, LocalizationViewModel localizationViewModel, MacroPlaybackOptions playbackOptions, MacroPlaybackOptionsViewModel playbackOptionsViewModel)
+        public MacroLibraryViewModelFactory(
+            ILoggerFactory loggerFactory, 
+
+            IDialogService dialogService, 
+
+            ILocalizationService localizationService, 
+            LocalizationViewModel localizationViewModel, 
+
+            MacroPlaybackOptions playbackOptions, 
+            MacroPlaybackOptionsViewModel playbackOptionsViewModel)
         {
             this._loggerFactory = loggerFactory;
+
+            this._dialogService = dialogService;
 
             this._localizationService = localizationService;
             this._localizationViewModel = localizationViewModel;
@@ -44,8 +58,9 @@ namespace RecBinderProject.Presentation.Factories
 
             MacroMetadataViewerViewModel macroMetadataViewerViewModel = new MacroMetadataViewerViewModel(macro.Metadata);
             MacroPlaybackStatusViewModel macroPlaybackStatusViewModel = new MacroPlaybackStatusViewModel(macroPlaybackService, this._localizationService);
-            
-            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(macroPlaybackService, this._localizationViewModel, macroPlaybackStatusViewModel, macroMetadataViewerViewModel, this._playbackOptionsViewModel);
+
+            ILogger<MacroPlaybackViewModel> macroPlaybackViewModelLogger = this._loggerFactory.CreateLogger<MacroPlaybackViewModel>();
+            MacroPlaybackViewModel macroPlaybackViewModel = new MacroPlaybackViewModel(macroPlaybackViewModelLogger, this._dialogService, macroPlaybackService, this._localizationViewModel, macroPlaybackStatusViewModel, macroMetadataViewerViewModel, this._playbackOptionsViewModel);
 
             return macroPlaybackViewModel;
         }
