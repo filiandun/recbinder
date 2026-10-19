@@ -7,7 +7,7 @@ using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 
 using RecBinderProject.Presentation.Commands;
-using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.Services.Dialog;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 

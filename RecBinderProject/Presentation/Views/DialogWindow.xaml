@@ -33,7 +33,19 @@
 
                 <Border Grid.Row="1" Padding="20, 15" Background="{DynamicResource SolidBackgroundFillColorBaseBrush}" ClipToBounds="True">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Command="{Binding CloseCommand}" Content="OK" Margin="0, 0, 10, 0" Background="{DynamicResource AccentFillColorDefaultBrush}"/>
+                        <Button Command="{Binding PrimaryCommand}" Content="{Binding PrimaryButton.Text}" Margin="0, 0, 10, 0" Background="{DynamicResource AccentFillColorDefaultBrush}"/>
+                        <Button Command="{Binding SecondaryCommand}" Content="{Binding SecondaryButton.Text}" Margin="0, 0, 10, 0" Background="{DynamicResource ControlFillColorDefaultBrush}" >
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SecondaryButton}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                     </StackPanel>
                 </Border>
             </Grid>

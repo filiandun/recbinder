@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+
 using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Domain;
@@ -10,7 +11,7 @@ using RecBinderProject.Infrastructure.Services.AppSettings;
 using RecBinderProject.Infrastructure.Services.Localization;
 
 using RecBinderProject.Presentation.Commands;
-using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.Services.Dialog;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
@@ -107,7 +108,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
                     string title = this._localizationService.GetString(LocalizationScope.Common, "Dialog_Label_Attention");
                     string message = $"{this._localizationService.GetString(LocalizationScope.MacroList, "Load_Message_FailedFiles")} ({loadResult.FailedFiles.Count}):\n{string.Join("\n", loadResult.FailedFiles)}";
 
-                    this._dialogService.Show(title, message);
+                    await this._dialogService.ShowAsync(title, message);
                 }
 
                 this.MacroItems = new ObservableCollection<MacroLibraryListItemViewModel>(loadResult.Macros.Select(m => new MacroLibraryListItemViewModel(m)));
@@ -119,7 +120,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroLibrary
                 string title = this._localizationService.GetString(LocalizationScope.Common, "Dialog_Label_Attention");
                 string message = $"{this._localizationService.GetString(LocalizationScope.MacroList, "Load_Message_UnexpectedError")}";
 
-                this._dialogService.Show(title, message);
+                await this._dialogService.ShowAsync(title, message);
             }
         }
 

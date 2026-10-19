@@ -4,14 +4,19 @@ using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
 
 using RecBinderProject.Infrastructure.Repositories;
+
 using RecBinderProject.Infrastructure.Services.Input;
 using RecBinderProject.Infrastructure.Services.AppSettings;
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 using RecBinderProject.Infrastructure.Services.Localization;
 
 using RecBinderProject.Presentation.Views;
+
 using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.Services.Dialog;
+
 using RecBinderProject.Presentation.Factories;
+
 using RecBinderProject.Presentation.ViewModels.MainWindow;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.MacroLibrary;
@@ -20,6 +25,7 @@ using RecBinderProject.Presentation.ViewModels.MacroOptions;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
+
 
 
 namespace RecBinderProject.Infrastructure.Extenstions

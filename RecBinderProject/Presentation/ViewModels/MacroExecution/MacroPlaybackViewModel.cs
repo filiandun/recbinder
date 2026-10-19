@@ -2,9 +2,7 @@
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
-
-using RecBinderProject.Presentation.Services;
-
+using RecBinderProject.Presentation.Services.Dialog;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
@@ -57,7 +55,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             {
                 this._logger.LogError(ex.Message, "An error occurred while playing the macro.");
 
-                this._dialogService.Show(this.LocalizationViewModel.Common["Dialog_Label_Error"], "An error occurred while playing the macro.");
+                await this._dialogService.ShowAsync(this.LocalizationViewModel.Common["Dialog_Label_Error"], "An error occurred while playing the macro.");
             }
         }
 

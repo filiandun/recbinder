@@ -11,7 +11,7 @@ using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 
 using RecBinderProject.Infrastructure.Services.Localization;
-using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.Services.Dialog;
 
 
 namespace RecBinderProject.Presentation.Factories

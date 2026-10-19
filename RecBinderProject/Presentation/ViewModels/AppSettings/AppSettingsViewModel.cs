@@ -2,11 +2,12 @@
 using System.ComponentModel;
 
 using RecBinderProject.Presentation.Commands;
-using RecBinderProject.Presentation.Services;
 using RecBinderProject.Presentation.ViewModels.Localization;
 
 using RecBinderProject.Infrastructure.Services.AppSettings;
 using RecBinderProject.Infrastructure.Services.Localization;
+using RecBinderProject.Presentation.Services.Dialog;
+using System.Runtime.CompilerServices;
 
 
 namespace RecBinderProject.Presentation.ViewModels.AppSettings
@@ -69,7 +70,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             }
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
             if (this._appSettingsService.LoadState == AppSettingsLoadState.LoadedFromFile) return;
 
@@ -85,7 +86,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             string title = this._localizationService.GetString(LocalizationScope.AppSettings, "Dialog_Load_TitleAttention");
             string message = this._localizationService.GetString(LocalizationScope.AppSettings, messageKey);
 
-            this._dialogService.Show(title, message);
+            await this._dialogService.ShowAsync(title, message);
         }
 
 

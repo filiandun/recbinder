@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
+
 using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 
 using RecBinderProject.Presentation.Commands;
-using RecBinderProject.Presentation.Services;
+using RecBinderProject.Presentation.Services.Dialog;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
@@ -86,7 +87,7 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
 
         public async Task InitializeAsync()
         {
-            this._appSettingsViewModel.Initialize();
+            await this._appSettingsViewModel.InitializeAsync();
 
             await this._macroLibraryViewModel.InitializeAsync();
         }
