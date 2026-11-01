@@ -12,5 +12,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         public void Pause();
         public void Resume();
         public void Stop();
+
+        public Task SaveMacroAsync();
     }
 }

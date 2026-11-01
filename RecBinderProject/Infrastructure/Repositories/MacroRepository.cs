@@ -87,14 +87,14 @@ namespace RecBinderProject.Infrastructure.Repositories
             }
         }
 
-        public void Save(Macro macro)
+        public async Task SaveAsync(Macro macro)
         {
             Directory.CreateDirectory(this._saveDirectory);
 
             string filePath = this.GetUniqueFilePath(macro);
 
             using FileStream fileStream = File.Create(filePath);
-            JsonSerializer.Serialize(fileStream, macro, this._saveJsonSerializerOptions);
+            await JsonSerializer.SerializeAsync(fileStream, macro, this._saveJsonSerializerOptions);
 
             this.MacroSaved?.Invoke(macro);
         }

@@ -108,8 +108,6 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
                 this._recorder!.Stop();
                 this._cancellationTokenSource.Cancel();
 
-                this.SaveMacro();
-
                 this.State = MacroExecutionState.Stopped;
             }
         }
@@ -125,8 +123,6 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
                 this._recorder!.Stop();
 
-                this.SaveMacro();
-
                 this.State = MacroExecutionState.Completed;
             }
             catch (OperationCanceledException)
@@ -135,16 +131,26 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             }
         }
 
-        private void SaveMacro()
+        public async Task SaveMacroAsync()
         {
-            this._macro!.Metadata.Duration = this._recorder!.GetElapsedTime();
+            if (this._macro is null)
+            {
+                this._logger.LogWarning("Attempt to save a null macro.");
+                return;
+            }
+
+            if (this._recorder is null)
+            {
+                this._logger.LogWarning("Attempt to save a macro when recorder is null.");
+                return;
+            }
+
+            this._macro.Metadata.Duration = this._recorder.GetElapsedTime();
             this._macro.Metadata.CreationDateTime = DateTime.Now;
 
+            await this._repository.SaveAsync(this._macro);
+
             this._logger.LogInformation("Save macro with '{EventCount}' events.", this._macro.Events.Count);
-
-            this._repository.Save(this._macro);
-
-            this.MacroSaved?.Invoke();
         }
     }
 }
