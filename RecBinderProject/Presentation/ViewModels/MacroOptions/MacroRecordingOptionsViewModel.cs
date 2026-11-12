@@ -11,6 +11,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroOptions
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly MacroRecordingOptions _options;
+        public MacroRecordingOptions Options => this._options;
 
 
         public bool KeyboardPressIgnored
@@ -63,20 +64,20 @@ namespace RecBinderProject.Presentation.ViewModels.MacroOptions
 
         public bool TreeDimensionalMouseMovementEnabled
         {
-            get => this._options.TreeDimensionalMouseMovementEnabled;
+            get => this._options.ThreeDimensionalMouseMovementEnabled;
             set
             {
-                if (this._options.TreeDimensionalMouseMovementEnabled == value) return;
+                if (this._options.ThreeDimensionalMouseMovementEnabled == value) return;
 
-                this._options.TreeDimensionalMouseMovementEnabled = value;
+                this._options.ThreeDimensionalMouseMovementEnabled = value;
                 this.OnPropertyChanged();
             }
         }
 
 
-        public MacroRecordingOptionsViewModel(MacroRecordingOptions options)
+        public MacroRecordingOptionsViewModel()
         {
-            this._options = options;
+            this._options = new MacroRecordingOptions();
         }
 
 

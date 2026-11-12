@@ -11,7 +11,8 @@ namespace RecBinderProject.Presentation.ViewModels.MacroOptions
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly MacroPlaybackOptions _options;
-        
+        public MacroPlaybackOptions Options => this._options;
+
 
         public bool KeyboardPressIgnored
         {
@@ -136,9 +137,9 @@ namespace RecBinderProject.Presentation.ViewModels.MacroOptions
         }
 
 
-        public MacroPlaybackOptionsViewModel(MacroPlaybackOptions options)
+        public MacroPlaybackOptionsViewModel()
         {
-            this._options = options;
+            this._options = new MacroPlaybackOptions();
         }
 
 
