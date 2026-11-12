@@ -1,129 +1,143 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 using RecBinderProject.Domain;
 
 using RecBinderProject.Infrastructure.Repositories;
-using RecBinderProject.Infrastructure.Services.Input;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 {
-    public class MacroRecordingService : MacroExecutionServiceBase, IMacroRecordingService
+    public class MacroRecordingService : MacroExecutionServiceBase, IMacroRecordingService, IDisposable
     {
-        public event Action? MacroSaved;
-
         private readonly ILogger<MacroRecordingService> _logger;
-        private readonly ILogger<MacroEventRecorder> _recorderLogger;
 
-        private CancellationTokenSource _cancellationTokenSource;
-
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly IMacroRepository _repository;
 
-        private readonly IInputListener _inputListener;
+        private MacroRecordingSession? _recordingSession;
+        private MacroRecordingSession ActiveRecordingSession => this._recordingSession ?? throw new InvalidOperationException("Recording session is not initialized.");
 
-        private Macro? _macro;
-        private MacroEventRecorder? _recorder;
+        public override TimeSpan TotalDuration => this._recordingSession?.Macro.Metadata.Duration ?? TimeSpan.Zero;
+        public override TimeSpan ElapsedTime => this._recordingSession?.MacroRecorder.GetElapsedTime() ?? TimeSpan.Zero;
 
-        private readonly MacroRecordingOptions _options;
+        public bool CanSave => this.State == MacroExecutionState.Completed || this.State == MacroExecutionState.Stopped;
 
-        public override TimeSpan TotalDuration => this._macro?.Metadata.Duration ?? TimeSpan.Zero;
-        public override TimeSpan ElapsedTime => this._recorder?.GetElapsedTime() ?? TimeSpan.Zero;
-
-
-        public MacroRecordingService(ILogger<MacroRecordingService> logger, ILogger<MacroEventRecorder> recorderLogger, IMacroRepository repository, IInputListener inputListener, MacroRecordingOptions macroOptions)
+        public MacroRecordingService(ILogger<MacroRecordingService> logger, IServiceScopeFactory scopeFactory, IMacroRepository repository)
         {
             this._logger = logger;
-            this._recorderLogger = recorderLogger;
 
-            this._cancellationTokenSource = new CancellationTokenSource();
-
+            this._scopeFactory = scopeFactory;
             this._repository = repository;
-
-            this._inputListener = inputListener;
-
-            this._macro = null;
-            this._recorder = null;
-
-            this._options = macroOptions;
-
-            this.State = MacroExecutionState.Completed;
+            
+            this._recordingSession = null;
         }
 
 
-        public async Task Start(MacroMetadata macroMetadata)
+        public async Task StartAsync(MacroMetadata macroMetadata, MacroRecordingOptions recordingOptions)
         {
-            if (this.CanStart())
+            if (!this.CanStart)
             {
-                this._macro = new Macro(macroMetadata);
-                this._recorder = new MacroEventRecorder(this._recorderLogger, this._inputListener, this._macro, this._options);
+                this._logger.LogWarning("Attempt start session while state is '{State}'.", this.State);
 
-                this._cancellationTokenSource.Dispose();
-                this._cancellationTokenSource = new CancellationTokenSource();
+                return;
+            }
 
-                this._logger.LogInformation("Starting macro recording, {name}", this._macro.Metadata.Name);
+            this._logger.LogInformation("Starting macro recording, {name}", macroMetadata.Name);
 
-                this._recorder.Start();
+            this.SetState(MacroExecutionState.Executing);
 
-                this.State = MacroExecutionState.Playing;
+            this._recordingSession?.Dispose();
+            this._recordingSession = null;
 
-                await this.WaitAndStopAfterDurationAsync(this._cancellationTokenSource.Token);
+            IServiceScope serviceScope = this._scopeFactory.CreateScope();
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            try
+            {
+                MacroRecordingContext recordingContext = serviceScope.ServiceProvider.GetRequiredService<MacroRecordingContext>();
+                recordingContext.Initialize(macroMetadata, recordingOptions);
+
+                MacroEventRecorder macroRecorder = serviceScope.ServiceProvider.GetRequiredService<MacroEventRecorder>();
+
+                Macro macro = new Macro(macroMetadata);
+
+                this._recordingSession = new MacroRecordingSession(serviceScope, macroRecorder, cancellationTokenSource, macro);
+
+                macroRecorder.Start();
+
+                await this.WaitAndStopAfterDurationAsync(this._recordingSession);
+
+                this._logger.LogInformation("Recording macro '{Name}' completed successfully.", macro.Metadata.Name);
+            }
+            catch
+            {
+                serviceScope?.Dispose();
+                cancellationTokenSource?.Dispose();
+
+                this._recordingSession?.Dispose();
+                this._recordingSession = null;
+
+                this.SetState(MacroExecutionState.Stopped); // TODO MacroExecutionState.Faulted
+
+                throw;
             }
         }
 
         public void Pause()
         {
-            if (this.CanPause())
+            if (this.CanPause)
             {
                 this._logger.LogInformation("Macro recording paused.");
 
-                this._recorder!.Pause();
+                this.ActiveRecordingSession.MacroRecorder.Pause();
 
-                this.State = MacroExecutionState.Paused;
+                this.SetState(MacroExecutionState.Paused);
             }
         }
 
         public void Resume()
         {
-            if (this.CanResume())
+            if (this.CanResume)
             {
                 this._logger.LogInformation("Macro recording resumed.");
 
-                this._recorder!.Resume();
+                this.ActiveRecordingSession.MacroRecorder.Resume();
 
-                this.State = MacroExecutionState.Playing;
+                this.SetState(MacroExecutionState.Executing);
             }
         }
 
         public void Stop()
         {
-            if (this.CanStop())
+            if (this.CanStop)
             {
                 this._logger.LogInformation("Macro recording stopped.");
 
-                this._recorder!.Stop();
-                this._cancellationTokenSource.Cancel();
+                this.ActiveRecordingSession.MacroRecorder.Stop();
+                this.ActiveRecordingSession.CancellationTokenSource.Cancel();
 
-                this.State = MacroExecutionState.Stopped;
+                this.SetState(MacroExecutionState.Stopped);
             }
         }
 
 
-        private async Task WaitAndStopAfterDurationAsync(CancellationToken token)
+        private async Task WaitAndStopAfterDurationAsync(MacroRecordingSession recordingSession)
         {
             try
             {
-                await Task.Delay(this._macro!.Metadata.Duration, token);
+                await Task.Delay(recordingSession.Macro.Metadata.Duration, recordingSession.CancellationTokenSource.Token);
 
                 this._logger.LogInformation("Macro recording completed.");
 
-                this._recorder!.Stop();
+                recordingSession.MacroRecorder.Stop();
 
-                this.State = MacroExecutionState.Completed;
+                this.SetState(MacroExecutionState.Completed);
             }
             catch (OperationCanceledException)
             {
@@ -133,24 +147,21 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
         public async Task SaveMacroAsync()
         {
-            if (this._macro is null)
+            if (this.CanSave)
             {
-                this._logger.LogWarning("Attempt to save a null macro.");
-                return;
+                this.ActiveRecordingSession.Macro.Metadata.Duration = this.ElapsedTime;
+                this.ActiveRecordingSession.Macro.Metadata.CreationDateTime = DateTime.Now;
+
+                await this._repository.SaveAsync(this.ActiveRecordingSession.Macro);
+
+                this._logger.LogInformation("Save macro with '{EventCount}' events.", this.ActiveRecordingSession.Macro.Events.Count);
             }
+        }
 
-            if (this._recorder is null)
-            {
-                this._logger.LogWarning("Attempt to save a macro when recorder is null.");
-                return;
-            }
 
-            this._macro.Metadata.Duration = this._recorder.GetElapsedTime();
-            this._macro.Metadata.CreationDateTime = DateTime.Now;
-
-            await this._repository.SaveAsync(this._macro);
-
-            this._logger.LogInformation("Save macro with '{EventCount}' events.", this._macro.Events.Count);
+        public void Dispose()
+        {
+            this._recordingSession?.Dispose();
         }
     }
 }

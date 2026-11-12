@@ -3,11 +3,13 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
+
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
@@ -33,15 +35,17 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private Point _mouseOffset;
 
 
-        public MacroEventPlayer(ILogger<MacroEventPlayer> logger, Macro macro, MacroPlaybackOptions options)
+        public MacroEventPlayer(ILogger<MacroEventPlayer> logger, MacroPlaybackContext context)
         {
+            if (!context.IsInitialized) throw new InvalidOperationException("Playback context is not initialized.");
+
             this._logger = logger;
             this._inputSimulator = new SafeInputSimulator();
 
             this._stopwatch = new Stopwatch();
 
-            this._macro = macro;
-            this._options = options;
+            this._macro = context.Macro;
+            this._options = context.PlaybackOptions;
 
             this._isPaused = false;
 

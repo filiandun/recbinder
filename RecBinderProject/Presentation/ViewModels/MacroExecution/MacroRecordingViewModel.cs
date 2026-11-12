@@ -31,8 +31,8 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             IMacroRecordingService recordingService,
 
             LocalizationViewModel localizationViewModel, 
-
             MacroRecordingStatusViewModel statusViewModel,
+
             MacroMetadataCreatorViewModel metadataCreatorViewModel,
             MacroRecordingOptionsViewModel optionsViewModel) : base(logger, dialogService, recordingService, localizationViewModel, statusViewModel)
         {
@@ -61,7 +61,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
                     this.MetadataCreatorViewModel.ApplyChanges(); // TODO сделать адекватнее как-нибудь
 
-                    await this._recordingService.Start(this.MetadataCreatorViewModel.MacroMetadataModel);
+                    await this._recordingService.StartAsync(this.MetadataCreatorViewModel.MacroMetadataModel, this.OptionsViewModel.Options);
 
                     await this.TrySaveMacroAsync();
                 }

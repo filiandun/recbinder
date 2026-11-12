@@ -3,8 +3,9 @@
 using RecBinderProject.ApplicationLayer.MacroExecutionService;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 
-using RecBinderProject.Presentation.Services.Dialog;
+using RecBinderProject.Domain;
 
+using RecBinderProject.Presentation.Services.Dialog;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
@@ -15,6 +16,8 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 {
     public class MacroPlaybackViewModel : MacroExecutionViewModelBase
     {
+        private Macro _MACRO;
+
         private readonly IMacroPlaybackService _playbackService;
 
         public MacroMetadataViewerViewModel MetadataViewerViewModel { get; private set; }
@@ -22,6 +25,8 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 
 
         public MacroPlaybackViewModel(
+            Macro macro, // TODO TEST
+
             ILogger<MacroPlaybackViewModel> logger,
 
             IDialogService dialogService,
@@ -34,6 +39,8 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             MacroMetadataViewerViewModel metadataViewerViewModel,
             MacroPlaybackOptionsViewModel optionsViewModel) : base(logger, dialogService, playbackService, localizationViewModel, statusViewModel)
         {
+            this._MACRO = macro;
+
             this._playbackService = playbackService;
 
             this.MetadataViewerViewModel = metadataViewerViewModel;
@@ -57,7 +64,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
                 {
                     this._logger.LogDebug("Start playback a macro '{MacroName}'.", this.MetadataViewerViewModel.MacroName);
 
-                    await this._playbackService.StartAsync();
+                    await this._playbackService.StartAsync(this._MACRO, this.OptionsViewModel.Options);
                 }
             }
             catch (Exception ex)

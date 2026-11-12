@@ -1,14 +1,16 @@
-﻿using RecBinderProject.Domain;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
+﻿using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+
+using RecBinderProject.Domain;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 {
     public interface IMacroRecordingService : IMacroExecutionInfo
     {
-        public event Action? MacroSaved;
+        public bool CanSave { get; }
 
-        public Task Start(MacroMetadata macroMetadata);
+        public Task StartAsync(MacroMetadata macroMetadata, MacroRecordingOptions recordingOptions);
         public void Pause();
         public void Resume();
         public void Stop();

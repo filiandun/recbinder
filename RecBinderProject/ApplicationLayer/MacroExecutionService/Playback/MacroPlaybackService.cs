@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 using RecBinderProject.Domain;
@@ -9,129 +11,147 @@ using RecBinderProject.Domain;
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
 {
-    public class MacroPlaybackService : MacroExecutionServiceBase, IMacroPlaybackService
+    public class MacroPlaybackService : MacroExecutionServiceBase, IMacroPlaybackService, IDisposable
     {
         private readonly ILogger<MacroPlaybackService> _logger;
 
-        private CancellationTokenSource _cancellationTokenSource;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        private readonly Macro _macro;
-        private readonly MacroPlaybackOptions _options;
+        private MacroPlaybackSession? _playbackSession;
+        private MacroPlaybackSession ActivePlaybackSession => this._playbackSession ?? throw new InvalidOperationException("Playback session is not initialized.");
 
-        private readonly MacroEventPlayer _player;
-
-        public override TimeSpan TotalDuration => this._player.EffectiveDuration;
-        public override TimeSpan ElapsedTime => this._player.ElapsedTime;
+        public override TimeSpan TotalDuration => this._playbackSession?.MacroPlayer.EffectiveDuration ?? TimeSpan.Zero;
+        public override TimeSpan ElapsedTime => this._playbackSession?.MacroPlayer.ElapsedTime ?? TimeSpan.Zero;
 
 
-        public MacroPlaybackService(ILoggerFactory loggerFactory, Macro macro, MacroPlaybackOptions options)
+        public MacroPlaybackService(ILogger<MacroPlaybackService> logger, IServiceScopeFactory scopeFactory)
         {
-            this._logger = loggerFactory.CreateLogger<MacroPlaybackService>();
+            this._logger = logger;
 
-            this._cancellationTokenSource = new CancellationTokenSource();
+            this._scopeFactory = scopeFactory;
 
-            this._macro = macro;
-            this._options = options;
-
-            var playerLogger = loggerFactory.CreateLogger<MacroEventPlayer>();
-            this._player = new MacroEventPlayer(playerLogger, this._macro, options);
-
-            this.State = MacroExecutionState.Completed;
+            this._playbackSession = null;
         }
 
 
-        public async Task StartAsync()
+        public async Task StartAsync(Macro macro, MacroPlaybackOptions playbackOptions)
         {
-            if (this.CanStart())
+            if (!this.CanStart)
             {
-                this._logger.LogInformation("Starting macro playback. Name: {Name}, Speed: {Speed}, Loop count: {LoopCount}", this._macro.Metadata.Name, this._options.Speed, this._options.LoopCount);
+                this._logger.LogWarning("Attempt start session while state is '{State}'.", this.State);
 
-                this.State = MacroExecutionState.Playing;
+                return;
+            }
 
-                try
-                {
-                    this._cancellationTokenSource.Dispose();
-                    this._cancellationTokenSource = new CancellationTokenSource();
+            this._logger.LogInformation("Starting macro playback. Name: {Name}, Speed: {Speed}, Loop count: {LoopCount}", macro.Metadata.Name, playbackOptions.Speed, playbackOptions.LoopCount);
 
-                    await Task.Run(async () => await this.PlaybackLoop());
+            this.SetState(MacroExecutionState.Executing);
 
-                    this._logger.LogInformation("Macro playback completed successfully.");
+            this._playbackSession?.Dispose();
+            this._playbackSession = null;
 
-                    this.State = MacroExecutionState.Completed;
-                }
-                catch (OperationCanceledException)
-                {
-                    this._logger.LogInformation("Macro playback was stopped by user.");
+            IServiceScope serviceScope = this._scopeFactory.CreateScope();
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-                    this.State = MacroExecutionState.Stopped;
-                }
-                catch (Exception ex)
-                {
-                    this._logger.LogError(ex, "Macro playback terminated with an unexpected error.");
+            try
+            {
+                MacroPlaybackContext playbackContext = serviceScope.ServiceProvider.GetRequiredService<MacroPlaybackContext>();
+                playbackContext.Initialize(macro, playbackOptions);
 
-                    this.State = MacroExecutionState.Stopped;
+                MacroEventPlayer macroPlayer = serviceScope.ServiceProvider.GetRequiredService<MacroEventPlayer>();
 
-                    throw;
-                }
+                this._playbackSession = new MacroPlaybackSession(serviceScope, macroPlayer, cancellationTokenSource, playbackOptions, macro);
+
+                await Task.Run(async () => await this.PlaybackLoop(this._playbackSession));
+
+                this._logger.LogInformation("Playback macro '{Name}' completed successfully.", macro.Metadata.Name);
+
+                this.SetState(MacroExecutionState.Completed);
+            }
+            catch (OperationCanceledException)
+            {
+                this._logger.LogInformation("Playback macro '{Name}' was stopped by user.", macro.Metadata.Name);
+
+                this.SetState(MacroExecutionState.Stopped);
+            }
+            catch
+            {
+                serviceScope?.Dispose();
+                cancellationTokenSource?.Dispose();
+
+                this._playbackSession?.Dispose();
+                this._playbackSession = null;
+
+                this.SetState(MacroExecutionState.Stopped); // TODO MacroExecutionState.Faulted
+
+                throw;
             }
         }
 
         public void Pause()
         {
-            if (this.CanPause())
+            if (this.CanPause)
             {
                 this._logger.LogInformation("Macro playback paused.");
 
-                this._player.Pause();
+                this.ActivePlaybackSession.MacroPlayer.Pause();
 
-                this.State = MacroExecutionState.Paused;
+                this.SetState(MacroExecutionState.Paused);
             }
         }
 
         public void Resume()
         {
-            if (this.CanResume())
+            if (this.CanResume)
             {
                 this._logger.LogInformation("Macro playback resumed.");
 
-                this._player.Resume();
+                this.ActivePlaybackSession.MacroPlayer.Resume();
 
-                this.State = MacroExecutionState.Playing;
+                this.SetState(MacroExecutionState.Executing);
             }
         }
 
         public void Stop()
         {
-            if (this.CanStop())
+            if (this.CanStop)
             {
                 this._logger.LogInformation("Macro playback stopping..");
 
-                this._cancellationTokenSource.Cancel();
+                this.ActivePlaybackSession.CancellationTokenSource.Cancel();
+
+                this.SetState(MacroExecutionState.Stopped);
             }
         }
 
 
-        private async Task PlaybackLoop()
+        private async Task PlaybackLoop(MacroPlaybackSession playbackSession)
         {
             int iteration = 0;
 
-            while (!this._cancellationTokenSource.IsCancellationRequested)
+            while (!playbackSession.CancellationTokenSource.IsCancellationRequested)
             {
-                this._logger.LogInformation("Continue macro playback. Iteration: {Iteration}/{LoopCount}", iteration, this._options.LoopCount);
+                this._logger.LogInformation("Continue macro playback. Iteration: {Iteration}/{LoopCount}", iteration, playbackSession.PlaybackOptions.LoopCount);
 
                 iteration++;
 
-                await this._player.Start(this._cancellationTokenSource.Token);
+                await playbackSession.MacroPlayer.Start(playbackSession.CancellationTokenSource.Token);
 
-                if (!this._options.LoopEnabled) break;
+                if (!playbackSession.PlaybackOptions.LoopEnabled) break;
 
-                if (this._options.LoopCount > 0 && iteration >= this._options.LoopCount) break;
+                if (playbackSession.PlaybackOptions.LoopCount > 0 && iteration >= playbackSession.PlaybackOptions.LoopCount) break;
 
-                if (this._options.LoopDelayMs > 0)
+                if (playbackSession.PlaybackOptions.LoopDelayMs > 0)
                 {
-                    await Task.Delay(this._options.LoopDelayMs, this._cancellationTokenSource.Token);
+                    await Task.Delay(playbackSession.PlaybackOptions.LoopDelayMs, playbackSession.CancellationTokenSource.Token);
                 }
             }
+        }
+
+
+        public void Dispose()
+        {
+            this._playbackSession?.Dispose();
         }
     }
 }

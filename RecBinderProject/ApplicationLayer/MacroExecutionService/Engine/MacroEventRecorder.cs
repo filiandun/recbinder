@@ -12,6 +12,8 @@ using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 using RecBinderProject.Infrastructure.Services.Input;
 
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
+
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
@@ -30,8 +32,10 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private readonly MacroRecordingOptions _options;
 
 
-        public MacroEventRecorder(ILogger<MacroEventRecorder> logger, IInputListener inputListener, Macro macro, MacroRecordingOptions options)
+        public MacroEventRecorder(ILogger<MacroEventRecorder> logger, IInputListener inputListener, MacroRecordingContext context)
         {
+            if (!context.IsInitialized) throw new InvalidOperationException("Recording context is not initialized.");
+
             this._logger = logger;
 
             this._inputListener = inputListener;
@@ -40,8 +44,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
             this._stopwatch = new Stopwatch();
 
-            this._macro = macro;
-            this._options = options;
+            this._macro = new Macro(context.MacroMetadata);
+            this._options = context.RecordingOptions;
         }
 
 
@@ -162,7 +166,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void OnMouseMoveExt(object? sender, MouseEventExtArgs e)
         {
-            if (!this._options.MouseMoveIgnored && !this._options.TreeDimensionalMouseMovementEnabled)
+            if (!this._options.MouseMoveIgnored && !this._options.ThreeDimensionalMouseMovementEnabled)
             {
                 this._macro.AddEvent(MacroEvent.FromMouseMove(e.Location.X, e.Location.Y, (int)this._stopwatch.ElapsedMilliseconds));
             }
@@ -170,7 +174,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private void OnMouseDeltaReceived(MouseDeltaEvent e)
         {
-            if (!this._options.MouseMoveIgnored && this._options.TreeDimensionalMouseMovementEnabled)
+            if (!this._options.MouseMoveIgnored && this._options.ThreeDimensionalMouseMovementEnabled)
             {
                 this._macro.AddEvent(MacroEvent.FromMouseDelta(e.DeltaX, e.DeltaY, (int)this._stopwatch.ElapsedMilliseconds));
             }

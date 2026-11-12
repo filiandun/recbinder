@@ -3,8 +3,11 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService
 {
     public enum MacroExecutionState
     {
-        Playing,
+        Ready,
+
+        Executing,
         Paused,
+
         Stopped,
         Completed
     }

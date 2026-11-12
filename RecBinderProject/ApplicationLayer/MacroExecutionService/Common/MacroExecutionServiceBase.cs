@@ -15,12 +15,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Common
         public abstract TimeSpan TotalDuration { get; }
         public abstract TimeSpan ElapsedTime { get; }
 
-        protected bool CanStart() => this.State != MacroExecutionState.Playing;
-        protected bool CanPause() => this.State == MacroExecutionState.Playing;
-        protected bool CanResume() => this.State == MacroExecutionState.Paused;
-        protected bool CanStop() => this.State == MacroExecutionState.Playing || this.State == MacroExecutionState.Paused;
+        public bool CanStart => this.State != MacroExecutionState.Executing;
+        public bool CanPause => this.State == MacroExecutionState.Executing;
+        public bool CanResume => this.State == MacroExecutionState.Paused;
+        public bool CanStop => this.State == MacroExecutionState.Executing || this.State == MacroExecutionState.Paused;
 
-        private void SetState(MacroExecutionState newState)
+        protected void SetState(MacroExecutionState newState)
         {
             if (this._state != newState)
             {

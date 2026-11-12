@@ -31,11 +31,11 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
         public ICommand PauseCommand { get; private set; }
         public ICommand StopCommand { get; private set; }
 
-        public bool CanStart => this._executionService.State != MacroExecutionState.Playing;
-        public bool CanPause => this._executionService.State == MacroExecutionState.Playing;
-        public bool CanStop => this._executionService.State == MacroExecutionState.Playing || this._executionService.State == MacroExecutionState.Paused;
+        public bool CanStart => this._executionService.CanStart || this._executionService.CanResume;
+        public bool CanPause => this._executionService.CanPause;
+        public bool CanStop => this._executionService.CanStop;
 
-        public bool CanEditMetadata => this._executionService.State != MacroExecutionState.Playing;
+        public bool CanEditMetadata => this._executionService.CanStart;
 
 
         public MacroExecutionViewModelBase(ILogger logger, IDialogService dialogService, IMacroExecutionInfo executionService, LocalizationViewModel localizationViewModel, MacroExecutionStatusViewModelBase statusViewModel)

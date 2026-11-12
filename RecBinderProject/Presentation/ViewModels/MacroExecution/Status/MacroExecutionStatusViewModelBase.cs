@@ -116,7 +116,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution.Status
         {
             switch (newProcessState)
             {
-                case MacroExecutionState.Playing: this.SetProcessingState(); break;
+                case MacroExecutionState.Executing: this.SetProcessingState(); break;
                 case MacroExecutionState.Paused: this.SetPausedState(); break;
                 case MacroExecutionState.Completed: this.SetCompletedState(); break;
                 case MacroExecutionState.Stopped: this.SetStoppedState(); break;
