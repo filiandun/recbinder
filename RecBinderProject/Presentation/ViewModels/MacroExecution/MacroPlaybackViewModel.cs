@@ -16,17 +16,15 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
 {
     public class MacroPlaybackViewModel : MacroExecutionViewModelBase
     {
-        private Macro _MACRO;
-
         private readonly IMacroPlaybackService _playbackService;
 
         public MacroMetadataViewerViewModel MetadataViewerViewModel { get; private set; }
         public MacroPlaybackOptionsViewModel OptionsViewModel { get; private set; }
 
+        private readonly Macro _macro;
+
 
         public MacroPlaybackViewModel(
-            Macro macro, // TODO TEST
-
             ILogger<MacroPlaybackViewModel> logger,
 
             IDialogService dialogService,
@@ -36,15 +34,15 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             LocalizationViewModel localizationViewModel, 
 
             MacroPlaybackStatusViewModel statusViewModel, 
-            MacroMetadataViewerViewModel metadataViewerViewModel,
-            MacroPlaybackOptionsViewModel optionsViewModel) : base(logger, dialogService, playbackService, localizationViewModel, statusViewModel)
+            
+            Macro macro) : base(logger, dialogService, playbackService, localizationViewModel, statusViewModel)
         {
-            this._MACRO = macro;
-
             this._playbackService = playbackService;
 
-            this.MetadataViewerViewModel = metadataViewerViewModel;
-            this.OptionsViewModel = optionsViewModel;
+            this.MetadataViewerViewModel = new MacroMetadataViewerViewModel(macro.Metadata);
+            this.OptionsViewModel = new MacroPlaybackOptionsViewModel();
+
+            this._macro = macro;
         }
 
 
@@ -64,12 +62,12 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
                 {
                     this._logger.LogDebug("Start playback a macro '{MacroName}'.", this.MetadataViewerViewModel.MacroName);
 
-                    await this._playbackService.StartAsync(this._MACRO, this.OptionsViewModel.Options);
+                    await this._playbackService.StartAsync(this._macro, this.OptionsViewModel.Options);
                 }
             }
             catch (Exception ex)
             {
-                this._logger.LogError(ex.Message, "An error occurred while playing the macro.");
+                this._logger.LogError(ex, "An error occurred while playing the macro.");
 
                 await this._dialogService.ShowAsync(this.LocalizationViewModel.Common["Dialog_Label_Error"], "An error occurred while playing the macro.");
             }

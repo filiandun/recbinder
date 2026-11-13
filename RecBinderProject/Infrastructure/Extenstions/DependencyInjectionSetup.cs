@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
 
@@ -50,11 +51,11 @@ namespace RecBinderProject.Infrastructure.Extenstions
             // Macro Recording
             //services.AddSingleton<MacroRecordingOptions>();
 
+            services.AddScoped<MacroRecordingContext>();
+
             services.AddSingleton<IInputListener, RawInputListener>();
             services.AddScoped<MacroEventRecorder>();
             services.AddScoped<IMacroRecordingService, MacroRecordingService>();
-
-            services.AddSingleton<MacroRecordingOptionsViewModel>();
 
             services.AddSingleton<MacroRecordingStatusViewModel>();
             services.AddSingleton<MacroMetadataCreatorViewModel>();
@@ -63,22 +64,21 @@ namespace RecBinderProject.Infrastructure.Extenstions
             // Macro Library
             //services.AddSingleton<MacroPlaybackOptions>();
 
+            services.AddScoped<MacroPlaybackContext>();
+
             services.AddScoped<MacroEventPlayer>();
             services.AddScoped<IMacroPlaybackService, MacroPlaybackService>();
 
-            services.AddSingleton<MacroPlaybackOptionsViewModel>();
-
-            services.AddSingleton<MacroLibraryListViewModel>();
             services.AddSingleton<IMacroLibraryViewModelFactory, MacroLibraryViewModelFactory>();
-            services.AddSingleton<MacroMetadataViewerViewModel>();
+            services.AddSingleton<MacroLibraryListViewModel>();
             services.AddSingleton<MacroLibraryViewModel>();
+
 
             // App Settings  
             services.AddSingleton<GeneralAppSettingsSectionViewModel>();
             //services.AddSingleton<AdvancedAppSettingsSectionViewModel>();
             //services.AddSingleton<ProfileAppSettingsSectionViewModel>();
             services.AddSingleton<AppSettingsViewModel>();
-            services.AddSingleton<AppSettingsView>();
 
             // Main Window
             services.AddSingleton<MainWindowViewModel>();

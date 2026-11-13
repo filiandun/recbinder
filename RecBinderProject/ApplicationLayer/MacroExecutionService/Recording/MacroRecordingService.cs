@@ -60,12 +60,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
             try
             {
+                Macro macro = new Macro(macroMetadata);
+
                 MacroRecordingContext recordingContext = serviceScope.ServiceProvider.GetRequiredService<MacroRecordingContext>();
-                recordingContext.Initialize(macroMetadata, recordingOptions);
+                recordingContext.Initialize(macro, recordingOptions);
 
                 MacroEventRecorder macroRecorder = serviceScope.ServiceProvider.GetRequiredService<MacroEventRecorder>();
-
-                Macro macro = new Macro(macroMetadata);
 
                 this._recordingSession = new MacroRecordingSession(serviceScope, macroRecorder, cancellationTokenSource, macro);
 

@@ -33,13 +33,12 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             LocalizationViewModel localizationViewModel, 
             MacroRecordingStatusViewModel statusViewModel,
 
-            MacroMetadataCreatorViewModel metadataCreatorViewModel,
-            MacroRecordingOptionsViewModel optionsViewModel) : base(logger, dialogService, recordingService, localizationViewModel, statusViewModel)
+            MacroMetadataCreatorViewModel metadataCreatorViewModel) : base(logger, dialogService, recordingService, localizationViewModel, statusViewModel)
         {
             this._recordingService = recordingService;
 
             this.MetadataCreatorViewModel = metadataCreatorViewModel;
-            this.OptionsViewModel = optionsViewModel;
+            this.OptionsViewModel = new MacroRecordingOptionsViewModel();
         }
 
 
@@ -68,7 +67,7 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             }
             catch (Exception ex)
             {
-                this._logger.LogError(ex.Message, "An error occurred while recording the macro.");
+                this._logger.LogError(ex, "An error occurred while recording the macro.");
 
                 await this._dialogService.ShowAsync(this.LocalizationViewModel.Common["Dialog_Label_Error"], "An error occurred while recording the macro.");
             }

@@ -7,17 +7,17 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Managers
 {
     public class MacroRecordingContext
     {
-        private MacroMetadata? _macroMetadata;
+        private Macro? _macro;
         private MacroRecordingOptions? _recordingOptions;
 
-        public MacroMetadata MacroMetadata => this._macroMetadata ?? throw new InvalidOperationException($"{nameof(MacroRecordingContext)} is not initialized: {nameof(this.MacroMetadata)} is null.");
+        public Macro Macro => this._macro ?? throw new InvalidOperationException($"{nameof(MacroRecordingContext)} is not initialized: {nameof(this.Macro)} is null.");
         public MacroRecordingOptions RecordingOptions => this._recordingOptions ?? throw new InvalidOperationException($"{nameof(MacroRecordingContext)} is not initialized: {nameof(this.RecordingOptions)} is null.");
 
-        public bool IsInitialized => this._macroMetadata is not null && this._recordingOptions is not null;
+        public bool IsInitialized => this._macro is not null && this._recordingOptions is not null;
 
-        public void Initialize(MacroMetadata macroMetadata, MacroRecordingOptions recordingOptions)
+        public void Initialize(Macro macro, MacroRecordingOptions recordingOptions)
         {
-            ArgumentNullException.ThrowIfNull(macroMetadata);
+            ArgumentNullException.ThrowIfNull(macro);
             ArgumentNullException.ThrowIfNull(recordingOptions);
 
             if (this.IsInitialized)
@@ -25,7 +25,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Managers
                 throw new InvalidOperationException($"{nameof(MacroRecordingContext)} is already initialized.");
             }
 
-            this._macroMetadata = macroMetadata;
+            this._macro = macro;
             this._recordingOptions = recordingOptions;
         }
     }

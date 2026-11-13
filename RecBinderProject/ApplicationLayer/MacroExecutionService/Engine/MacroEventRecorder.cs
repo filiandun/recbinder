@@ -44,7 +44,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
             this._stopwatch = new Stopwatch();
 
-            this._macro = new Macro(context.MacroMetadata);
+            this._macro = context.Macro;
             this._options = context.RecordingOptions;
         }
 

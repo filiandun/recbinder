@@ -79,12 +79,14 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
                 serviceScope?.Dispose();
                 cancellationTokenSource?.Dispose();
 
-                this._playbackSession?.Dispose();
-                this._playbackSession = null;
-
                 this.SetState(MacroExecutionState.Stopped); // TODO MacroExecutionState.Faulted
 
                 throw;
+            }
+            finally
+            {
+                this._playbackSession?.Dispose();
+                this._playbackSession = null;
             }
         }
 
@@ -119,8 +121,6 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
                 this._logger.LogInformation("Macro playback stopping..");
 
                 this.ActivePlaybackSession.CancellationTokenSource.Cancel();
-
-                this.SetState(MacroExecutionState.Stopped);
             }
         }
 
