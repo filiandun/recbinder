@@ -5,9 +5,9 @@ using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.ViewModels.Localization;
 
 using RecBinderProject.Infrastructure.Services.AppSettings;
-using RecBinderProject.Infrastructure.Services.Localization;
 using RecBinderProject.Presentation.Services.Dialog;
 using System.Runtime.CompilerServices;
+using RecBinderProject.ApplicationLayer.Localization;
 
 
 namespace RecBinderProject.Presentation.ViewModels.AppSettings

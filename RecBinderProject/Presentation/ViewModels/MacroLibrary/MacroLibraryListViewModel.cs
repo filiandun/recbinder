@@ -8,10 +8,10 @@ using RecBinderProject.Domain;
 
 using RecBinderProject.Infrastructure.Repositories;
 using RecBinderProject.Infrastructure.Services.AppSettings;
-using RecBinderProject.Infrastructure.Services.Localization;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Services.Dialog;
+using RecBinderProject.ApplicationLayer.Localization;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroLibrary

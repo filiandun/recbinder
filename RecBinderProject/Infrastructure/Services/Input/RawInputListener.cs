@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 
 using RecBinderProject.Domain.MacroEvents;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
 
 
 namespace RecBinderProject.Infrastructure.Services.Input

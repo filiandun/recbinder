@@ -1,5 +1,4 @@
-﻿using RecBinderProject.Infrastructure.Services.Localization;
-
+﻿using RecBinderProject.ApplicationLayer.Localization;
 
 namespace RecBinderProject.Presentation.ViewModels.Localization
 {

@@ -3,6 +3,7 @@ using System.Globalization;
 using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Infrastructure.Services.AppSettings;
+using RecBinderProject.ApplicationLayer.Localization;
 
 
 namespace RecBinderProject.Infrastructure.Services.Localization

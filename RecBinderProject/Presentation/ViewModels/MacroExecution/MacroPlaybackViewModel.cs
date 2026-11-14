@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 
 using RecBinderProject.Domain;

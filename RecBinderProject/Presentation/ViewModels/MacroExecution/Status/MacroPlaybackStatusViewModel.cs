@@ -1,6 +1,6 @@
 ﻿
+using RecBinderProject.ApplicationLayer.Localization;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
-using RecBinderProject.Infrastructure.Services.Localization;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroExecution.Status
