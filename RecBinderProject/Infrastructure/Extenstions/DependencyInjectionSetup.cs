@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
+using RecBinderProject.ApplicationLayer.Localization;
+using RecBinderProject.ApplicationLayer.GlobalHotkey;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
 
 using RecBinderProject.Infrastructure.Repositories;
 
@@ -24,8 +27,6 @@ using RecBinderProject.Presentation.ViewModels.MacroLibrary;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
-using RecBinderProject.ApplicationLayer.Localization;
 
 
 
@@ -44,8 +45,8 @@ namespace RecBinderProject.Infrastructure.Extenstions
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddSingleton<IThemeService, ThemeService>();
 
-            services.AddSingleton<LocalizationViewModel>();
-            services.AddSingleton<GlobalHotkeyService>();
+            services.AddSingleton<IGlobalHotkeyService, GlobalHotkeyService>();
+            services.AddSingleton<LocalizationViewModel>(); // TODO ВОПРОС надо она или нет как singleton? Хотя, она везде используется, пусть будет
 
             // Macro Recording
             services.AddSingleton<IInputListener, RawInputListener>();

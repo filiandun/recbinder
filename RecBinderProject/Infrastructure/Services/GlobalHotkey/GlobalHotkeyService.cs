@@ -1,11 +1,13 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 
+using RecBinderProject.ApplicationLayer.GlobalHotkey;
+
+
 namespace RecBinderProject.Infrastructure.Services.GlobalHotkey
 {
-    public class GlobalHotkeyService
+    public class GlobalHotkeyService : IGlobalHotkeyService
     {
         public event Action<HotkeyAction>? HotkeyPressed;
 
@@ -37,9 +39,9 @@ namespace RecBinderProject.Infrastructure.Services.GlobalHotkey
         }
 
 
-        public void Initialize(Window window)
+        public void Initialize(IntPtr hwnd)
         {
-            this._hwnd = new WindowInteropHelper(window).Handle;
+            this._hwnd = hwnd;
             this._source = HwndSource.FromHwnd(_hwnd);
             this._source?.AddHook(WndProc);
         }
@@ -48,7 +50,7 @@ namespace RecBinderProject.Infrastructure.Services.GlobalHotkey
         {
             if (this._hwnd == IntPtr.Zero) throw new InvalidOperationException("HotkeyService is not initialized.");
 
-            Unregister(binding.Action);
+            this.Unregister(binding.Action);
 
             int id = this._nextId++;
             uint modifiers = (uint)binding.Modifiers;
@@ -97,19 +99,6 @@ namespace RecBinderProject.Infrastructure.Services.GlobalHotkey
             this._bindings.Clear();
         }
 
-        public void Dispose()
-        {
-            UnregisterAll();
-
-            if (this._source is not null)
-            {
-                this._source.RemoveHook(WndProc);
-                this._source = null;
-            }
-
-            this._hwnd = IntPtr.Zero;
-        }
-
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg == WM_HOTKEY)
@@ -123,6 +112,20 @@ namespace RecBinderProject.Infrastructure.Services.GlobalHotkey
                 }
             }
             return IntPtr.Zero;
+        }
+
+
+        public void Dispose()
+        {
+            this.UnregisterAll();
+
+            if (this._source is not null)
+            {
+                this._source.RemoveHook(WndProc);
+                this._source = null;
+            }
+
+            this._hwnd = IntPtr.Zero;
         }
     }
 }

@@ -102,8 +102,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ApplicationLayer\GlobalHotkey\" />
-  </ItemGroup>
-
 </Project>

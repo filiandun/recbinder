@@ -1,25 +1,24 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using System.Windows.Interop;
-
+﻿using RecBinderProject.ApplicationLayer.GlobalHotkey;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
-
 using RecBinderProject.Presentation.ViewModels.MainWindow;
+
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
 
 
 namespace RecBinderProject
 {
     public partial class MainWindow : Window
     {
-        private readonly GlobalHotkeyService _globalHotkeyService;
-
+        private readonly IGlobalHotkeyService _globalHotkeyService;
         private readonly IInputListener _inputListener;
 
         public MainWindowViewModel ViewModel { get; private set; }
 
 
-        public MainWindow(MainWindowViewModel viewModel, GlobalHotkeyService globalHotkeyService, IInputListener inputListener)
+        public MainWindow(MainWindowViewModel viewModel, IGlobalHotkeyService globalHotkeyService, IInputListener inputListener)
         {
             InitializeComponent();
 
@@ -27,7 +26,6 @@ namespace RecBinderProject
             this.DataContext = viewModel;
 
             this._globalHotkeyService = globalHotkeyService;
-
             this._inputListener = inputListener;
 
             this.SourceInitialized += this.OnSourceInitialized;
@@ -39,7 +37,9 @@ namespace RecBinderProject
 
         private async void OnSourceInitialized(object? sender, EventArgs e)
         {
-            this._globalHotkeyService.Initialize(this);
+            IntPtr hwnd = new WindowInteropHelper(this).Handle;
+
+            this._globalHotkeyService.Initialize(hwnd);
 
             this._globalHotkeyService.UpdateBindings(new[]
             {
@@ -53,7 +53,6 @@ namespace RecBinderProject
             this._globalHotkeyService.HotkeyPressed += this.ViewModel.OnHotkeyPressed;
 
 
-            IntPtr hwnd = new WindowInteropHelper(this).Handle;
             this._inputListener.Initialize(hwnd);
         }
 

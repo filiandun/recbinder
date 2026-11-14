@@ -2,6 +2,7 @@
 
 using RecBinderProject.ApplicationLayer.Localization;
 
+
 namespace RecBinderProject.Presentation.ViewModels.Localization
 {
     public class LocalizationViewModel : INotifyPropertyChanged

@@ -1,4 +1,4 @@
-﻿namespace RecBinderProject.Infrastructure.Services.GlobalHotkey
+﻿namespace RecBinderProject.ApplicationLayer.GlobalHotkey
 {
     public enum HotkeyAction
     {

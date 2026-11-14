@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 using Microsoft.Extensions.Logging;
 
-using RecBinderProject.Infrastructure.Services.GlobalHotkey;
+using RecBinderProject.ApplicationLayer.GlobalHotkey;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Services.Dialog;
