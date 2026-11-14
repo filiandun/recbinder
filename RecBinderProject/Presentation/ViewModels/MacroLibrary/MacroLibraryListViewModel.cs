@@ -5,13 +5,12 @@ using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
 
 using RecBinderProject.Domain;
-
-using RecBinderProject.Infrastructure.Repositories;
 using RecBinderProject.Infrastructure.Services.AppSettings;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Services.Dialog;
 using RecBinderProject.ApplicationLayer.Localization;
+using RecBinderProject.ApplicationLayer.MacroRepository;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroLibrary

@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using RecBinderProject.Domain;
 
 using RecBinderProject.Infrastructure.Services.AppSettings;
+using RecBinderProject.ApplicationLayer.MacroRepository;
 
 
 namespace RecBinderProject.Infrastructure.Repositories

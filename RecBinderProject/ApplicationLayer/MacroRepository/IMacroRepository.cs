@@ -1,7 +1,7 @@
 ﻿using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.Infrastructure.Repositories
+namespace RecBinderProject.ApplicationLayer.MacroRepository
 {
     public interface IMacroRepository
     {

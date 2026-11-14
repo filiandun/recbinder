@@ -27,6 +27,7 @@ using RecBinderProject.Presentation.ViewModels.MacroLibrary;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
+using RecBinderProject.ApplicationLayer.MacroRepository;
 
 
 
