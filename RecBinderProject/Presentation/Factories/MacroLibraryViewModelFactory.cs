@@ -21,9 +21,7 @@ namespace RecBinderProject.Presentation.Factories
 
         public MacroPlaybackViewModel CreatePlayback(Macro macro)
         {
-            MacroMetadataViewerViewModel metadataViewerViewModel = ActivatorUtilities.CreateInstance<MacroMetadataViewerViewModel>(this._serviceProvider, macro.Metadata);
-
-            MacroPlaybackViewModel playbackViewModel = ActivatorUtilities.CreateInstance<MacroPlaybackViewModel>(this._serviceProvider, metadataViewerViewModel, macro);
+            MacroPlaybackViewModel playbackViewModel = ActivatorUtilities.CreateInstance<MacroPlaybackViewModel>(this._serviceProvider, macro);
 
             return playbackViewModel;
         }

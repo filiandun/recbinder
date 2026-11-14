@@ -12,12 +12,10 @@ using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 using RecBinderProject.Infrastructure.Services.Input;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
-
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 {
-    public class MacroEventRecorder
+    public class MacroEventRecorder : IDisposable
     {
         private const int WHEEL_DELTA = 120;
 
@@ -28,14 +26,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private readonly Stopwatch _stopwatch;
 
-        private readonly Macro _macro;
         private readonly MacroRecordingOptions _options;
+        private readonly Macro _macro;
 
 
-        public MacroEventRecorder(ILogger<MacroEventRecorder> logger, IInputListener inputListener, MacroRecordingContext context)
+        public MacroEventRecorder(ILogger<MacroEventRecorder> logger, IInputListener inputListener, MacroRecordingOptions recordingOptions, Macro macro)
         {
-            if (!context.IsInitialized) throw new InvalidOperationException("Recording context is not initialized.");
-
             this._logger = logger;
 
             this._inputListener = inputListener;
@@ -44,8 +40,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
             this._stopwatch = new Stopwatch();
 
-            this._macro = context.Macro;
-            this._options = context.RecordingOptions;
+            this._options = recordingOptions;
+            this._macro = macro;
         }
 
 
@@ -115,6 +111,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
                 this._globalHook.MouseWheelExt -= this.OnMouseWheelExt;
 
                 this._globalHook.Dispose();
+                this._globalHook = null;
             }
 
             this._inputListener.Unregister();
@@ -191,6 +188,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
                 this._macro.AddEvent(MacroEvent.FromMouseWheel(wheelClicks, (int)this._stopwatch.ElapsedMilliseconds));
             }
+        }
+
+
+        public void Dispose()
+        {
+            this.Unsubscribe();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
@@ -15,7 +14,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
     {
         private readonly ILogger<MacroPlaybackService> _logger;
 
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IMacroEventPlayerFactory _playerFactory;
 
         private MacroPlaybackSession? _playbackSession;
         private MacroPlaybackSession ActivePlaybackSession => this._playbackSession ?? throw new InvalidOperationException("Playback session is not initialized.");
@@ -24,11 +23,11 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
         public override TimeSpan ElapsedTime => this._playbackSession?.MacroPlayer.ElapsedTime ?? TimeSpan.Zero;
 
 
-        public MacroPlaybackService(ILogger<MacroPlaybackService> logger, IServiceScopeFactory scopeFactory)
+        public MacroPlaybackService(ILogger<MacroPlaybackService> logger, IMacroEventPlayerFactory playerFactory)
         {
             this._logger = logger;
 
-            this._scopeFactory = scopeFactory;
+            this._playerFactory = playerFactory;
 
             this._playbackSession = null;
         }
@@ -50,17 +49,13 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
             this._playbackSession?.Dispose();
             this._playbackSession = null;
 
-            IServiceScope serviceScope = this._scopeFactory.CreateScope();
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
             try
             {
-                MacroPlaybackContext playbackContext = serviceScope.ServiceProvider.GetRequiredService<MacroPlaybackContext>();
-                playbackContext.Initialize(macro, playbackOptions);
+                MacroEventPlayer macroPlayer = this._playerFactory.Create(playbackOptions, macro);
 
-                MacroEventPlayer macroPlayer = serviceScope.ServiceProvider.GetRequiredService<MacroEventPlayer>();
-
-                this._playbackSession = new MacroPlaybackSession(serviceScope, macroPlayer, cancellationTokenSource, playbackOptions, macro);
+                this._playbackSession = new MacroPlaybackSession(macroPlayer, cancellationTokenSource, playbackOptions, macro);
 
                 await Task.Run(async () => await this.PlaybackLoop(this._playbackSession));
 
@@ -76,7 +71,6 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
             }
             catch
             {
-                serviceScope?.Dispose();
                 cancellationTokenSource?.Dispose();
 
                 this.SetState(MacroExecutionState.Stopped); // TODO MacroExecutionState.Faulted

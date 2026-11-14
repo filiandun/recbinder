@@ -17,11 +17,10 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
     public class MacroPlaybackViewModel : MacroExecutionViewModelBase
     {
         private readonly IMacroPlaybackService _playbackService;
+        private readonly Macro _macro;
 
         public MacroMetadataViewerViewModel MetadataViewerViewModel { get; private set; }
         public MacroPlaybackOptionsViewModel OptionsViewModel { get; private set; }
-
-        private readonly Macro _macro;
 
 
         public MacroPlaybackViewModel(
@@ -30,19 +29,18 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             IDialogService dialogService,
 
             IMacroPlaybackService playbackService,
+            Macro macro,
 
             LocalizationViewModel localizationViewModel, 
 
-            MacroPlaybackStatusViewModel statusViewModel, 
-            
-            Macro macro) : base(logger, dialogService, playbackService, localizationViewModel, statusViewModel)
+            MacroPlaybackStatusViewModel statusViewModel) : base(logger, dialogService, playbackService, localizationViewModel, statusViewModel)
         {
             this._playbackService = playbackService;
+            this._macro = macro;
 
             this.MetadataViewerViewModel = new MacroMetadataViewerViewModel(macro.Metadata);
             this.OptionsViewModel = new MacroPlaybackOptionsViewModel();
 
-            this._macro = macro;
         }
 
 

@@ -17,7 +17,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
     {
         private readonly ILogger<MacroRecordingService> _logger;
 
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IMacroEventRecorderFactory _recorderFactory;
         private readonly IMacroRepository _repository;
 
         private MacroRecordingSession? _recordingSession;
@@ -28,11 +28,12 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
 
         public bool CanSave => this.State == MacroExecutionState.Completed || this.State == MacroExecutionState.Stopped;
 
-        public MacroRecordingService(ILogger<MacroRecordingService> logger, IServiceScopeFactory scopeFactory, IMacroRepository repository)
+
+        public MacroRecordingService(ILogger<MacroRecordingService> logger, IMacroEventRecorderFactory recorderFactory, IMacroRepository repository)
         {
             this._logger = logger;
 
-            this._scopeFactory = scopeFactory;
+            this._recorderFactory = recorderFactory;
             this._repository = repository;
             
             this._recordingSession = null;
@@ -55,19 +56,15 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             this._recordingSession?.Dispose();
             this._recordingSession = null;
 
-            IServiceScope serviceScope = this._scopeFactory.CreateScope();
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
             try
             {
                 Macro macro = new Macro(macroMetadata);
 
-                MacroRecordingContext recordingContext = serviceScope.ServiceProvider.GetRequiredService<MacroRecordingContext>();
-                recordingContext.Initialize(macro, recordingOptions);
+                MacroEventRecorder macroRecorder = this._recorderFactory.Create(recordingOptions, macro);
 
-                MacroEventRecorder macroRecorder = serviceScope.ServiceProvider.GetRequiredService<MacroEventRecorder>();
-
-                this._recordingSession = new MacroRecordingSession(serviceScope, macroRecorder, cancellationTokenSource, macro);
+                this._recordingSession = new MacroRecordingSession(macroRecorder, cancellationTokenSource, recordingOptions, macro);
 
                 macroRecorder.Start();
 
@@ -77,7 +74,6 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             }
             catch
             {
-                serviceScope?.Dispose();
                 cancellationTokenSource?.Dispose();
 
                 this._recordingSession?.Dispose();

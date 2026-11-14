@@ -31,13 +31,11 @@ namespace RecBinderProject.Presentation.ViewModels.MacroExecution
             IMacroRecordingService recordingService,
 
             LocalizationViewModel localizationViewModel, 
-            MacroRecordingStatusViewModel statusViewModel,
-
-            MacroMetadataCreatorViewModel metadataCreatorViewModel) : base(logger, dialogService, recordingService, localizationViewModel, statusViewModel)
+            MacroRecordingStatusViewModel statusViewModel) : base(logger, dialogService, recordingService, localizationViewModel, statusViewModel)
         {
             this._recordingService = recordingService;
 
-            this.MetadataCreatorViewModel = metadataCreatorViewModel;
+            this.MetadataCreatorViewModel = new MacroMetadataCreatorViewModel();
             this.OptionsViewModel = new MacroRecordingOptionsViewModel();
         }
 

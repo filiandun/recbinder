@@ -23,8 +23,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private readonly SafeInputSimulator _inputSimulator;
         private readonly Stopwatch _stopwatch;
 
-        private readonly Macro _macro;
         private readonly MacroPlaybackOptions _options;
+        private readonly Macro _macro;
 
         private volatile bool _isPaused;
 
@@ -35,17 +35,15 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private Point _mouseOffset;
 
 
-        public MacroEventPlayer(ILogger<MacroEventPlayer> logger, MacroPlaybackContext context)
+        public MacroEventPlayer(ILogger<MacroEventPlayer> logger, MacroPlaybackOptions playbackOptions, Macro macro)
         {
-            if (!context.IsInitialized) throw new InvalidOperationException("Playback context is not initialized.");
-
             this._logger = logger;
             this._inputSimulator = new SafeInputSimulator();
 
             this._stopwatch = new Stopwatch();
 
-            this._macro = context.Macro;
-            this._options = context.PlaybackOptions;
+            this._options = playbackOptions;
+            this._macro = macro;
 
             this._isPaused = false;
 

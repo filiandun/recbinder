@@ -1,18 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
 
 using RecBinderProject.Infrastructure.Repositories;
 
-using RecBinderProject.Infrastructure.Services.Input;
+using RecBinderProject.Infrastructure.Factories;
+
 using RecBinderProject.Infrastructure.Services.AppSettings;
+using RecBinderProject.Infrastructure.Services.Input;
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 using RecBinderProject.Infrastructure.Services.Localization;
-
-using RecBinderProject.Presentation.Views;
 
 using RecBinderProject.Presentation.Services;
 using RecBinderProject.Presentation.Services.Dialog;
@@ -23,10 +22,8 @@ using RecBinderProject.Presentation.ViewModels.MainWindow;
 using RecBinderProject.Presentation.ViewModels.AppSettings;
 using RecBinderProject.Presentation.ViewModels.MacroLibrary;
 using RecBinderProject.Presentation.ViewModels.Localization;
-using RecBinderProject.Presentation.ViewModels.MacroOptions;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
-using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 
 
 
@@ -49,30 +46,22 @@ namespace RecBinderProject.Infrastructure.Extenstions
             services.AddSingleton<GlobalHotkeyService>();
 
             // Macro Recording
-            //services.AddSingleton<MacroRecordingOptions>();
-
-            services.AddScoped<MacroRecordingContext>();
-
             services.AddSingleton<IInputListener, RawInputListener>();
-            services.AddScoped<MacroEventRecorder>();
-            services.AddScoped<IMacroRecordingService, MacroRecordingService>();
+            services.AddSingleton<IMacroEventRecorderFactory, MacroEventRecorderFactory>();
+            services.AddSingleton<IMacroRecordingService, MacroRecordingService>();
 
             services.AddSingleton<MacroRecordingStatusViewModel>();
-            services.AddSingleton<MacroMetadataCreatorViewModel>();
             services.AddSingleton<MacroRecordingViewModel>();
 
             // Macro Library
-            //services.AddSingleton<MacroPlaybackOptions>();
+            services.AddSingleton<IMacroEventPlayerFactory, MacroEventPlayerFactory>();
+            services.AddSingleton<IMacroPlaybackService, MacroPlaybackService>();
 
-            services.AddScoped<MacroPlaybackContext>();
-
-            services.AddScoped<MacroEventPlayer>();
-            services.AddScoped<IMacroPlaybackService, MacroPlaybackService>();
+            services.AddSingleton<MacroPlaybackStatusViewModel>();
 
             services.AddSingleton<IMacroLibraryViewModelFactory, MacroLibraryViewModelFactory>();
             services.AddSingleton<MacroLibraryListViewModel>();
             services.AddSingleton<MacroLibraryViewModel>();
-
 
             // App Settings  
             services.AddSingleton<GeneralAppSettingsSectionViewModel>();
