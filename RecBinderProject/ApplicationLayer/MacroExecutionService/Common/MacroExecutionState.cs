@@ -1,5 +1,5 @@
 ﻿
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService
+namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Common
 {
     public enum MacroExecutionState
     {

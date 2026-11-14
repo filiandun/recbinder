@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
+
 using Microsoft.Extensions.Logging;
 
 using Gma.System.MouseKeyHook;
@@ -9,8 +10,6 @@ using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
 
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
-
-using RecBinderProject.Infrastructure.Services.Input;
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine

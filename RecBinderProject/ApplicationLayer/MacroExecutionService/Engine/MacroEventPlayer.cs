@@ -3,13 +3,11 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
 using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
-
 
 
 namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
@@ -20,7 +18,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private readonly ILogger<MacroEventPlayer> _logger;
 
-        private readonly SafeInputSimulator _inputSimulator;
+        private readonly IInputSimulator _inputSimulator;
         private readonly Stopwatch _stopwatch;
 
         private readonly MacroPlaybackOptions _options;
@@ -35,10 +33,11 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         private Point _mouseOffset;
 
 
-        public MacroEventPlayer(ILogger<MacroEventPlayer> logger, MacroPlaybackOptions playbackOptions, Macro macro)
+        public MacroEventPlayer(ILogger<MacroEventPlayer> logger, IInputSimulator inputSimulator, MacroPlaybackOptions playbackOptions, Macro macro)
         {
             this._logger = logger;
-            this._inputSimulator = new SafeInputSimulator();
+
+            this._inputSimulator = inputSimulator;
 
             this._stopwatch = new Stopwatch();
 

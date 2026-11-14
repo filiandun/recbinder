@@ -1,5 +1,4 @@
-﻿
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Common
+﻿namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Common
 {
     public abstract class MacroExecutionServiceBase : IMacroExecutionInfo
     {

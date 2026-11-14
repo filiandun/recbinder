@@ -2,8 +2,8 @@
 using System.Windows.Input;
 using System.Windows.Interop;
 
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
-using RecBinderProject.Infrastructure.Services.Input;
 
 using RecBinderProject.Presentation.ViewModels.MainWindow;
 

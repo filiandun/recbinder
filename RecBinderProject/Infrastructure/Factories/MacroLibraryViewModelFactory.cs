@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using RecBinderProject.Domain;
-
+using RecBinderProject.Presentation.Factories;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroMetadataExecution;
 
 
-namespace RecBinderProject.Presentation.Factories
+namespace RecBinderProject.Infrastructure.Factories
 {
     public class MacroLibraryViewModelFactory : IMacroLibraryViewModelFactory
     {

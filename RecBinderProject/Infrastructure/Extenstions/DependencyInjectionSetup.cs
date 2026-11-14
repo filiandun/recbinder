@@ -24,6 +24,8 @@ using RecBinderProject.Presentation.ViewModels.MacroLibrary;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
+using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
+using RecBinderProject.ApplicationLayer.Localization;
 
 
 
@@ -54,6 +56,7 @@ namespace RecBinderProject.Infrastructure.Extenstions
             services.AddSingleton<MacroRecordingViewModel>();
 
             // Macro Library
+            services.AddTransient<IInputSimulator, SafeInputSimulator>();
             services.AddSingleton<IMacroEventPlayerFactory, MacroEventPlayerFactory>();
             services.AddSingleton<IMacroPlaybackService, MacroPlaybackService>();
 
