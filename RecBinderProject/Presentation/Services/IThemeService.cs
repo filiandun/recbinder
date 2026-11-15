@@ -1,5 +1,4 @@
-﻿using RecBinderProject.Infrastructure.Services.AppSettings;
-
+﻿using RecBinderProject.ApplicationLayer.AppSettings;
 
 namespace RecBinderProject.Presentation.Services
 {

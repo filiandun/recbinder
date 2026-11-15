@@ -2,10 +2,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-
-namespace RecBinderProject.Infrastructure.Services.AppSettings
+namespace RecBinderProject.ApplicationLayer.AppSettings.Models
 {
-    public class GeneralAppSettings : IEquatable<GeneralAppSettings>, ICloneable
+    public class GeneralAppSettingsModel : IEquatable<GeneralAppSettingsModel>, ICloneable
     {
         public AppLanguage AppLanguage { get; set; }
         public AppTheme AppTheme { get; set; }
@@ -14,7 +13,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
         public Size MonitorSize { get; set; }
 
 
-        public GeneralAppSettings()
+        public GeneralAppSettingsModel()
         {
             this.AppLanguage = AppLanguage.System;
             this.AppTheme = AppTheme.System;
@@ -23,7 +22,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
             this.MonitorSize = SystemInformation.PrimaryMonitorSize;
         }
 
-        public GeneralAppSettings(AppLanguage language, AppTheme theme, string saveDirectory, Size monitorSize)
+        public GeneralAppSettingsModel(AppLanguage language, AppTheme theme, string saveDirectory, Size monitorSize)
         {
             this.AppLanguage = language;
             this.AppTheme = theme;
@@ -33,7 +32,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
         }
 
 
-        public GeneralAppSettings(AppLanguage language, AppTheme theme, string saveDirectory, int monitorWidth, int monitorHeight)
+        public GeneralAppSettingsModel(AppLanguage language, AppTheme theme, string saveDirectory, int monitorWidth, int monitorHeight)
         {
             this.AppLanguage = language;
             this.AppTheme = theme;
@@ -43,9 +42,9 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
         }
 
 
-        public static GeneralAppSettings Default()
+        public static GeneralAppSettingsModel Default()
         {
-            return new GeneralAppSettings()
+            return new GeneralAppSettingsModel()
             {
                 AppLanguage = AppLanguage.System,
                 AppTheme = AppTheme.System,
@@ -54,7 +53,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
             };
         }
 
-        public bool Equals(GeneralAppSettings? other) // TODO может и не надо, просто сделать модель record, а не class
+        public bool Equals(GeneralAppSettingsModel? other) // TODO может и не надо, просто сделать модель record, а не class
         {
             if (other is null) return false;
 
@@ -65,6 +64,6 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
         }
 
         // TODO может и не надо, просто сделать модель record, а не class
-        public object Clone() => new GeneralAppSettings(this.AppLanguage, this.AppTheme, this.SaveDirectory, this.MonitorSize);
+        public object Clone() => new GeneralAppSettingsModel(this.AppLanguage, this.AppTheme, this.SaveDirectory, this.MonitorSize);
     }
 }

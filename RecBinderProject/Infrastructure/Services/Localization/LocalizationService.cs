@@ -1,9 +1,10 @@
 ﻿using System.Resources;
 using System.Globalization;
+
 using Microsoft.Extensions.Logging;
 
-using RecBinderProject.Infrastructure.Services.AppSettings;
 using RecBinderProject.ApplicationLayer.Localization;
+using RecBinderProject.ApplicationLayer.AppSettings;
 
 
 namespace RecBinderProject.Infrastructure.Services.Localization

@@ -7,8 +7,9 @@ using System.ComponentModel;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Services;
-using RecBinderProject.Infrastructure.Services.AppSettings;
 using RecBinderProject.ApplicationLayer.Localization;
+using RecBinderProject.ApplicationLayer.AppSettings.Models;
+using RecBinderProject.ApplicationLayer.AppSettings;
 
 
 namespace RecBinderProject.Presentation.ViewModels.AppSettings
@@ -25,14 +26,14 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         private readonly IAppSettingsService _appSettingsService;
         private readonly IThemeService _themeService;
 
-        private GeneralAppSettings _generalAppSettingsOriginal;
-        private GeneralAppSettings _generalAppSettingsEditable;
+        private GeneralAppSettingsModel _generalAppSettingsOriginal;
+        private GeneralAppSettingsModel _generalAppSettingsEditable;
 
         public ICommand BrowseSaveDirectoryCommand { get; }
 
         public bool IsSaveAllowed => !this.HasErrors;
         public bool IsCancelAllowed => this.HasEdits;
-        public bool IsResetAllowed => !this._generalAppSettingsEditable.Equals(GeneralAppSettings.Default()); // TODO: подумать над названием, сейчас оно не соответствует действию
+        public bool IsResetAllowed => !this._generalAppSettingsEditable.Equals(GeneralAppSettingsModel.Default()); // TODO: подумать над названием, сейчас оно не соответствует действию
 
         public bool HasEdits => !this._generalAppSettingsOriginal.Equals(this._generalAppSettingsEditable);
         public bool HasErrors => this._errors.Count != 0;
@@ -136,7 +137,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
             this._themeService = themeService;
 
             this._generalAppSettingsOriginal = this._appSettingsService.AppSettings.General;
-            this._generalAppSettingsEditable = (GeneralAppSettings)this._generalAppSettingsOriginal.Clone();
+            this._generalAppSettingsEditable = (GeneralAppSettingsModel)this._generalAppSettingsOriginal.Clone();
 
             this.BrowseSaveDirectoryCommand = new RelayCommand(BrowseSaveDirectory);
         }
@@ -146,7 +147,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         {
             if (this.HasErrors) throw new InvalidOperationException("General app settings section has error(s)");
 
-            this._generalAppSettingsOriginal = (GeneralAppSettings)_generalAppSettingsEditable.Clone();
+            this._generalAppSettingsOriginal = (GeneralAppSettingsModel)_generalAppSettingsEditable.Clone();
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.HasEdits)));
         }
@@ -155,12 +156,12 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
         {
             if (this.HasErrors) throw new InvalidOperationException("General app settings section has error(s)");
 
-            this._appSettingsService.AppSettings.General = (GeneralAppSettings)this._generalAppSettingsEditable.Clone();
+            this._appSettingsService.AppSettings.General = (GeneralAppSettingsModel)this._generalAppSettingsEditable.Clone();
         }
 
         public void CancelLocal()
         {
-            this._generalAppSettingsEditable = (GeneralAppSettings)this._generalAppSettingsOriginal.Clone();
+            this._generalAppSettingsEditable = (GeneralAppSettingsModel)this._generalAppSettingsOriginal.Clone();
 
             this._localizationService.ApplyLanguage(this._generalAppSettingsEditable.AppLanguage);
             this._themeService.ApplyTheme(this._generalAppSettingsEditable.AppTheme);
@@ -170,7 +171,7 @@ namespace RecBinderProject.Presentation.ViewModels.AppSettings
 
         public void ResetLocal() // TODO: не сбрасываются ошибки на самой странице (выделение поля желтым остаётся)
         {
-            this._generalAppSettingsEditable = GeneralAppSettings.Default();
+            this._generalAppSettingsEditable = GeneralAppSettingsModel.Default();
 
             this._localizationService.ApplyLanguage(this._generalAppSettingsEditable.AppLanguage);
             this._themeService.ApplyTheme(this._generalAppSettingsEditable.AppTheme);

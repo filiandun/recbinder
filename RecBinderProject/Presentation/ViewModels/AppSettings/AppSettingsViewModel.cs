@@ -3,11 +3,10 @@ using System.ComponentModel;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.ViewModels.Localization;
-
-using RecBinderProject.Infrastructure.Services.AppSettings;
 using RecBinderProject.Presentation.Services.Dialog;
 using System.Runtime.CompilerServices;
 using RecBinderProject.ApplicationLayer.Localization;
+using RecBinderProject.ApplicationLayer.AppSettings;
 
 
 namespace RecBinderProject.Presentation.ViewModels.AppSettings

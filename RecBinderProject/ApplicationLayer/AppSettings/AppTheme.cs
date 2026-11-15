@@ -1,4 +1,4 @@
-﻿namespace RecBinderProject.Infrastructure.Services.AppSettings
+﻿namespace RecBinderProject.ApplicationLayer.AppSettings
 {
     public enum AppTheme
     {

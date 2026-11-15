@@ -76,9 +76,8 @@ namespace RecBinderProject.Presentation.ViewModels.MainWindow
             this._macroRecordingViewModel = macroRecordingViewModel;
             this._appSettingsViewModel = appSettingsViewModel;
 
-
-            this.OpenSettingsCommand = new RelayCommand(this.ExecuteOpenSettings);
             this.OpenHelpCommand = new RelayCommand(this.ExecuteOpenHelp);
+            this.OpenSettingsCommand = new RelayCommand(this.ExecuteOpenSettings);
 
             this._selectedMenuIndex = 0;
             this._currentViewModel = macroLibraryViewModel;

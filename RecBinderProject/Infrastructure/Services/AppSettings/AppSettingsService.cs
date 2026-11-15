@@ -1,6 +1,11 @@
 ﻿using System.IO;
 using System.Text.Json;
+
 using Microsoft.Extensions.Logging;
+
+using RecBinderProject.ApplicationLayer.AppSettings;
+using RecBinderProject.ApplicationLayer.AppSettings.Models;
+
 
 namespace RecBinderProject.Infrastructure.Services.AppSettings
 {
@@ -13,7 +18,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
 
         public AppSettingsLoadState LoadState { get; set; }
 
-        public AppSettings AppSettings { get; set; } // TODO подумать над тем, чтобы убрать публичный set и сделать метод (для того, чтобы не было подвешенного состояния, когда сохранённые настройки в файл отличаются от этих)
+        public AppSettingsModel AppSettings { get; set; } // TODO подумать над тем, чтобы убрать публичный set и сделать метод (для того, чтобы не было подвешенного состояния, когда сохранённые настройки в файл отличаются от этих)
 
 
         public AppSettingsService(ILogger<AppSettingsService> logger) 
@@ -23,7 +28,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
             this._fileName = "settings.json";
             this._filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._fileName);
 
-            this.AppSettings = new AppSettings();
+            this.AppSettings = new AppSettingsModel();
 
             this.LoadState = AppSettingsLoadState.NotLoaded;
         }
@@ -35,7 +40,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
             {
                 this._logger.LogInformation("App settings file not found, creating default file {AppSettingsFile}", this._filePath);
 
-                this.AppSettings = new AppSettings();
+                this.AppSettings = new AppSettingsModel();
                 this.Save();
 
                 this.LoadState = AppSettingsLoadState.MissingFile;
@@ -48,9 +53,9 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
                 this._logger.LogInformation("Loading app settings from {AppSettingsFile}", this._filePath);
 
                 using FileStream fileStream = File.OpenRead(this._filePath);
-                AppSettings? loadedSettings = JsonSerializer.Deserialize<AppSettings>(fileStream);
+                AppSettingsModel? loadedSettings = JsonSerializer.Deserialize<AppSettingsModel>(fileStream);
 
-                this.AppSettings = loadedSettings ?? new AppSettings();
+                this.AppSettings = loadedSettings ?? new AppSettingsModel();
 
                 this.LoadState = AppSettingsLoadState.LoadedFromFile;
             }
@@ -58,7 +63,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
             {
                 this._logger.LogError(ex, "Failed to parse app settings file {AppSettingsFile}", this._filePath);
                  
-                this.AppSettings = new AppSettings();
+                this.AppSettings = new AppSettingsModel();
                 this.Save();
 
                 this.LoadState = AppSettingsLoadState.CorruptedFile;
@@ -66,14 +71,14 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
             catch (IOException ex)
             {   
                 this._logger.LogError(ex, "Failed to read app settings file {AppSettingsFile}", this._filePath);
-                this.AppSettings = new AppSettings();
+                this.AppSettings = new AppSettingsModel();
 
                 this.LoadState = AppSettingsLoadState.CorruptedFile;
             }
             catch (UnauthorizedAccessException ex)
             {
                 this._logger.LogError(ex, "No access to app settings file {AppSettingsFile}", this._filePath);
-                this.AppSettings = new AppSettings();
+                this.AppSettings = new AppSettingsModel();
 
                 this.LoadState = AppSettingsLoadState.AccessDenied;
             }
@@ -92,18 +97,18 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
             {
                 this._logger.LogError(ex, "Failed to parse app settings file {AppSettingsFile}", this._filePath);
 
-                this.AppSettings = new AppSettings();
+                this.AppSettings = new AppSettingsModel();
                 this.Save();
             }
             catch (IOException ex)
             {
                 this._logger.LogError(ex, "Failed to create app settings file {AppSettingsFile}", this._filePath);
-                this.AppSettings = new AppSettings();
+                this.AppSettings = new AppSettingsModel();
             }
             catch (UnauthorizedAccessException ex)
             {
                 this._logger.LogError(ex, "No access to app settings file {AppSettingsFile}", this._filePath);
-                this.AppSettings = new AppSettings();
+                this.AppSettings = new AppSettingsModel();
             }
 
         }
@@ -112,7 +117,7 @@ namespace RecBinderProject.Infrastructure.Services.AppSettings
         {
             this._logger.LogInformation("Reset app settings");
 
-            this.AppSettings = new AppSettings();
+            this.AppSettings = new AppSettingsModel();
         }
     }
 }
