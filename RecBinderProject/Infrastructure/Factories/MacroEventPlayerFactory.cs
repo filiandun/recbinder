@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+using RecBinderProject.ApplicationLayer.MacroExecution.Playback;
 
 using RecBinderProject.Domain;
+
+using RecBinderProject.Infrastructure.EventExecution;
 
 
 namespace RecBinderProject.Infrastructure.Factories
@@ -20,7 +21,7 @@ namespace RecBinderProject.Infrastructure.Factories
         }
 
 
-        public MacroEventPlayer Create(MacroPlaybackOptions options, Macro macro)
+        public IMacroEventPlayer Create(MacroPlaybackOptions options, Macro macro)
         {
             return ActivatorUtilities.CreateInstance<MacroEventPlayer>(this._serviceProvider, options, macro);
         }

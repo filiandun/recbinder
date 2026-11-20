@@ -1,5 +1,4 @@
-﻿
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
+﻿namespace RecBinderProject.Infrastructure.Input
 {
     public interface IInputSimulator
     {

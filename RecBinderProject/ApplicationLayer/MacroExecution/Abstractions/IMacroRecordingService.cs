@@ -1,12 +1,11 @@
-﻿using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+﻿using RecBinderProject.ApplicationLayer.MacroExecution.Recording;
 
 using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
+namespace RecBinderProject.ApplicationLayer.MacroExecution.Abstractions
 {
-    public interface IMacroRecordingService : IMacroExecutionInfo
+    public interface IMacroRecordingService : IMacroExecutionInfo, IDisposable
     {
         public bool CanSave { get; }
 

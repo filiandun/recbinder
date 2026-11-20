@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+using RecBinderProject.ApplicationLayer.MacroExecution.Playback;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroOptions

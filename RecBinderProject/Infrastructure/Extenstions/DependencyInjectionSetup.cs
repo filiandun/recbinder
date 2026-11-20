@@ -1,18 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using RecBinderProject.ApplicationLayer.Localization;
+using RecBinderProject.ApplicationLayer.AppSettings;
 using RecBinderProject.ApplicationLayer.GlobalHotkey;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Playback;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
+using RecBinderProject.ApplicationLayer.Localization;
+using RecBinderProject.ApplicationLayer.MacroRepository;
 
 using RecBinderProject.Infrastructure.Repositories;
 
 using RecBinderProject.Infrastructure.Factories;
 
 using RecBinderProject.Infrastructure.Services.AppSettings;
-using RecBinderProject.Infrastructure.Services.Input;
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 using RecBinderProject.Infrastructure.Services.Localization;
 
@@ -27,8 +24,10 @@ using RecBinderProject.Presentation.ViewModels.MacroLibrary;
 using RecBinderProject.Presentation.ViewModels.Localization;
 using RecBinderProject.Presentation.ViewModels.MacroExecution;
 using RecBinderProject.Presentation.ViewModels.MacroExecution.Status;
-using RecBinderProject.ApplicationLayer.MacroRepository;
-using RecBinderProject.ApplicationLayer.AppSettings;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+using RecBinderProject.ApplicationLayer.MacroExecution.Recording;
+using RecBinderProject.ApplicationLayer.MacroExecution.Playback;
+using RecBinderProject.Infrastructure.Input;
 
 
 

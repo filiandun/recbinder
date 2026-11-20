@@ -1,4 +1,7 @@
-﻿namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Common
+﻿using RecBinderProject.ApplicationLayer.MacroExecution.Common;
+
+
+namespace RecBinderProject.ApplicationLayer.MacroExecution.Abstractions
 {
     public interface IMacroExecutionInfo
     {

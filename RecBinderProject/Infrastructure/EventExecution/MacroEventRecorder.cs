@@ -5,16 +5,18 @@ using Microsoft.Extensions.Logging;
 
 using Gma.System.MouseKeyHook;
 
+using RecBinderProject.ApplicationLayer.MacroExecution.Recording;
+
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+using RecBinderProject.Infrastructure.Input;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
 
-
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
+namespace RecBinderProject.Infrastructure.EventExecution
 {
-    public class MacroEventRecorder : IDisposable
+    public class MacroEventRecorder : IMacroEventRecorder
     {
         private const int WHEEL_DELTA = 120;
 
@@ -27,6 +29,8 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
 
         private readonly MacroRecordingOptions _options;
         private readonly Macro _macro;
+
+        public TimeSpan GetElapsedTime => this._stopwatch.Elapsed;
 
 
         public MacroEventRecorder(ILogger<MacroEventRecorder> logger, IInputListener inputListener, MacroRecordingOptions recordingOptions, Macro macro)
@@ -42,9 +46,6 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
             this._options = recordingOptions;
             this._macro = macro;
         }
-
-
-        public TimeSpan GetElapsedTime() => this._stopwatch.Elapsed;
 
 
         public void Start()
@@ -78,7 +79,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         }
 
 
-        public void Subscribe()
+        private void Subscribe()
         {
             this._globalHook = Hook.GlobalEvents();
 
@@ -96,7 +97,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
         }
 
 
-        public void Unsubscribe()
+        private void Unsubscribe()
         {
             if (this._globalHook != null)
             {

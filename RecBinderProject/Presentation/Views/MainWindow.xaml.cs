@@ -1,5 +1,5 @@
 ﻿using RecBinderProject.ApplicationLayer.GlobalHotkey;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
+using RecBinderProject.Infrastructure.Input;
 using RecBinderProject.Infrastructure.Services.GlobalHotkey;
 using RecBinderProject.Presentation.ViewModels.MainWindow;
 

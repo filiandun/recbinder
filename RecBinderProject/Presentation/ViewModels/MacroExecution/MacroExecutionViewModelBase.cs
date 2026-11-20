@@ -3,7 +3,8 @@ using System.Windows.Input;
 
 using Microsoft.Extensions.Logging;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+using RecBinderProject.ApplicationLayer.MacroExecution.Common;
 
 using RecBinderProject.Presentation.Commands;
 using RecBinderProject.Presentation.Services.Dialog;

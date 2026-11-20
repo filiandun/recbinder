@@ -2,8 +2,8 @@
 
 using Microsoft.Extensions.Logging;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+using RecBinderProject.ApplicationLayer.MacroExecution.Common;
 
 using RecBinderProject.Presentation.Services.Dialog;
 

@@ -1,14 +1,12 @@
-﻿using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
-
+﻿using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
 using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Managers
+namespace RecBinderProject.ApplicationLayer.MacroExecution.Playback
 {
     public sealed record MacroPlaybackSession : IDisposable
     {
-        public MacroEventPlayer MacroPlayer { get; init; }
+        public IMacroEventPlayer MacroPlayer { get; init; }
 
         public CancellationTokenSource CancellationTokenSource { get; init; }
 
@@ -16,7 +14,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Managers
         public Macro Macro { get; init; }
 
 
-        public MacroPlaybackSession(MacroEventPlayer macroPlayer, CancellationTokenSource cancellationTokenSource, MacroPlaybackOptions playbackOptions, Macro macro)
+        public MacroPlaybackSession(IMacroEventPlayer macroPlayer, CancellationTokenSource cancellationTokenSource, MacroPlaybackOptions playbackOptions, Macro macro)
         {
             this.MacroPlayer = macroPlayer;
 

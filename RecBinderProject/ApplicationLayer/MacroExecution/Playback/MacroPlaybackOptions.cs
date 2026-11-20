@@ -1,6 +1,5 @@
 ﻿
-
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Options
+namespace RecBinderProject.ApplicationLayer.MacroExecution.Playback
 {
     public class MacroPlaybackOptions
     {

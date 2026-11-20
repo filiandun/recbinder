@@ -1,18 +1,21 @@
 ﻿using System.Drawing;
 using System.Diagnostics;
 using System.Windows.Forms;
+
 using Microsoft.Extensions.Logging;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+using RecBinderProject.ApplicationLayer.MacroExecution.Playback;
 
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+using RecBinderProject.Infrastructure.Input;
 
 
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Engine
+namespace RecBinderProject.Infrastructure.EventExecution
 {
-    public class MacroEventPlayer
+    public class MacroEventPlayer : IMacroEventPlayer
     {
         private const int VIRTUAL_SCREEN_MAX = 65535;
 

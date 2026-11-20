@@ -1,17 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+using RecBinderProject.ApplicationLayer.MacroExecution.Common;
 using RecBinderProject.ApplicationLayer.MacroRepository;
 
 using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
+namespace RecBinderProject.ApplicationLayer.MacroExecution.Recording
 {
-    public class MacroRecordingService : MacroExecutionServiceBase, IMacroRecordingService, IDisposable
+    public class MacroRecordingService : MacroExecutionServiceBase, IMacroRecordingService
     {
         private readonly ILogger<MacroRecordingService> _logger;
 
@@ -22,7 +20,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
         private MacroRecordingSession ActiveRecordingSession => this._recordingSession ?? throw new InvalidOperationException("Recording session is not initialized.");
 
         public override TimeSpan TotalDuration => this._recordingSession?.Macro.Metadata.Duration ?? TimeSpan.Zero;
-        public override TimeSpan ElapsedTime => this._recordingSession?.MacroRecorder.GetElapsedTime() ?? TimeSpan.Zero;
+        public override TimeSpan ElapsedTime => this._recordingSession?.MacroRecorder.GetElapsedTime ?? TimeSpan.Zero;
 
         public bool CanSave => this.State == MacroExecutionState.Completed || this.State == MacroExecutionState.Stopped;
 
@@ -60,7 +58,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Recording
             {
                 Macro macro = new Macro(macroMetadata);
 
-                MacroEventRecorder macroRecorder = this._recorderFactory.Create(recordingOptions, macro);
+                IMacroEventRecorder macroRecorder = this._recorderFactory.Create(recordingOptions, macro);
 
                 this._recordingSession = new MacroRecordingSession(macroRecorder, cancellationTokenSource, recordingOptions, macro);
 

@@ -3,8 +3,9 @@ using System.ComponentModel;
 using System.Windows.Threading;
 using System.Runtime.CompilerServices;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
 using RecBinderProject.ApplicationLayer.Localization;
+using RecBinderProject.ApplicationLayer.MacroExecution.Common;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
 
 
 namespace RecBinderProject.Presentation.ViewModels.MacroExecution.Status

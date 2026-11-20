@@ -3,9 +3,9 @@
 using System.Windows.Forms;
 
 
-namespace RecBinderProject.Infrastructure.Services.Input
+namespace RecBinderProject.Infrastructure.Input
 {
-    public class SafeInputSimulator : ApplicationLayer.MacroExecutionService.Engine.IInputSimulator
+    public class SafeInputSimulator : IInputSimulator
     {
         private readonly InputSimulator _inputSimulator;
 

@@ -1,7 +1,6 @@
 ﻿
 using RecBinderProject.ApplicationLayer.Localization;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Recording;
-
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
 
 namespace RecBinderProject.Presentation.ViewModels.MacroExecution.Status
 {

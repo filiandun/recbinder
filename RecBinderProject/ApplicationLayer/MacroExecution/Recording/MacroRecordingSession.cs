@@ -1,14 +1,12 @@
-﻿using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
-
+﻿using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
 using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Managers
+namespace RecBinderProject.ApplicationLayer.MacroExecution.Recording
 {
     public sealed record MacroRecordingSession : IDisposable
     {
-        public MacroEventRecorder MacroRecorder { get; init; }
+        public IMacroEventRecorder MacroRecorder { get; init; }
 
         public CancellationTokenSource CancellationTokenSource { get; init; }
 
@@ -16,7 +14,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Managers
         public Macro Macro { get; init; }
 
 
-        public MacroRecordingSession(MacroEventRecorder macroRecorder, CancellationTokenSource cancellationTokenSource, MacroRecordingOptions recordingOptions, Macro macro)
+        public MacroRecordingSession(IMacroEventRecorder macroRecorder, CancellationTokenSource cancellationTokenSource, MacroRecordingOptions recordingOptions, Macro macro)
         {
             this.MacroRecorder = macroRecorder;
 

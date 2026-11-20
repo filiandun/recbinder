@@ -1,10 +1,9 @@
-﻿using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
+﻿using RecBinderProject.ApplicationLayer.MacroExecution.Playback;
 
 using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
+namespace RecBinderProject.ApplicationLayer.MacroExecution.Abstractions
 {
     public interface IMacroPlaybackService : IMacroExecutionInfo
     {

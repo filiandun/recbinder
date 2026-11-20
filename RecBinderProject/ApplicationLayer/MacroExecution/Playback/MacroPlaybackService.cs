@@ -1,14 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Common;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Engine;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Managers;
-using RecBinderProject.ApplicationLayer.MacroExecutionService.Options;
-
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+using RecBinderProject.ApplicationLayer.MacroExecution.Common;
 using RecBinderProject.Domain;
 
 
-namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
+namespace RecBinderProject.ApplicationLayer.MacroExecution.Playback
 {
     public class MacroPlaybackService : MacroExecutionServiceBase, IMacroPlaybackService, IDisposable
     {
@@ -53,7 +50,7 @@ namespace RecBinderProject.ApplicationLayer.MacroExecutionService.Playback
 
             try
             {
-                MacroEventPlayer macroPlayer = this._playerFactory.Create(playbackOptions, macro);
+                IMacroEventPlayer macroPlayer = this._playerFactory.Create(playbackOptions, macro);
 
                 this._playbackSession = new MacroPlaybackSession(macroPlayer, cancellationTokenSource, playbackOptions, macro);
 
