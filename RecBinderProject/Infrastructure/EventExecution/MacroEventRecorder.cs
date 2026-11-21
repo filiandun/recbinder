@@ -5,12 +5,13 @@ using Microsoft.Extensions.Logging;
 
 using Gma.System.MouseKeyHook;
 
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
 using RecBinderProject.ApplicationLayer.MacroExecution.Recording;
 
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
-using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+
 using RecBinderProject.Infrastructure.Input;
 
 

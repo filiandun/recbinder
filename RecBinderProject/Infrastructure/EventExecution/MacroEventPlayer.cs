@@ -5,11 +5,12 @@ using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 
 using RecBinderProject.ApplicationLayer.MacroExecution.Playback;
+using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
 
 using RecBinderProject.Domain;
 using RecBinderProject.Domain.MacroEvents;
 using RecBinderProject.Domain.MacroEvents.Enums;
-using RecBinderProject.ApplicationLayer.MacroExecution.Abstractions;
+
 using RecBinderProject.Infrastructure.Input;
 
 
@@ -203,8 +204,13 @@ namespace RecBinderProject.Infrastructure.EventExecution
                 double targetX = e.X + this._mouseOffset.X;
                 double targetY = e.Y + this._mouseOffset.Y;
 
-                double virtualX = targetX * VIRTUAL_SCREEN_MAX / (this._macro.Metadata.ResolutionWidth - 1);
-                double virtualY = targetY * VIRTUAL_SCREEN_MAX / (this._macro.Metadata.ResolutionHeight - 1);
+                Rectangle virtualScreen = SystemInformation.VirtualScreen;
+
+                double virtualX = (targetX - virtualScreen.Left) * VIRTUAL_SCREEN_MAX / Math.Max(1, virtualScreen.Width - 1);
+                double virtualY = (targetY - virtualScreen.Top) * VIRTUAL_SCREEN_MAX / Math.Max(1, virtualScreen.Height - 1);
+
+                virtualX = Math.Clamp(virtualX, 0, VIRTUAL_SCREEN_MAX);
+                virtualY = Math.Clamp(virtualY, 0, VIRTUAL_SCREEN_MAX);
 
                 this._inputSimulator.MouseMoveTo(virtualX, virtualY);
             }
